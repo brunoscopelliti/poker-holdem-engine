@@ -19,7 +19,7 @@ function playSingleHand(){
 
   setTimeout(function() {
 
-    console.log(chalk.red('look ma, i am playing poker'));
+    console.log(chalk.bold.red('look ma... i\'m playing poker!'));
     hand.next();
 
   }, 2000);
@@ -54,13 +54,17 @@ engine.on('game:start', function(setupData) {
   // that the tournament is starting for the first time, or
   // it is resuming after a break.
 
+  if (gamestate.status == 'play'){
+    return;
+  }
+
   gamestate.status = 'play';
 
   if (!gamestate.started){
 
-    console.log(chalk.bold.yellow(' -- is first time'));
-
     // @todo register players and other first-time stuff
+
+    gamestate.players = setupData.players.map(function(player) {});
 
     gamestate.started = true;
 
@@ -76,6 +80,11 @@ engine.on('game:pause', function() {
 
   //
   // take a break!
+
+  if (gamestate.status == 'pause'){
+    return;
+  }
+
   gamestate.status = 'pause';
 
 });
@@ -85,6 +94,10 @@ engine.on('game:end', function() {
 
   //
   // game is over
+  if (gamestate.status == 'stop'){
+    return;
+  }
+
   gamestate.status = 'stop';
 
 });
