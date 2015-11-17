@@ -1,6 +1,8 @@
 
 'use strict';
 
+const config = require('./config');
+
 const EventEmitter = require('events').EventEmitter;
 
 const chalk = require('chalk');
@@ -11,6 +13,9 @@ const engine = exports.engine = {};
 
 mixin(engine, EventEmitter.prototype, false)
 
+
+
+const status = require('./domain/player-status');
 
 
 function playSingleHand(){
@@ -66,7 +71,17 @@ engine.on('game:start', function(setupData) {
 
     // @todo register players and other first-time stuff
 
-    gamestate.players = setupData.players.map(function(player) {});
+    gamestate.players = setupData.players.map(function(player, id) {
+
+      return {
+        id: id,
+        name: player.name,
+        chips: config.BUYIN,
+        status: status.active,
+        version: 'Poker folder star!'
+      };
+
+    });
 
     gamestate.started = true;
 
