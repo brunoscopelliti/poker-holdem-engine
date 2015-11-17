@@ -44,6 +44,8 @@ function* dealer(){
 
 }
 
+exports._dealer = dealer;
+
 const hand = dealer();
 
 
