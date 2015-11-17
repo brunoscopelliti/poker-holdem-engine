@@ -4,6 +4,7 @@
 const sut = require('../index');
 
 const tape = require('tape');
+const chalk = require('chalk');
 const sinon = require('sinon');
 
 tape('game:* listeners', t => t.end());

@@ -4,6 +4,7 @@
 const sut = require('../lib/shuffle-cards');
 
 const tape = require('tape');
+const chalk = require('chalk');
 const sinon = require('sinon');
 
 tape('shuffle', t => t.end());

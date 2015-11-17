@@ -4,6 +4,7 @@
   "description": "Texas hold'em poker engine",
   "main": "index.js",
   "scripts": {
+    "pretest": "browserify tests/*.js -o bundle.js",
     "test": "tape tests/*.js"
   },
   "repository": {
@@ -32,7 +33,12 @@
     "poker-deck": "^1.0.0"
   },
   "devDependencies": {
-    "tape": "^4.2.2",
-    "sinon": "^1.17.2"
+    "connect": "^3.4.0",
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^4.0.1",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-connect": "^0.11.2",
+    "sinon": "^1.17.2",
+    "tape": "^4.2.2"
   }
 }
