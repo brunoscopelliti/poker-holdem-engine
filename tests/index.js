@@ -6,6 +6,7 @@ const sut = require('../index');
 const tape = require('tape');
 const sinon = require('sinon');
 
+tape('game:* listeners', t => t.end());
 
 tape('game:start listener', function(t) {
 
@@ -26,8 +27,6 @@ tape('game:start listener', function(t) {
 
 });
 
-
-
 tape('game:pause listener', function(t) {
 
   sut.engine.emit('game:pause', { players: [] });
@@ -36,7 +35,6 @@ tape('game:pause listener', function(t) {
   t.end();
 
 });
-
 
 tape('game:end listener', function(t) {
 
