@@ -1,6 +1,7 @@
 module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-browserify');
 
     grunt.initConfig({
@@ -17,6 +18,16 @@ module.exports = function (grunt) {
           options: {
             base: './'
           }
+        }
+      },
+
+      watch: {
+        options: {
+          livereload: 35740
+        },
+        unit: {
+          files: ['./lib/index.js', './lib/holdem-sequence.js', './lib/*.js', './tests/*.js', '!./tests/bundle.js'],
+          tasks: ['browserify:unit']
         }
       },
 
