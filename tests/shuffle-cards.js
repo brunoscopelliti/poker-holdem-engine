@@ -9,7 +9,7 @@ const sinon = require('sinon');
 
 tape('shuffle', t => t.end());
 
-tape('shuffle', function(t){
+tape('shuffle produces random sorted cards\' deck', function(t){
 
   const cardsA = sut();
   const cardsB = sut();

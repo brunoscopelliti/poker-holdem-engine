@@ -27,15 +27,13 @@ tape('loop on players starting from Dealer Button', function(t){
       setTimeout(function() {
         player.count = ++count;
         res(player);
-      }, 250);
+      }, 100);
     });
 
   }).then(function() {
-
     t.equal(players.filter(player => typeof player.count != 'undefined').length, players.length, 'loop over all the players');
     t.equal(players[1].count, players.length);
     t.equal(players[2].count, 1);
-
     t.end()
   })
 
