@@ -1,7 +1,7 @@
 
 'use strict';
 
-const sut = require('../lib/shuffle-cards');
+const sut = require('../../holdem/shuffle-cards');
 
 const tape = require('tape');
 const chalk = require('chalk');
