@@ -2,7 +2,9 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-watch');
+
     grunt.loadNpmTasks('grunt-browserify');
+    grunt.loadNpmTasks('grunt-eslint');
 
     grunt.initConfig({
 
@@ -27,7 +29,7 @@ module.exports = function (grunt) {
         },
         unit: {
           files: ['./lib/index.js', './lib/holdem-sequence.js', './lib/*.js', './tests/*.js', './tests/**/*.js', '!./tests/bundle.js'],
-          tasks: ['browserify:unit']
+          tasks: ['eslint:js', 'browserify:unit']
         }
       },
 
@@ -40,6 +42,13 @@ module.exports = function (grunt) {
             'tests/bundle.js': ['tests/*.js', 'tests/**/*.js', '!tests/bundle.js']
           }
         }
+      },
+
+      eslint: {
+        options: {
+          configFile: 'eslint.json'
+        },
+        js: ['./*.js', '!./Gruntfile.js', './domain/*.js', './holdem/*.js', './lib/*.js']
       }
 
     });
