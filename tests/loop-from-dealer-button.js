@@ -32,8 +32,8 @@ tape('loop on players starting from Dealer Button', function(t){
 
   }).then(function() {
     t.equal(players.filter(player => typeof player.count != 'undefined').length, players.length, 'loop over all the players');
-    t.equal(players[1].count, players.length);
-    t.equal(players[2].count, 1);
+    t.ok(players[2].count === 1 && players[1].count === players.length, 'check the loop order');
+    t.equal(Object.getOwnPropertySymbols(players[2]).length, 0, '[passed] symbol is deleted');
     t.end()
   })
 
