@@ -26,7 +26,7 @@ module.exports = function (grunt) {
           livereload: 35740
         },
         unit: {
-          files: ['./lib/index.js', './lib/holdem-sequence.js', './lib/*.js', './tests/*.js', '!./tests/bundle.js'],
+          files: ['./lib/index.js', './lib/holdem-sequence.js', './lib/*.js', './tests/*.js', './tests/**/*.js', '!./tests/bundle.js'],
           tasks: ['browserify:unit']
         }
       },
@@ -37,7 +37,7 @@ module.exports = function (grunt) {
         },
         unit: {
           files: {
-            'tests/bundle.js': ['tests/*.js', '!tests/bundle.js']
+            'tests/bundle.js': ['tests/*.js', 'tests/**/*.js', '!tests/bundle.js']
           }
         }
       }

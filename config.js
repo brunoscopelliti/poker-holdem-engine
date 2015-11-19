@@ -9,8 +9,9 @@ const config = {
   // the progression of small blinds
   SMALL_BLINDS: [10, 20, 25, 50, 100, 125, 200, 250, 500, 750, 1000, 1500, 2000],
 
-  // duration of a small blind value, in terms of "table rounds"
-  BLINDS_PERIOD: 1
+  // duration of a small blind value, in terms of "played hands"
+  // if 0, the value is equal to the number of players
+  BLINDS_PERIOD: 0
 
 };
 

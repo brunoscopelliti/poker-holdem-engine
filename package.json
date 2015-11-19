@@ -4,8 +4,8 @@
   "description": "Texas hold'em poker engine",
   "main": "index.js",
   "scripts": {
-    "pretest": "browserify tests/*.js -o bundle.js",
     "test": "tape tests/*.js"
+    "pretest": "browserify tests/*.js -o tests/bundle.js",
   },
   "repository": {
     "type": "git",
@@ -40,6 +40,7 @@
     "grunt-contrib-connect": "^0.11.2",
     "grunt-contrib-watch": "^0.6.1",
     "sinon": "^1.17.2",
-    "tape": "^4.2.2"
+    "tape": "^4.2.2",
+    "tape-case": "^1.0.1"
   }
 }
