@@ -1,7 +1,7 @@
 
 'use strict';
 
-const sut = require('../lib/loop-from-dealer-button');
+const sut = require('../../lib/loop-from-dealer-button');
 
 const tape = require('tape');
 const chalk = require('chalk');
