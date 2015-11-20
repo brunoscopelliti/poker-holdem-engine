@@ -17,7 +17,8 @@ exports = module.exports = function assignDB(gamestate){
   let newDB;
 
   do {
-    // ...
+    // make sure the dealer button reached a player
+    // who wasn't eliminated (plyaer.status == status.out)
     newDB = getNext(currDB, gamestate.players.length);
     currDB = newDB;
   } while(gamestate.players[newDB].status == status.out);

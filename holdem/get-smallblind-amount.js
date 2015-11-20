@@ -15,6 +15,6 @@ exports = module.exports = function getSmallblindAmount(gamestate){
 
   let i = Math.min(Math.floor(gamestate[progressive] / blindPeriod), config.SMALL_BLINDS.length-1);
 
-  return config.SMALL_BLINDS[i]
+  return config.SMALL_BLINDS[i];
 
 };
