@@ -18,42 +18,9 @@ mixin(engine, EventEmitter.prototype, false)
 const status = require('./domain/player-status');
 
 
-function playSingleHand(){
 
-  // @todo
-
-  setTimeout(function() {
-
-    console.log(chalk.bold.red('look ma... i\'m playing poker!'));
-    hand.next();
-
-  }, 2000);
-
-}
-
-function* dealer(){
-
-  while (gamestate.status != 'stop'){
-
-    if (gamestate.status == 'pause'){
-      yield gamestate.status;
-    }
-
-    if (gamestate.status == 'play'){
-
-      let result = yield playSingleHand();
-
-    }
-
-  }
-
-}
-
-exports._dealer = dealer;
-
+const dealer = exports._dealer = require('./holdem-dealer');
 const hand = dealer();
-
-
 
 engine.on('game:start', function(setupData) {
 
@@ -69,7 +36,7 @@ engine.on('game:start', function(setupData) {
 
   if (!gamestate.started){
 
-    // @todo register players and other first-time stuff
+    gamestate.tournamentId = setupData.tournamentId;
 
     gamestate.players = setupData.players.map(function(player, id) {
 
@@ -77,6 +44,7 @@ engine.on('game:start', function(setupData) {
         id: id,
         name: player.name,
         chips: config.BUYIN,
+        cards: [],
         status: status.active,
         version: 'Poker folder star!'
       };
@@ -116,5 +84,13 @@ engine.on('game:end', function() {
   }
 
   gamestate.status = 'stop';
+
+});
+
+
+
+engine.on('storage:success', function() {
+
+  hand.next();
 
 });
