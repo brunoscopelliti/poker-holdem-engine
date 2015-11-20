@@ -1,7 +1,7 @@
 
 'use strict';
 
-
+const status = require('../domain/player-status');
 const eachFromDB = require('../lib/loop-from-dealer-button');
 
 
@@ -11,7 +11,9 @@ exports = module.exports = function assignCards(gamestate, deck) {
   // next the one who has the dealer button
 
   function assignCard(player){
-    player.cards.push(deck.shift());
+    if (player.status == status.active){
+      player.cards.push(deck.shift());
+    }
   }
 
   // clear cards from previous hand

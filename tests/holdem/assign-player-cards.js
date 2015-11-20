@@ -72,7 +72,7 @@ tape('some players are out', function(t) {
 
   sut(gamestate, deck).then(function() {
     t.equal(gamestate.players.filter(player => player.cards.length == 0).length, 2, 'eliminated players did not receive cards');
-    t.deepEqual(gamestate.players[3].cards, [1,6], 'first player who receives cards is the one next to the db');
+    t.deepEqual(gamestate.players[3].cards, [1,4], 'first player who receives cards is the active one next to the db');
     t.equal(deck.length, deckSize-2*gamestate.players.filter(player => player.status == status.active).length, 'deck changed');
     t.end();
   });
