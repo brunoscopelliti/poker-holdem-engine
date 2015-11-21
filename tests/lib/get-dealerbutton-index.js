@@ -4,7 +4,6 @@
 const sut = require('../../lib/get-dealerbutton-index');
 
 const tape = require('tape');
-const tcase = require('tape-case');
 const chalk = require('chalk');
 const sinon = require('sinon');
 
