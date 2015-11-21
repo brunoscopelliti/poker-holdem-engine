@@ -18,9 +18,8 @@ mixin(engine, EventEmitter.prototype, false)
 const status = require('./domain/player-status');
 
 
-
+const run = require('./lib/generator-runner');
 const dealer = exports._dealer = require('./holdem-dealer');
-const hand = dealer();
 
 engine.on('game:start', function(setupData) {
 
@@ -56,7 +55,7 @@ engine.on('game:start', function(setupData) {
   }
 
   // start the game
-  hand.next();
+  return run(dealer, gamestate);
 
 });
 
@@ -88,9 +87,10 @@ engine.on('game:end', function() {
 });
 
 
-
+/*
 engine.on('storage:success', function() {
 
   hand.next();
 
 });
+*/

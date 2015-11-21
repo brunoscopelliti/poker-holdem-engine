@@ -10,6 +10,12 @@ const assignCards = require('./holdem/assign-player-cards');
 
 exports = module.exports = function setup(gamestate){
 
+  // prepare a poker hand, so that it can be played...
+
+
+  //
+  // wait a few time after an hand is completed
+  // before a new one can start
   return new Promise(function(res, rej){
     setTimeout(function() {
 
