@@ -13,7 +13,7 @@ tape('game:start listener', function(t) {
 
   let dealerStub = sinon.stub(sut._dealer.prototype, 'next');
 
-  sut.engine.emit('game:start', { players: [
+  sut.gamestate.emit('game:start', { players: [
     { name: 'Bluffers', members: [{ githubUsername: 'pok-bluffers' }] },
     { name: 'PStar', members: [{ githubUsername: 'starrr' }] }
   ] });
@@ -30,7 +30,7 @@ tape('game:start listener', function(t) {
 
 tape('game:pause listener', function(t) {
 
-  sut.engine.emit('game:pause', { players: [] });
+  sut.gamestate.emit('game:pause', { players: [] });
 
   t.equal(sut.gamestate.status, 'pause', 'listen game:pause event');
   t.end();
@@ -39,7 +39,7 @@ tape('game:pause listener', function(t) {
 
 tape('game:end listener', function(t) {
 
-  sut.engine.emit('game:end', { players: [] });
+  sut.gamestate.emit('game:end', { players: [] });
 
   t.equal(sut.gamestate.status, 'stop', 'listen game:end event');
   t.end();

@@ -3,9 +3,6 @@
 
 const chalk = require('chalk');
 
-const engine = require('./index').engine;
-
-
 const setup = require('./holdem-hand-setup');
 
 
@@ -27,7 +24,6 @@ exports = module.exports = function* dealer(gamestate, testFn){
 
     if (gamestate.status == 'play'){
 
-
       //
       // setup the hand, so that it can be played
       let cards = yield setup(gamestate);
@@ -37,9 +33,10 @@ exports = module.exports = function* dealer(gamestate, testFn){
       console.log(chalk.bold.green('gamestate updated'));
       console.log(gamestate);
 
-      yield engine.emit('gamestate:updated', gamestate);
 
-      // yield* playHand();
+      yield save(gamestate, 'gamestate:updated');
+
+      // yield playHand();
 
     }
 
@@ -61,3 +58,19 @@ exports = module.exports = function* dealer(gamestate, testFn){
   // @todo are there other operations?
 
 };
+
+
+
+function save(gamestate, data) {
+
+  //
+  // ready to save an update on mongoDB
+  return new Promise(function(resolve, reject) {
+    // be patient until the update is completed
+    gamestate.emit('storage:ready', {});
+    gamestate.once('storage:completed', function() {
+      resolve();
+    });
+  });
+
+}

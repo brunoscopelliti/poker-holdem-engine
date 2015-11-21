@@ -1,6 +1,9 @@
 
 'use strict';
 
+const EventEmitter = require('events').EventEmitter;
+const mixin = require('merge-descriptors');
+
 const status = require('../domain/player-status');
 
 const run = require('../lib/generator-runner');
@@ -24,8 +27,8 @@ const gamestate = {
   ]
 }
 
-// start the generator
-// let hand = sut(gamestate);
+mixin(gamestate, EventEmitter.prototype, false);
+
 
 tape('dealer', t => t.end());
 
@@ -39,6 +42,16 @@ tape('dealer loop works', function(t){
       clearInterval(timer);
     }
   }, 250);
+
+  //
+  // simulate the time requested to store
+  // the updated gamestate on mongoDB
+  gamestate.on('storage:ready', function() {
+    setTimeout(function() {
+      gamestate.emit('storage:completed');
+    }, 250);
+  });
+
 
   //
   // run assertion after each played hand

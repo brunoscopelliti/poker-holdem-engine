@@ -9,9 +9,8 @@ const chalk = require('chalk');
 const mixin = require('merge-descriptors');
 
 const gamestate = exports.gamestate = {};
-const engine = exports.engine = {};
 
-mixin(engine, EventEmitter.prototype, false)
+mixin(gamestate, EventEmitter.prototype, false);
 
 
 
@@ -21,7 +20,7 @@ const status = require('./domain/player-status');
 const run = require('./lib/generator-runner');
 const dealer = exports._dealer = require('./holdem-dealer');
 
-engine.on('game:start', function(setupData) {
+gamestate.on('game:start', function(setupData) {
 
   // start has a different meaning on the basis of the fact
   // that the tournament is starting for the first time, or
@@ -60,7 +59,7 @@ engine.on('game:start', function(setupData) {
 });
 
 
-engine.on('game:pause', function() {
+gamestate.on('game:pause', function() {
 
   //
   // take a break!
@@ -74,7 +73,7 @@ engine.on('game:pause', function() {
 });
 
 
-engine.on('game:end', function() {
+gamestate.on('game:end', function() {
 
   //
   // game is over
@@ -85,12 +84,3 @@ engine.on('game:end', function() {
   gamestate.status = 'stop';
 
 });
-
-
-/*
-engine.on('storage:success', function() {
-
-  hand.next();
-
-});
-*/
