@@ -20,6 +20,10 @@ const status = require('./domain/player-status');
 const run = require('./lib/generator-runner');
 const dealer = exports._dealer = require('./holdem-dealer');
 
+
+const createPlayer = require('./holdem/player-factory');
+
+
 gamestate.on('game:start', function(setupData) {
 
   // start has a different meaning on the basis of the fact
@@ -36,18 +40,7 @@ gamestate.on('game:start', function(setupData) {
 
     gamestate.tournamentId = setupData.tournamentId;
 
-    gamestate.players = setupData.players.map(function(player, id) {
-
-      return {
-        id: id,
-        name: player.name,
-        chips: config.BUYIN,
-        cards: [],
-        status: status.active,
-        version: 'Poker folder star!'
-      };
-
-    });
+    gamestate.players = setupData.players.map(createPlayer);
 
     gamestate.started = true;
 
