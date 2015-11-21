@@ -2,7 +2,7 @@
 'use strict';
 
 const status = require('../domain/player-status');
-const getNext = require('../lib/get-nextplayer-index');
+const getNextActive = require('../lib/get-next-active-player-index');
 const getDB = require('../lib/get-dealerbutton-index');
 
 exports = module.exports = function assignDB(gamestate){
@@ -14,14 +14,7 @@ exports = module.exports = function assignDB(gamestate){
     gamestate.players[currDB][hasDB] = false;
   }
 
-  let newDB;
-
-  do {
-    // make sure the dealer button reached a player
-    // who wasn't eliminated (player.status == status.out)
-    newDB = getNext(currDB, gamestate.players.length);
-    currDB = newDB;
-  } while(gamestate.players[newDB].status != status.active);
+  let newDB = getNextActive(gamestate.players, currDB);
 
   gamestate.players[newDB][hasDB] = true;
 
