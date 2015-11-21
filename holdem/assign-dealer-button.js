@@ -3,12 +3,12 @@
 
 const status = require('../domain/player-status');
 const getNext = require('../lib/get-nextplayer-index');
+const getDB = require('../lib/get-dealerbutton-index');
 
 exports = module.exports = function assignDB(gamestate){
 
   let hasDB = Symbol.for('hasDB');
-
-  let currDB = gamestate.players.findIndex(player => player[hasDB]);
+  let currDB = getDB(gamestate.players);
 
   if (currDB >= 0){
     gamestate.players[currDB][hasDB] = false;
