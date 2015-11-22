@@ -3,17 +3,17 @@
 
 const config = require('../config');
 
-exports = module.exports = function getSmallblindAmount(gamestate){
+exports = module.exports = function getSmallblindAmount(gs){
 
   let progressive = Symbol.for('hand-progressive');
 
   if (!progressive){
-    throw new Error('Missing hand-progressive symbol from gamestate model');
+    throw new Error('Missing hand-progressive symbol from gs model');
   }
 
-  let blindPeriod = config.BLINDS_PERIOD || gamestate.players.length;
+  let blindPeriod = config.BLINDS_PERIOD || gs.players.length;
 
-  let i = Math.min(Math.floor(gamestate[progressive] / blindPeriod), config.SMALL_BLINDS.length-1);
+  let i = Math.min(Math.floor(gs[progressive] / blindPeriod), config.SMALL_BLINDS.length-1);
 
   return config.SMALL_BLINDS[i];
 

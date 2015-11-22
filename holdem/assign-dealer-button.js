@@ -4,17 +4,17 @@
 const getNextActive = require('../lib/get-next-active-player-index');
 const getDB = require('../lib/get-dealerbutton-index');
 
-exports = module.exports = function assignDB(gamestate){
+exports = module.exports = function assignDB(gs){
 
   let hasDB = Symbol.for('hasDB');
-  let currDB = getDB(gamestate.players);
+  let currDB = getDB(gs.players);
 
   if (currDB >= 0){
-    gamestate.players[currDB][hasDB] = false;
+    gs.players[currDB][hasDB] = false;
   }
 
-  let newDB = getNextActive(gamestate.players, currDB);
+  let newDB = getNextActive(gs.players, currDB);
 
-  gamestate.players[newDB][hasDB] = true;
+  gs.players[newDB][hasDB] = true;
 
 };

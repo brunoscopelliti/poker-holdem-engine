@@ -10,31 +10,11 @@ const sinon = require('sinon');
 
 const gamestate = {
   players: [
-    {
-      id: 0,
-      name: 'bud',
-      status: status.active
-    },
-    {
-      id: 1,
-      name: 'terence',
-      status: status.active
-    },
-    {
-      id: 2,
-      name: 'chuck',
-      status: status.active
-    },
-    {
-      id: 3,
-      name: 'silvester',
-      status: status.active
-    },
-    {
-      id: 4,
-      name: 'jean-claude',
-      status: status.active
-    }
+    { id: 0, name: 'bud', status: status.active },
+    { id: 1, name: 'terence', status: status.active },
+    { id: 2, name: 'chuck', status: status.active },
+    { id: 3, name: 'silvester', status: status.active },
+    { id: 4, name: 'jean-claude', status: status.active }
   ]
 };
 

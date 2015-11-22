@@ -7,7 +7,7 @@ const status = require('../domain/player-status');
 
 const actions = {
 
-  bet: function bet(gamestate, amount){
+  bet: function bet(gs, amount){
 
     //
     // amount should be in the range [ 0 ... player.chips ]
@@ -19,7 +19,7 @@ const actions = {
     }
 
 
-    if (this.chipsBet + amount < gamestate.callAmount){
+    if (this.chipsBet + amount < gs.callAmount){
 
       //
       // player is betting less than the required amount;
@@ -43,8 +43,8 @@ const actions = {
     this.chipsBet += amount;
     this.chips -= amount;
 
-    gamestate.pot += amount;
-    gamestate.callAmount = Math.max(this.chipsBet, gamestate.callAmount);
+    gs.pot += amount;
+    gs.callAmount = Math.max(this.chipsBet, gs.callAmount);
 
   },
 
