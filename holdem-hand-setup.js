@@ -20,10 +20,15 @@ exports = module.exports = function setup(gamestate){
   return new Promise(function(res, rej){
     setTimeout(function() {
 
+      let hasBB = Symbol.for('hasBB');
+
       //
       // 0) reset initial conditions
       gamestate.pot = gamestate.callAmount = 0;
-      gamestate.players.forEach(player => player.chipsBet = 0);
+      gamestate.players.forEach(player => {
+        player[hasBB] = false;
+        player.chipsBet = 0;
+      });
       gamestate.community_cards = [];
 
 
