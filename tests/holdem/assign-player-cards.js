@@ -12,37 +12,11 @@ let hasDB = Symbol.for('hasDB');
 
 const gamestate = {
   players: [
-    {
-      id: 0,
-      name: 'bud',
-      status: status.active,
-      cards: []
-    },
-    {
-      id: 1,
-      name: 'terence',
-      status: status.active,
-      cards: [],
-      [hasDB]: true
-    },
-    {
-      id: 2,
-      name: 'chuck',
-      status: status.active,
-      cards: []
-    },
-    {
-      id: 3,
-      name: 'silvester',
-      status: status.active,
-      cards: []
-    },
-    {
-      id: 4,
-      name: 'jean-claude',
-      status: status.active,
-      cards: []
-    }
+    { id: 0, name: 'bud', status: status.active, cards: [] },
+    { id: 1, name: 'terence', status: status.active, cards: [], [hasDB]: true },
+    { id: 2, name: 'chuck', status: status.active, cards: [] },
+    { id: 3, name: 'silvester', status: status.active, cards: [] },
+    { id: 4, name: 'jean-claude', status: status.active, cards: [] }
   ]
 };
 

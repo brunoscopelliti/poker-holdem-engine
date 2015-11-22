@@ -5,6 +5,7 @@ const EventEmitter = require('events').EventEmitter;
 const mixin = require('merge-descriptors');
 
 const status = require('../domain/player-status');
+const createPlayer = require('../holdem/player-factory');
 
 const run = require('../lib/generator-runner');
 const sut = require('../holdem-dealer');
@@ -18,14 +19,17 @@ let progressive = Symbol.for('hand-progressive');
 
 const gamestate = {
   status: 'play',
-  players: [
-    { id: 0, name: 'bud', status: status.active, cards: [] },
-    { id: 1, name: 'terence', status: status.active, cards: [], [hasDB]: true },
-    { id: 2, name: 'chuck', status: status.active, cards: [] },
-    { id: 3, name: 'silvester', status: status.active, cards: [] },
-    { id: 4, name: 'jean-claude', status: status.active, cards: [] }
-  ]
+  pot: 0,
+  callAmount: 0,
+  players: []
 }
+
+gamestate.players.push(createPlayer({ name: 'bud' }, 0));
+gamestate.players.push(createPlayer({ name: 'terence' }, 1));
+gamestate.players[1][hasDB] = true;
+gamestate.players.push(createPlayer({ name: 'chuck' }, 2));
+gamestate.players.push(createPlayer({ name: 'silvester' }, 3));
+gamestate.players.push(createPlayer({ name: 'jean-claude' }, 4));
 
 mixin(gamestate, EventEmitter.prototype, false);
 

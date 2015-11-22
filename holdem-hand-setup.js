@@ -21,6 +21,13 @@ exports = module.exports = function setup(gamestate){
     setTimeout(function() {
 
       //
+      // 0) reset initial conditions
+      gamestate.pot = gamestate.callAmount = 0;
+      gamestate.players.forEach(player => player.chipsBet = 0);
+      gamestate.community_cards = [];
+
+
+      //
       // 1) compute the small blind level for the current hand
       // big blinds is always the double
 
