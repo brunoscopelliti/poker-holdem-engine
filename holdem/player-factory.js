@@ -4,29 +4,53 @@
 const config = require('../config');
 const status = require('../domain/player-status');
 
+
 const actions = {
 
   bet: function bet(gamestate, amount){
 
-    //let player = gamestate.players.find(player => id === playerId);
-
-    // player is betting less than the required amount
-    // we treat this as a "fold" declaration
-    if (this.bet + amount < gamestate.callAmount){
-      return void this.fold();
+    //
+    // amount should be in the range [ 0 ... player.chips ]
+    if (amount < 0){
+      amount = 0;
+    }
+    else if (amount > this.chips){
+      amount = this.chips;
     }
 
 
+    if (this.chipsBet + amount < gamestate.callAmount){
+
+      //
+      // player is betting less than the required amount;
+      // unless he is betting all the chips he owns
+      // we treat this as a "fold" declaration
+
+      if (!this.isAllin(amount)){
+        return void this.fold();
+      }
+    }
 
 
+    if (this.isAllin(amount)){
+      let allin = Symbol.for('allin');
+      this[allin] = true;
+    }
+
+    //
+    // update chip values
+
+    this.chipsBet += amount;
+    this.chips -= amount;
+
+    gamestate.pot += amount;
+    gamestate.callAmount = Math.max(this.chipsBet, gamestate.callAmount);
 
   },
 
-  hasEnough: function hasEnough(amount){
-    return amount < this.chips;
+  isAllin: function isAllin(amount){
+    return amount === this.chips;
   },
-
-
 
   fold: function fold(){
     this.status = status.folded
@@ -49,7 +73,12 @@ exports = module.exports = function factory(obj, i){
   player.status = status.active;
 
   player.cards = [];
-  player.bet = player.handBet = 0;
+
+
+  // the total amount of chips the player bet
+  // in the current "betting session".
+  // "betting session": [preflop, flop, turn, river]
+  player.chipsBet = 0;
 
 
   return player;
