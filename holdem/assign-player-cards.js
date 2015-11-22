@@ -2,13 +2,15 @@
 'use strict';
 
 const status = require('../domain/player-status');
-const eachFromDB = require('../lib/loop-from-dealer-button');
+const eachFrom = require('../lib/loop-from');
 
 
-exports = module.exports = function assignCards(gamestate, deck) {
+exports = module.exports = function assignCards(gs, deck) {
 
   // dealer starts to assign private cards starting from the player
   // next the one who has the dealer button
+
+  const hasDB = Symbol.for('hasDB');
 
   function assignCard(player){
     if (player.status == status.active){
@@ -17,10 +19,12 @@ exports = module.exports = function assignCards(gamestate, deck) {
   }
 
   // clear cards from previous hand
-  gamestate.players.forEach(player => player.cards = []);
+  gs.players.forEach(player => player.cards = []);
 
-  return eachFromDB(gamestate.players, assignCard).then(function() {
-    return eachFromDB(gamestate.players, assignCard);
+  let dbIndex = gs.players.findIndex(player => player[hasDB]);
+
+  return eachFrom(gs.players, dbIndex, assignCard).then(function() {
+    return eachFrom(gs.players, dbIndex, assignCard);
   });
 
 };

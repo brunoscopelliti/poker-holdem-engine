@@ -1,15 +1,15 @@
 
 'use strict';
 
-const sut = require('../../lib/loop-from-dealer-button');
+const sut = require('../../lib/loop-from');
 
 const tape = require('tape');
 const chalk = require('chalk');
 const sinon = require('sinon');
 
-tape('eachFromDB', t => t.end());
+tape('eachFrom', t => t.end());
 
-tape('loop on players starting from Dealer Button', function(t){
+tape('loop on players starting from index', function(t){
 
   let count = 0;
 
@@ -23,7 +23,7 @@ tape('loop on players starting from Dealer Button', function(t){
 
   players[2][Symbol.for('hasDB')] = true;
 
-  sut(players, function(player) {
+  sut(players, 2, function(player) {
 
     return new Promise(function(res, rej){
       setTimeout(function() {
