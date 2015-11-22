@@ -38,8 +38,25 @@ gamestate.on('game:start', function(setupData) {
 
   if (!gamestate.started){
 
+    //
+    // the unique id of the current tournament
     gamestate.tournamentId = setupData.tournamentId;
 
+    //
+    // the amount of chips bet by all the players
+    gamestate.pot = 0;
+
+    //
+    // the amount of chips each player must bet
+    // to continue to be "active" in the current hand
+    gamestate.callAmount = 0;
+
+    //
+    // the cards on the table
+    gamestate.community_cards = [];
+
+    //
+    // the players
     gamestate.players = setupData.players.map(createPlayer);
 
     gamestate.started = true;
