@@ -5,6 +5,7 @@ const config = require('./config');
 
 const computeSB = require('./holdem/get-smallblind-amount');
 const assignDB = require('./holdem/assign-dealer-button');
+const payBlinds = require('./holdem/pay-blinds');
 const shuffleCards = require('./holdem/shuffle-cards');
 const assignCards = require('./holdem/assign-player-cards');
 
@@ -31,14 +32,22 @@ exports = module.exports = function setup(gamestate){
 
       assignDB(gamestate);
 
+
       //
-      // 3) prepare a random sorted deck of cards
+      // 3) pay small/big blinds
+      // and updates players/table's chips
+
+      payBlinds(gamestate);
+
+
+      //
+      // 4) prepare a random sorted deck of cards
       // i'm using Fisher–Yates algorithm to achieve 'randomness'
 
       let deck = gamestate._deck = shuffleCards();
 
       //
-      // 4) assign two cards to each active player
+      // 5) assign two cards to each active player
       // first player who receive a card is the one next the dealer button
       res(assignCards(gamestate, deck));
 
