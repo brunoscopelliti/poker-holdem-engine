@@ -1,7 +1,6 @@
 
 'use strict';
 
-const status = require('../domain/player-status');
 const getNextActive = require('../lib/get-next-active-player-index');
 const getDB = require('../lib/get-dealerbutton-index');
 
