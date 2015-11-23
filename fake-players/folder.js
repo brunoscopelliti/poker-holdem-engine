@@ -7,9 +7,14 @@ exports = module.exports = {
 
   bet: function (gamestate, bet) {
 
+    console.log(chalk.red(''));
+    console.log(chalk.red('***'));
+    console.log(chalk.red('Folder'));
+    console.log(gamestate);
+
     console.log(chalk.yellow('Aggressive is betting '), betAmount);
 
-    bet(0);
+    return bet(0);
 
   }
 

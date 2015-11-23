@@ -7,13 +7,18 @@ exports = module.exports = {
 
   bet: function (gamestate, bet) {
 
+    console.log(chalk.red(''));
+    console.log(chalk.red('***'));
+    console.log(chalk.red('Caller'));
+    console.log(gamestate);
+
     var me = gamestate.players[gamestate.me];
 
     var betAmount = me.callAmount * 4;
 
     console.log(chalk.blue('Caller is betting '), betAmount);
 
-    bet(betAmount);
+    return bet(betAmount);
 
   }
 

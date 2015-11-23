@@ -7,6 +7,11 @@ exports = module.exports = {
 
   bet: function (gamestate, bet) {
 
+    console.log(chalk.red(''));
+    console.log(chalk.red('***'));
+    console.log(chalk.red('Pair'));
+    console.log(gamestate);
+
     var me = gamestate.players[gamestate.me];
 
     var cardA = me.cards[0];
@@ -20,7 +25,7 @@ exports = module.exports = {
 
     console.log(chalk.green('Pair is betting '), betAmount);
 
-    bet(betAmount);
+    return bet(betAmount);
 
   }
 
