@@ -24,12 +24,18 @@ exports = module.exports = function setup(gs){
 
       //
       // 0) reset initial conditions
-      gs.pot = gs.callAmount = 0;
-      gs.players.forEach(player => {
-        player[hasBB] = false;
-        player.chipsBet = 0;
-      });
+
+      // the amount of chips bet by all the players
+      gs.pot = 0;
+
+      // the amount of chips each player must bet
+      // to continue to be "active" in the current hand
+      gs.callAmount = 0;
+
+      // the cards on the table
       gs.community_cards = [];
+
+      gs.players.forEach(player => { player[hasBB] = false; player.chipsBet = 0; });
 
 
       //
