@@ -9,8 +9,7 @@ exports = module.exports = {
 
     console.log(chalk.red(''));
     console.log(chalk.red('***'));
-    console.log(chalk.red('Pair'));
-    console.log(gamestate);
+    console.log(chalk.red('Pair'), gamestate);
 
     var me = gamestate.players[gamestate.me];
 
@@ -19,8 +18,13 @@ exports = module.exports = {
 
     var betAmount = 0;
 
-    if (cardA.rank == cardB.rank){
-      betAmount = me.callAmount * 2;
+    if (me.chips > 4750){
+      if (cardA.rank == cardB.rank){
+        betAmount = gamestate.callAmount * 2;
+      }
+    }
+    else {
+      betAmount = gamestate.callAmount;
     }
 
     console.log(chalk.green('Pair is betting '), betAmount);

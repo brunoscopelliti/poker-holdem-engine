@@ -9,12 +9,13 @@ exports = module.exports = {
 
     console.log(chalk.red(''));
     console.log(chalk.red('***'));
-    console.log(chalk.red('Folder'));
-    console.log(gamestate);
+    console.log(chalk.red('Folder'), gamestate);
 
-    console.log(chalk.yellow('Aggressive is betting '), betAmount);
+    var betAmount = 0;
 
-    return bet(0);
+    console.log(chalk.yellow('Folder is betting '), betAmount);
+
+    return bet(betAmount);
 
   }
 

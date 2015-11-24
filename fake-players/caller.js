@@ -14,7 +14,7 @@ exports = module.exports = {
 
     var me = gamestate.players[gamestate.me];
 
-    var betAmount = me.callAmount * 4;
+    var betAmount = gamestate.callAmount;
 
     console.log(chalk.blue('Caller is betting '), betAmount);
 
