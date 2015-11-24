@@ -3,6 +3,8 @@
 
 const config = require('./config');
 
+const status = require('./domain/player-status');
+
 const computeSB = require('./holdem/get-smallblind-amount');
 const assignDB = require('./holdem/assign-dealer-button');
 const payBlinds = require('./holdem/pay-blinds');
@@ -35,7 +37,15 @@ exports = module.exports = function setup(gs){
       // the cards on the table
       gs.community_cards = [];
 
-      gs.players.forEach(player => { player[hasBB] = false; player.chipsBet = 0; });
+      // reset player conditions
+      gs.players.forEach(player => {
+        player[hasBB] = false;
+        player.chipsBet = 0;
+        player.cards = [];
+        if (player.status == status.folded){
+          player.status = status.active;
+        }
+      });
 
 
       //
