@@ -3,8 +3,9 @@
 
 const chalk = require('chalk');
 
-const setup = require('./holdem-hand-setup');
+const handSetup = require('./holdem-hand-setup');
 const play = require('./holdem-loop');
+const handTeardown = require('./holdem-hand-teardown');
 
 
 exports = module.exports = function* dealer(gs, testFn){
@@ -30,11 +31,21 @@ exports = module.exports = function* dealer(gs, testFn){
 
       //
       // setup the hand, so that it can be played
-      let cards = yield setup(gs);
+      let cards = yield handSetup(gs);
 
       yield save(gs, 'gs:updated');
 
+      //
+      // play the game
+      // each player will be asked to make a bet,
+      // until only one player remains active, or
+      // the hand arrive to the "river" session
       yield play(gs);
+
+      //
+      // declare the winner of the hand, and
+      // updates accordingly the gamestate
+      yield handTeardown(gs);
 
     }
 

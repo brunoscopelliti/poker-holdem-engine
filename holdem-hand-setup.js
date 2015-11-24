@@ -41,7 +41,7 @@ exports = module.exports = function setup(gs){
       gs.players.forEach(player => {
         player[hasBB] = false;
         player.chipsBet = 0;
-        player.cards = [];
+        player.cards = player.bestCards = [];
         if (player.status == status.folded){
           player.status = status.active;
         }

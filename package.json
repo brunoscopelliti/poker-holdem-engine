@@ -30,7 +30,9 @@
     "chalk": "^1.1.1",
     "knuth-shuffle": "^1.0.1",
     "merge-descriptors": "^1.0.0",
-    "poker-deck": "^1.0.0"
+    "poker-combinations": "^1.0.0",
+    "poker-deck": "^1.0.0",
+    "poker-rank": "^1.0.0"
   },
   "devDependencies": {
     "connect": "^3.4.0",
