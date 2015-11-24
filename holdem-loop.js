@@ -5,9 +5,24 @@ const config = require('./config');
 
 const chalk = require('chalk');
 
-const status = require('./domain/player-status');
 const run = require('./lib/generator-runner');
-const eachFrom = require('./lib/loop-from');
+
+const status = require('./domain/player-status');
+const takeBets = require('./holdem/collect-player-bets');
+
+
+function isBetRoundFinished(gs){
+
+  let allin = Symbol.for('allin');
+  let activePlayers = gs.players.filter(p => p.status === status.active);
+
+  if (activePlayers.length == 1){
+    return true;
+  }
+
+  return activePlayers.filter(p => p.chipsBet < gs.callAmount && !p[allin]).length == 0;
+
+}
 
 
 function* handLoop(gs){
@@ -44,14 +59,18 @@ function* handLoop(gs){
 
       activePlayers = gs.players.filter(p => p.status === active);
 
-      if (activePlayers.length == 1){
-        // @todo define hand winner
+      if (activePlayers.length > 1){
+        //
+        // since there are still more than one "active" player
+        // we have to continue with the flop session.
+        // add three cards on the table
+        gs.community_cards.push(gs._deck.shift(), gs._deck.shift(), gs._deck.shift());
       }
       else {
         //
-        // flop
-        // add three cards on the table
-        gs.community_cards.push(gs._deck.shift(), gs._deck.shift(), gs._deck.shift());
+        // ... otherwise, we stop the loop immediately
+        // returning the control on the runner
+        return gs;
       }
 
     }
@@ -72,74 +91,40 @@ function* handLoop(gs){
 
       activePlayers = gs.players.filter(p => p.status === status.active);
 
-      if (activePlayers.length == 1){
-        // @todo define hand winner
-      }
-      else if (gs.community_cards.length < 5){
+      if (activePlayers.length > 1) {
         //
-        // turn/river
+        // until there are more than one "active" player, and the game
+        // has not reached the river session, we coninue to run the loop.
         // add another card on the table
         gs.community_cards.push(gs._deck.shift());
       }
       else {
-        // @todo showdown
+        //
+        // ... otherwise, we stop the loop immediately
+        // returning the control on the runner
+        return gs;
       }
 
     }
 
   }
 
-}
-
-
-function takeBets(gs, fromIndex){
-
-  return eachFrom(gs.players, fromIndex, function(player, i) {
-    if (player.status == status.active){
-      return player.talk(gs).then(function(betAmount) {
-
-        return player.bet(gs, betAmount);
-
-      }).catch(function() {
-
-        // @todo
-        // handle request's error
-
-      });
-    }
-  });
+  return gs;
 
 }
-
-
-function isBetRoundFinished(gs){
-
-  let allin = Symbol.for('allin');
-  let activePlayers = gs.players.filter(p => p.status === status.active);
-
-  if (activePlayers.length == 1){
-    return true;
-  }
-
-  return activePlayers.filter(p => p.chipsBet < gs.callAmount && !p[allin]).length == 0;
-
-}
-
-
 
 
 exports = module.exports = function play(gs){
 
   //
-  // ..
+  // return a promise that will be settled when the hand is completed
   return new Promise(function(resolve, reject){
 
-    return run(handLoop, gs).then(function() {
+    return run(handLoop, gs).then(resolve).catch(function() {
 
-      resolve();
-
-    }).catch(function() {
-
+      // @todo
+      // define what to to in this case;
+      // ???
       console.log(chalk.bold.red('something bad happened inside the loop'));
 
     });
