@@ -1,8 +1,10 @@
 
 'use strict';
 
+const session = require('../../domain/game-session');
 const status = require('../../domain/player-status');
 const sut = require('../../holdem/collect-player-bets');
+const createPlayer = require('../../holdem/player-factory');
 
 const tape = require('tape');
 const chalk = require('chalk');
@@ -13,19 +15,19 @@ let hasDB = Symbol.for('hasDB');
 let betStub = sinon.stub();
 let talkStub = sinon.stub();
 
-const gamestate = {
-  players: [
-    { id: 0, name: 'bud', status: status.active, bet: betStub, talk: talkStub },
-    { id: 1, name: 'terence', status: status.active, [hasDB]: true, bet: betStub, talk: talkStub },
-    { id: 2, name: 'chuck', status: status.out, bet: betStub, talk: talkStub },
-    { id: 3, name: 'silvester', status: status.folded, bet: betStub, talk: talkStub },
-    { id: 4, name: 'jean-claude', status: status.active, bet: betStub, talk: talkStub }
-  ]
-};
-
 tape('collect player\'s bet', t => t.end());
 
 tape('bet round, everything goes fine', function(t) {
+
+  const gamestate = {
+    players: [
+      { id: 0, name: 'bud', status: status.active, bet: betStub, talk: talkStub },
+      { id: 1, name: 'terence', status: status.active, [hasDB]: true, bet: betStub, talk: talkStub },
+      { id: 2, name: 'chuck', status: status.out, bet: betStub, talk: talkStub },
+      { id: 3, name: 'silvester', status: status.folded, bet: betStub, talk: talkStub },
+      { id: 4, name: 'jean-claude', status: status.active, bet: betStub, talk: talkStub }
+    ]
+  };
 
   talkStub.onCall(0).returns(Promise.resolve(25));
   talkStub.onCall(1).returns(Promise.resolve(50));
@@ -41,16 +43,26 @@ tape('bet round, everything goes fine', function(t) {
     t.ok(betStub.getCall(0).calledWith(gamestate, 25), 'check the bet amount');
     t.ok(betStub.getCall(1).calledWith(gamestate, 50), 'check the bet amount');
 
-    t.end();
-
     betStub.reset();
     talkStub.reset();
+
+    t.end();
 
   });
 
 });
 
 tape('bet round, with rejection', function(t) {
+
+  const gamestate = {
+    players: [
+      { id: 0, name: 'bud', status: status.active, bet: betStub, talk: talkStub },
+      { id: 1, name: 'terence', status: status.active, [hasDB]: true, bet: betStub, talk: talkStub },
+      { id: 2, name: 'chuck', status: status.out, bet: betStub, talk: talkStub },
+      { id: 3, name: 'silvester', status: status.folded, bet: betStub, talk: talkStub },
+      { id: 4, name: 'jean-claude', status: status.active, bet: betStub, talk: talkStub }
+    ]
+  };
 
   talkStub.onCall(0).returns(Promise.resolve(25));
   talkStub.onCall(1).returns(new Promise((res, rej) => setTimeout(rej, 250)));
@@ -65,6 +77,46 @@ tape('bet round, with rejection', function(t) {
 
     t.ok(betStub.getCall(0).calledWith(gamestate, 25), 'check the bet amount');
     t.ok(betStub.getCall(1).calledWith(gamestate, 0), 'check the bet amount in case of rejection');
+
+    betStub.reset();
+    talkStub.reset();
+
+    t.end();
+
+  });
+
+});
+
+tape('river bet round', function(t) {
+
+  let players = [{ name: 'silvester' }, { name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'jean-claude' }];
+
+  const gamestate = {
+    callAmount: 0,
+    pot: 0,
+    players: players.map(createPlayer)
+  };
+
+  gamestate.players.forEach(player => player.talk = talkStub);
+
+  talkStub.onCall(0).returns(Promise.resolve(25));
+  talkStub.onCall(1).returns(Promise.resolve(75));
+  talkStub.onCall(2).returns(Promise.resolve(75));
+  talkStub.onCall(3).returns(Promise.resolve(75));
+  talkStub.onCall(4).returns(Promise.resolve(75));
+
+  gamestate.session = session.river;
+
+  sut(gamestate, 4).then(function() {
+
+    let first = gamestate.players.filter(player => player[ Symbol.for('show-first')]);
+
+    t.equal(talkStub.callCount, 5, 'all the active players talk');
+    t.equal(first.length, 1, 'only one player can have the badge');
+    t.deepEqual(gamestate.players[1], first[0], 'the badge goes to the first who rised for the first last time');
+
+    betStub.reset();
+    talkStub.reset();
 
     t.end();
 

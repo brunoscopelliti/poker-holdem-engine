@@ -23,6 +23,7 @@ exports = module.exports = function setup(gs){
     setTimeout(function() {
 
       let hasBB = Symbol.for('hasBB');
+      let badge = Symbol.for('show-first');
 
       //
       // 0) reset initial conditions
@@ -40,6 +41,7 @@ exports = module.exports = function setup(gs){
       // reset player conditions
       gs.players.forEach(player => {
         player[hasBB] = false;
+        delete player[badge];
         player.chipsBet = 0;
         player.cards = player.bestCards = [];
         if (player.status == status.folded){

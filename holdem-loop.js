@@ -8,6 +8,7 @@ const chalk = require('chalk');
 const run = require('./lib/generator-runner');
 
 const status = require('./domain/player-status');
+const session = require('./domain/game-session');
 const takeBets = require('./holdem/collect-player-bets');
 
 
@@ -43,7 +44,7 @@ function* handLoop(gs){
     // preflop session
     if (gs.community_cards.length == 0){
 
-      console.log(chalk.green('pre-flop'));
+      gs.session = session.pre;
 
       // check if there are active players
       // who still have to call, or fold
@@ -76,8 +77,7 @@ function* handLoop(gs){
     }
     else {
 
-      let phase = gs.community_cards.length == 3 ? 'flop' : (gs.community_cards.length == 4 ? 'turn' : 'river');
-      console.log(chalk.green(phase));
+      gs.session = gs.community_cards.length == 3 ? session.flop : (gs.community_cards.length == 4 ? session.turn : session.river);
 
       do {
         let dbIndex = gs.players.findIndex(player => player[hasDB]);
