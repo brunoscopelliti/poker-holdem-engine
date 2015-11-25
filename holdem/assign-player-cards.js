@@ -2,6 +2,8 @@
 'use strict';
 
 const status = require('../domain/player-status');
+
+const getDB = require('../lib/get-dealerbutton-index');
 const eachFrom = require('../lib/loop-from');
 
 
@@ -21,7 +23,7 @@ exports = module.exports = function assignCards(gs, deck) {
   // clear cards from previous hand
   gs.players.forEach(player => player.cards = []);
 
-  let dbIndex = gs.players.findIndex(player => player[hasDB]);
+  let dbIndex = getDB(gs.players);
 
   return eachFrom(gs.players, dbIndex, assignCard).then(function() {
     return eachFrom(gs.players, dbIndex, assignCard);
