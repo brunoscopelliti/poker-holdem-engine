@@ -14,8 +14,12 @@ exports = module.exports = function takeBet(gs, fromIndex) {
 
       }).catch(function() {
 
-        // @todo
-        // handle request's error
+        // @todo retry in case there was a network problem
+
+        //
+        // in case of error
+        // just fold!
+        return player.bet(gs, 0);
 
       });
     }
