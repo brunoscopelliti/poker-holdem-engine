@@ -2,6 +2,7 @@
 'use strict';
 
 const status = require('../../domain/player-status');
+
 const sut = require('../../holdem/assign-player-cards');
 
 const tape = require('tape');

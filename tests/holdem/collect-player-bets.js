@@ -3,8 +3,9 @@
 
 const session = require('../../domain/game-session');
 const status = require('../../domain/player-status');
-const sut = require('../../holdem/collect-player-bets');
 const createPlayer = require('../../holdem/player-factory');
+
+const sut = require('../../holdem/collect-player-bets');
 
 const tape = require('tape');
 const chalk = require('chalk');

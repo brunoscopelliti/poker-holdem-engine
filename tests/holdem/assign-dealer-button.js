@@ -2,6 +2,7 @@
 'use strict';
 
 const status = require('../../domain/player-status');
+
 const sut = require('../../holdem/assign-dealer-button');
 
 const tape = require('tape');
