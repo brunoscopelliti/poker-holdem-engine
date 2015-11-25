@@ -4,6 +4,9 @@
 const config = require('../config');
 const status = require('../domain/player-status');
 
+const sortByRank = require('poker-rank');
+const getCombinations = require('poker-combinations');
+
 const fake = Symbol('fake-test');
 const progressive = Symbol.for('hand-progressive');
 const hasDB = Symbol('hasDB');
@@ -19,6 +22,11 @@ if (process.env.NODE_ENV === 'test'){
 
 const actions = {
 
+  //
+  // prepare the gamestate model with the only information
+  // each player should know
+  // then send an http request to the bot service
+  // to get the bet amount
   talk: function talk(gs){
 
     //
@@ -80,6 +88,10 @@ const actions = {
 
   },
 
+
+  //
+  // updates the player state, and the game state
+  // accordingly to the player bet
   bet: function bet(gs, amount){
 
     //
@@ -122,16 +134,25 @@ const actions = {
   },
 
 
+  //
+  // compute the player best combination
   showdown: function showdown(commonCards){
     let combs = getCombinations(this.cards.concat(commonCards), 5);
     let bestHand = sortByRank(combs)[0];
     this.bestCards = combs[bestHand.index];
   },
 
+
+  //
+  // return true if the specified amount
+  // is equal to the player total number of chips
   isAllin: function isAllin(amount){
     return amount === this.chips;
   },
 
+
+  //
+  // change the player status to folded
   fold: function fold(){
     this.status = status.folded
   }
