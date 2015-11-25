@@ -29,6 +29,17 @@ tape('create new player', function(t) {
 
 });
 
+//
+// player#talk
+
+// @todo
+
+
+//
+// player#bet
+
+tape('player#bet', t => t.end());
+
 tape('player checks', function(t){
 
   const gamestate = {
@@ -257,6 +268,34 @@ tape('two players fake game, bud folds', function(t){
   t.equal(bud.status, status.folded, 'check status');
 
   t.equal(gamestate.pot, config.BUYIN+250, 'check pot');
+
+  t.end();
+
+});
+
+
+//
+// player#showdown
+
+tape('player#showdown', t => t.end());
+
+tape('player has three-of-a-kind', function(t){
+
+  const commonCards = [
+    { rank: '7', type: 'H' },
+    { rank: '3', type: 'S' },
+    { rank: '4', type: 'C' },
+    { rank: '7', type: 'D' },
+    { rank: 'Q', type: 'H' }
+  ];
+
+  const expectedBestCards = [{ rank: '7', type: 'S' }, { rank: 'A', type: 'S' }, { rank: '7', type: 'H' }, { rank: '7', type: 'D' }, { rank: 'Q', type: 'H' }];
+
+  let player = sut({ name: 'bud' }, 0);
+
+  player.cards = [{ rank: '7', type: 'S' }, { rank: 'A', type: 'S' }];
+  player.showdown(commonCards);
+  t.deepEqual(player.bestCards, expectedBestCards, 'check best cards computation');
 
   t.end();
 
