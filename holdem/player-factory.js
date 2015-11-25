@@ -139,7 +139,7 @@ const actions = {
   showdown: function showdown(commonCards){
     let combs = getCombinations(this.cards.concat(commonCards), 5);
     let bestHand = sortByRank(combs)[0];
-    this.bestCards = combs[bestHand.index];
+    return this.bestCards = combs[bestHand.index];
   },
 
 
