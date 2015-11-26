@@ -3,51 +3,44 @@
 
 const config = require('./config');
 
-const status = require('./domain/player-status');
-
-
 const sortByRank = require('poker-rank');
 const getCombinations = require('poker-combinations');
 
+const status = require('./domain/player-status');
 
-function findWinner(players, commonCards){
-
-  if (players.length == 1){
-    return 'todo';
-  }
-
-  //
-  // get the best combination of each player
-  players.forEach(function(player) {
-    let combs = getCombinations(player.cards.concat(commonCards), 5);
-    let bestHand = sortByRank(combs)[0];
-    player.bestCards = combs[bestHand.index];
-  });
+const showdown = require('./holdem/showdown');
 
 
-  players.map(function(player) {
-    return { playerId: player.id, bestCards: player.bestCards };
-  })
-
-
-}
 
 exports = module.exports = function teardown(gs){
 
-  // ...
+  return new Promise(function(res, rej){
 
-  let activePlayers = gs.players.filter(player => player.status == status.active);
-
-  findWinner(activePlayers, gs.community_cards);
-
-  // 1) find the winner
-
-  // handle ex-equo
-
-  // 2) updates winner chips
-  // 3) reset the pot
+    //
+    // in this phase of the hand only the active players can partecipate
+    let activePlayers = gs.players.filter(player => player.status == status.active);
 
 
+    //
+    // 1) showdown
+    // sort the player by the strength of their best point
 
+    showdown(activePlayers, gs.community_cards)
+      .then(function(sortedPlayers) {
+
+        //
+        // 2) update chips & player status
+        // be careful about all-in split, exequos
+
+        //
+        // 3) reset pot
+        // ...
+
+        // @todo resolve promise
+        res();
+
+      });
+
+  });
 
 };

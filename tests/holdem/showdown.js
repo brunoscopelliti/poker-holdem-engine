@@ -4,7 +4,7 @@
 const status = require('../../domain/player-status');
 const createPlayer = require('../../holdem/player-factory');
 
-const sut = require('../../holdem/get-winner');
+const sut = require('../../holdem/showdown');
 
 const tape = require('tape');
 const chalk = require('chalk');
