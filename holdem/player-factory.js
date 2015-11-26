@@ -124,7 +124,6 @@ const actions = {
 
     //
     // update chip values
-
     this.chipsBet += amount;
     this.chips -= amount;
 
@@ -177,9 +176,12 @@ exports = module.exports = function factory(obj, i){
   player.cards = [];
 
   // the total amount of chips the player bet
-  // in the current "betting session".
+  // in the current "hand".
+  // it is the sum of the chips the player bet
+  // in each "betting session" of the current hand.
   // "betting session": [preflop, flop, turn, river]
   player.chipsBet = 0;
+
 
   if (obj.lib){
     // for test...
