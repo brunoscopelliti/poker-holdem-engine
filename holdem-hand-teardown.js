@@ -9,6 +9,8 @@ const getCombinations = require('poker-combinations');
 const status = require('./domain/player-status');
 
 const showdown = require('./holdem/showdown');
+const assignPot = require('./holdem/assign-pot');
+
 
 
 
