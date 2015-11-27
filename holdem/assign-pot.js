@@ -33,28 +33,34 @@ exports = module.exports = function assignPot(gs, showdownResults) {
   }
 
   //
-  // ...
+  // it's an array of players who already
+  // received part of the pot
+  let servedWinners = [];
 
   while(showdownPlayers.length > 0 && gs.pot > 0){
-
     let winner = showdownPlayers[0];
-
     if (winner[isAllin]){
+      let previousWinnerChipsBet = servedWinners.length == 0 ? 0 : servedWinners[servedWinners.length-1].chipsBet;
 
-      let sidepot = gs.players.reduce((tot, player) => tot += Math.min(player.chipsBet, winner.chipsBet), 0);
+      let sidepot = gs.players
+        // to compute the sidepot we have to exclude players who received
+        // already part of the pot ("previous winners")
+        .filter(player => servedWinners.find(winner => winner.id == player.id) == null)
+        // normalize the players bet amount in function of the amount
+        // bet from the previous winner (if any)
+        .map(player => (player.chipsBet -= previousWinnerChipsBet, player))
+        .reduce((tot, player) => tot += Math.max(Math.min(player.chipsBet, winner.chipsBet), 0), 0);
+
+      servedWinners.push(winner);
 
       gs.players.find(player => player.id == winner.id).chips += sidepot;
       gs.pot = gs.pot - sidepot;
-
     }
     else {
-
       assignToWinner(gs, winner.id);
-
     }
 
     showdownPlayers.shift();
-
   }
 
 };
