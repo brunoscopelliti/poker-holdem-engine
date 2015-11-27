@@ -40,6 +40,7 @@ exports = module.exports = function assignPot(gs, showdownResults) {
   while(showdownPlayers.length > 0 && gs.pot > 0){
     let winner = showdownPlayers[0];
     if (winner[isAllin]){
+
       let previousWinnerChipsBet = servedWinners.length == 0 ? 0 : servedWinners[servedWinners.length-1].chipsBet;
 
       let sidepot = gs.players
@@ -51,16 +52,50 @@ exports = module.exports = function assignPot(gs, showdownResults) {
         .map(player => (player.chipsBet -= previousWinnerChipsBet, player))
         .reduce((tot, player) => tot += Math.max(Math.min(player.chipsBet, winner.chipsBet), 0), 0);
 
+
+      //
+      // divide pot in case of exequos
+      if (winner.detail.exequo){
+        let exequosNumber = showdownPlayers.concat(servedWinners)
+          .filter(player => player.detail && player.detail.exequo ==winner.detail.exequo).length;
+        sidepot /= exequosNumber;
+      }
+
       servedWinners.push(winner);
 
       gs.players.find(player => player.id == winner.id).chips += sidepot;
       gs.pot = gs.pot - sidepot;
+
+      showdownPlayers.shift();
+
     }
     else {
-      assignToWinner(gs, winner.id);
+
+      let winAmount = gs.pot;
+
+      if (winner.detail.exequo){
+
+        // @todo
+        // here it's not correct to simply divide by "exequosNumber"
+        // this can lead to wrong result when one of the exequo player is all-in
+
+        let exequosNumber = showdownPlayers.concat(servedWinners)
+          .filter(player => player.detail && player.detail.exequo == winner.detail.exequo).length;
+
+
+        winAmount /= exequosNumber;
+
+      }
+
+
+      gs.players.find(player => player.id == winner.id).chips += winAmount;
+      gs.pot -= winAmount;
+
+      showdownPlayers.shift();
+
     }
 
-    showdownPlayers.shift();
+
   }
 
 };
