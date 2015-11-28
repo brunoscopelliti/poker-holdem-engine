@@ -24,6 +24,7 @@ tape('only one player at the showdown', function(t) {
 
   const winner = gamestate.players.slice(1,2); // terence
   winner[0].detail = {};
+
   const expectedChips = gamestate.pot + config.BUYIN;
 
   sut(gamestate, winner);
@@ -42,9 +43,12 @@ tape('winner is not all-in, and there are not ex-equo', function(t) {
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
-  const winner = gamestate.players.slice(1,4); // terence, chuck, silvester
+  gamestate.players[0].status = status.folded;
+
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   winner[0].detail = winner[1].detail = winner[2].detail = {};
+
   const expectedChips = gamestate.pot + config.BUYIN;
 
   sut(gamestate, winner);
@@ -63,10 +67,13 @@ tape('winner is not all-in, and ex-equo dont change anything', function(t) {
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
-  const winner = gamestate.players.slice(1,4); // terence, chuck, silvester
+  gamestate.players[0].status = status.folded;
+
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   winner[0].detail = {};
   winner[1].detail = winner[2].detail = { exequo: '#0'};
+
   const expectedChips = gamestate.pot + config.BUYIN;
 
   sut(gamestate, winner);
@@ -92,12 +99,10 @@ tape('winner is all-in, second winner no', function(t) {
   gamestate.players[2].chipsBet = 600;
   gamestate.players[3].chipsBet = 800;
 
-  const winner = gamestate.players.slice(0); // bud, terence, chuck, silvester
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   winner[0].detail = winner[1].detail = winner[2].detail = winner[3].detail = {};
-  winner[0][isAllin] = true;
-  winner[2][isAllin] = true;
-  winner[3][isAllin] = true;
+  winner[0][isAllin] = winner[2][isAllin] = winner[3][isAllin] = true;
 
   const mainPot = 800;
   const sidePot = 1800;
@@ -121,13 +126,14 @@ tape('winner is all-in, some players folded', function(t) {
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
+  gamestate.players[0].status = gamestate.players[1].status = status.folded;
+
   gamestate.players[0].chipsBet = 200;
   gamestate.players[1].chipsBet = 400;
-  gamestate.players[0].status = gamestate.players[1].status = status.folded;
   gamestate.players[2].chipsBet = 600;
   gamestate.players[3].chipsBet = 800;
 
-  const winner = gamestate.players.slice(2); // chuck, silvester
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   winner[0].detail = winner[1].detail = {};
   winner[0][isAllin] = true;
@@ -154,13 +160,14 @@ tape('winner is all-in, some players folded (one bet more than the winner)', fun
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
+  gamestate.players[0].status = gamestate.players[1].status = status.folded;
+
   gamestate.players[0].chipsBet = 200;
   gamestate.players[1].chipsBet = 800;
-  gamestate.players[0].status = gamestate.players[1].status = status.folded;
   gamestate.players[2].chipsBet = 600;
   gamestate.players[3].chipsBet = 1200;
 
-  const winner = gamestate.players.slice(2); // chuck, silvester
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   winner[0].detail = winner[1].detail = {};
   winner[0][isAllin] = true;
@@ -192,12 +199,10 @@ tape('all in all-in', function(t) {
   gamestate.players[2].chipsBet = 600;
   gamestate.players[3].chipsBet = 800;
 
-  const winner = gamestate.players.slice(0); // bud, terence, chuck, silvester
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   winner[0].detail = winner[1].detail = winner[2].detail = winner[3].detail = {};
-  winner[0][isAllin] = true;
-  winner[1][isAllin] = true;
-  winner[2][isAllin] = true;
+  winner[0][isAllin] = winner[1][isAllin] = winner[2][isAllin] = winner[3][isAllin] = true;
 
   const mainPot = 800;
   const sidePot = 600;
@@ -228,12 +233,10 @@ tape('all in all-in, case two', function(t) {
   gamestate.players[2].chipsBet = 600;
   gamestate.players[3].chipsBet = 1000;
 
-  const winner = gamestate.players.slice(0); // bud, terence, chuck, silvester
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   winner[0].detail = winner[1].detail = winner[2].detail = winner[3].detail = {};
-  winner[0][isAllin] = true;
-  winner[1][isAllin] = true;
-  winner[2][isAllin] = true;
+  winner[0][isAllin] = winner[1][isAllin] = winner[2][isAllin] = winner[3][isAllin] = true;
 
   const mainPot = 800;
   const sidePot = 1200;
@@ -252,12 +255,6 @@ tape('all in all-in, case two', function(t) {
 
 });
 
-
-
-
-
-
-
 tape('ex-equo winners', function(t) {
 
   const gamestate = {
@@ -265,16 +262,26 @@ tape('ex-equo winners', function(t) {
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
-  const winner = gamestate.players.slice(1,4); // terence, chuck, silvester
+  gamestate.players[0].status = gamestate.players[3].status = status.folded;
+
+  gamestate.players[0].chipsBet = 20;
+  gamestate.players[1].chipsBet = 30;
+  gamestate.players[2].chipsBet = 30;
+  gamestate.players[3].chipsBet = 20;
+
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   winner[0].detail = winner[1].detail = { exequo: '#0' };
+
   const expectedChips = gamestate.pot/2 + config.BUYIN;
 
   sut(gamestate, winner);
 
   t.equal(gamestate.pot, 0, 'pot is assigned');
+  t.equal(gamestate.players[0].chips, config.BUYIN, 'bud wins nothing');
   t.equal(gamestate.players[1].chips, expectedChips, 'terence wins half pot');
   t.equal(gamestate.players[2].chips, expectedChips, 'chuck wins half pot');
+  t.equal(gamestate.players[3].chips, config.BUYIN, 'silvester wins nothing');
 
   t.end();
 
@@ -283,18 +290,26 @@ tape('ex-equo winners', function(t) {
 tape('three ex-equo winners', function(t) {
 
   const gamestate = {
-    pot: 100,
+    pot: 210,
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
-  const winner = gamestate.players.slice(1,4); // terence, chuck, silvester
+  gamestate.players[0].status = status.folded;
+  gamestate.players[0].chipsBet = 30;
+  gamestate.players[1].chipsBet = 60;
+  gamestate.players[2].chipsBet = 60;
+  gamestate.players[3].chipsBet = 60;
+
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   winner[0].detail = winner[1].detail = winner[2].detail = { exequo: '#0' };
+
   const expectedChips = gamestate.pot/3 + config.BUYIN;
 
   sut(gamestate, winner);
 
   t.equal(gamestate.pot, 0, 'pot is assigned');
+  t.equal(gamestate.players[0].chips, config.BUYIN, 'bud wins nothing');
   t.equal(gamestate.players[1].chips, expectedChips, 'terence wins part of the pot');
   t.equal(gamestate.players[2].chips, expectedChips, 'chuck wins part of the pot');
   t.equal(gamestate.players[3].chips, expectedChips, 'silvester wins part of the pot');
@@ -315,10 +330,11 @@ tape('winner is all-in, exequo seconds', function(t) {
   gamestate.players[2].chipsBet = 600;
   gamestate.players[3].chipsBet = 600;
 
-  const winner = gamestate.players.slice(0); // bud, terence, chuck, silvester
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   winner[0].detail = winner[3].detail = {};
   winner[1].detail = winner[2].detail = { exequo: '#0' }
+
   winner[0][isAllin] = true;
 
   const mainPot = 800;
@@ -339,25 +355,25 @@ tape('winner is all-in, exequo seconds', function(t) {
 tape('winner is all-in, one of the exequo seconds too', function(t) {
 
   const gamestate = {
-    pot: 3300,
+    pot: 2800,
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
   gamestate.players[0].chipsBet = 200;
   gamestate.players[1].chipsBet = 600;
   gamestate.players[2].chipsBet = 1000;
-  gamestate.players[3].chipsBet = 1500;
+  gamestate.players[3].chipsBet = 1000;
 
-  const winner = gamestate.players.slice(0); // bud, terence, chuck, silvester
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   winner[0].detail = winner[3].detail = {};
   winner[1].detail = winner[2].detail = { exequo: '#0' };
-  winner[0][isAllin] = true;
+
+  winner[0][isAllin] = winner[1][isAllin] = true;
 
   const mainPot = 800;
   const commonPot = 1200;
   const chuckWin = 800;
-  const back = 500;
 
   sut(gamestate, winner);
 
@@ -365,7 +381,121 @@ tape('winner is all-in, one of the exequo seconds too', function(t) {
   t.equal(gamestate.players[0].chips, config.BUYIN + mainPot, 'winner received the chips from the pot');
   t.equal(gamestate.players[1].chips, config.BUYIN + commonPot/2, 'terence divide part of the pot with chuck');
   t.equal(gamestate.players[2].chips, config.BUYIN + chuckWin + commonPot/2, 'chuck divide with terence, and win more from silvester');
-  t.equal(gamestate.players[3].chips, config.BUYIN + back, 'silvester has back the extra chips');
+  t.equal(gamestate.players[3].chips, config.BUYIN, 'silvester wins nothing');
+
+  t.end();
+
+});
+
+tape('winner is all-in, two exequo all-in seconds, third wins', function(t) {
+
+  const gamestate = {
+    pot: 5550,
+    players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }, { name: 'jean-claude' }].map(createPlayer)
+  };
+
+  gamestate.players[0].chipsBet = 700;
+  gamestate.players[1].chipsBet = 200;
+  gamestate.players[2].chipsBet = 750;
+  gamestate.players[3].chipsBet = 1800;
+  gamestate.players[4].chipsBet = 2100;
+
+  const winner = gamestate.players.filter(p => p.status == status.active);
+
+  winner[0].detail = winner[3].detail = winner[4].detail = {};
+  winner[1].detail = winner[2].detail = { exequo: '#0' };
+
+  winner[0][isAllin] = winner[1][isAllin] = winner[2][isAllin] = winner[3][isAllin] = true;
+
+  const mainPot = 3000;
+  const commonPot = 150;
+  const sidePot = 2100;
+  const back = 300;
+
+  sut(gamestate, winner);
+
+  t.equal(gamestate.pot, 0, 'pot is assigned');
+  t.equal(gamestate.players[0].chips, config.BUYIN + mainPot, 'winner received the chips from the pot');
+  t.equal(gamestate.players[1].chips, config.BUYIN, 'terence wins nothing, cause he bet to few');
+  t.equal(gamestate.players[2].chips, config.BUYIN + commonPot, 'chuck wins something');
+  t.equal(gamestate.players[3].chips, config.BUYIN + sidePot, 'silvester wins the sidepot');
+  t.equal(gamestate.players[4].chips, config.BUYIN + back, 'jean-claude has back the extra chips');
+
+  t.end();
+
+});
+
+tape('winner is all-in, all is in exequo', function(t) {
+
+  const gamestate = {
+    pot: 4570,
+    players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }, { name: 'jean-claude' }].map(createPlayer)
+  };
+
+  gamestate.players[0].chipsBet = 660;
+  gamestate.players[1].chipsBet = 320;
+  gamestate.players[2].chipsBet = 720;
+  gamestate.players[3].chipsBet = 1980;
+  gamestate.players[4].chipsBet = 890;
+
+  const winner = gamestate.players.filter(p => p.status == status.active);
+
+  winner[0].detail = winner[1].detail = winner[2].detail = winner[3].detail = winner[4].detail = { exequo: '#0' };
+  winner[0][isAllin] = winner[1][isAllin] = winner[2][isAllin] = winner[3][isAllin] = true;
+
+  const mainPot = 1600;
+  const sidePot = 1360;
+  const sidePot2 = 180;
+  const sidePot3 = 340;
+  const back = 1090;
+
+  sut(gamestate, winner);
+
+  t.equal(gamestate.pot, 0, 'pot is assigned');
+  t.equal(gamestate.players[0].chips, config.BUYIN + mainPot/5 + sidePot/4, 'bud receives a part of the pot');
+  t.equal(gamestate.players[1].chips, config.BUYIN + mainPot/5, 'terence receives a part of the pot');
+  t.equal(gamestate.players[2].chips, config.BUYIN + mainPot/5 + sidePot/4 + sidePot2/3, 'chuck receives a part of the pot');
+  t.equal(gamestate.players[3].chips, config.BUYIN + mainPot/5 + sidePot/4 + sidePot2/3 + sidePot3/2 + back, 'silvester receives a part of the pot');
+  t.equal(gamestate.players[4].chips, config.BUYIN + mainPot/5 + sidePot/4 + sidePot2/3 + sidePot3/2, 'jean-claude receives a part of the pot');
+
+  t.end();
+
+});
+
+tape('winner is all-in, pair of exequos', function(t) {
+
+  const gamestate = {
+    pot: 10000,
+    players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }, { name: 'jean-claude' }].map(createPlayer)
+  };
+
+  gamestate.players[0].chipsBet = 400;
+  gamestate.players[1].chipsBet = 600;
+  gamestate.players[2].chipsBet = 1400;
+  gamestate.players[3].chipsBet = 3800;
+  gamestate.players[4].chipsBet = 3800;
+
+  const winner = gamestate.players.filter(p => p.status == status.active);
+
+  winner[0].detail = {};
+  winner[1].detail = winner[2].detail = { exequo: '#0' };
+  winner[3].detail = winner[4].detail = { exequo: '#1' }
+
+  winner[0][isAllin] = winner[1][isAllin] = winner[2][isAllin] = true;
+
+  const mainPot = 2000;
+  const sidePot = 800;
+  const sidePot2 = 2400;
+  const sidePot3 = 4800;
+
+  sut(gamestate, winner);
+
+  t.equal(gamestate.pot, 0, 'pot is assigned');
+  t.equal(gamestate.players[0].chips, config.BUYIN + mainPot, 'bud receives the main pot');
+  t.equal(gamestate.players[1].chips, config.BUYIN + sidePot/2, 'terence splits with chuck sidePot');
+  t.equal(gamestate.players[2].chips, config.BUYIN + sidePot/2 + sidePot2, 'chuck splits with terence sidePot, but takes all sidePot2');
+  t.equal(gamestate.players[3].chips, config.BUYIN + sidePot3/2, 'silvester splits with jean-claude sidePot3');
+  t.equal(gamestate.players[4].chips, config.BUYIN + sidePot3/2, 'jean-claude splits with silvester sidePot3');
 
   t.end();
 

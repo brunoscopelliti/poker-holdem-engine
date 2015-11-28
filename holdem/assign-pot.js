@@ -6,96 +6,95 @@ const status = require('../domain/player-status');
 
 const isAllin = Symbol.for('allin');
 
-function shouldSplit(showdownResults) {
 
-  // return true
-  // if at the showdown there was only one player,
-  // or when there's not exequo & allin conditions
 
-  let winner = showdownResults[0];
-  return showdownResults.length > 1 && (winner[isAllin] || winner.detail.exequo);
+function assignToWinner(gs, winnerId, amount){
+  amount = typeof amount == 'undefined' ? gs.pot : amount;
+  gs.players.find(player => player.id == winnerId).chips += amount;
+  gs.pot -= amount;
 }
 
-function assignToWinner(gs, winnerId){
-  gs.players.find(player => player.id == winnerId).chips += gs.pot;
-  gs.pot = 0;
-}
+
 
 exports = module.exports = function assignPot(gs, showdownResults) {
 
   const showdownPlayers = showdownResults.slice(0);
 
   //
-  // assign the pot interely to the unique winner
-  if (!shouldSplit(showdownPlayers)){
+  // if at the showdown there is only one player,
+  // or the first classified player is not in all-in, or in exequo with others,
+  // then this player takes all the pot amount
+  if (showdownPlayers.length == 1 || (!showdownPlayers[0][isAllin] && !showdownPlayers[0].detail.exequo)){
     let winner = showdownPlayers[0];
     return void assignToWinner(gs, winner.id);
   }
 
+
   //
-  // it's an array of players who already
-  // received part of the pot
-  let servedWinners = [];
+  // create the sidepot
+  // sidepots is something like
+  // [ { amount: 250, competitors: [ playerId, ... ] } ]
+  let sidepots = [];
 
-  while(showdownPlayers.length > 0 && gs.pot > 0){
-    let winner = showdownPlayers[0];
-    if (winner[isAllin]){
+  //
+  const handPlayers = gs.players.filter(player => player.status != status.out);
 
-      let previousWinnerChipsBet = servedWinners.length == 0 ? 0 : servedWinners[servedWinners.length-1].chipsBet;
+  const sortedShowdownPlayers = showdownResults.sort((a,b) => a.chipsBet - b.chipsBet);
 
-      let sidepot = gs.players
-        // to compute the sidepot we have to exclude players who received
-        // already part of the pot ("previous winners")
-        .filter(player => servedWinners.find(winner => winner.id == player.id) == null)
-        // normalize the players bet amount in function of the amount
-        // bet from the previous winner (if any)
-        .map(player => (player.chipsBet -= previousWinnerChipsBet, player))
-        .reduce((tot, player) => tot += Math.max(Math.min(player.chipsBet, winner.chipsBet), 0), 0);
+  while (sortedShowdownPlayers.length > 0){
 
+    let sidepot = { amount: 0, competitors: sortedShowdownPlayers.map(player => player.id) };
+    let currPlayerAmount = handPlayers.find(x => x.id == sortedShowdownPlayers[0].id).chipsBet;
 
-      //
-      // divide pot in case of exequos
-      if (winner.detail.exequo){
-        let exequosNumber = showdownPlayers.concat(servedWinners)
-          .filter(player => player.detail && player.detail.exequo ==winner.detail.exequo).length;
-        sidepot /= exequosNumber;
-      }
+    handPlayers.forEach((player) => {
+      let playerContribute = Math.min(player.chipsBet, currPlayerAmount);
+      player.chipsBet -= playerContribute;
+      sidepot.amount += playerContribute;
+    });
 
-      servedWinners.push(winner);
-
-      gs.players.find(player => player.id == winner.id).chips += sidepot;
-      gs.pot = gs.pot - sidepot;
-
-      showdownPlayers.shift();
-
-    }
-    else {
-
-      let winAmount = gs.pot;
-
-      if (winner.detail.exequo){
-
-        // @todo
-        // here it's not correct to simply divide by "exequosNumber"
-        // this can lead to wrong result when one of the exequo player is all-in
-
-        let exequosNumber = showdownPlayers.concat(servedWinners)
-          .filter(player => player.detail && player.detail.exequo == winner.detail.exequo).length;
-
-
-        winAmount /= exequosNumber;
-
-      }
-
-
-      gs.players.find(player => player.id == winner.id).chips += winAmount;
-      gs.pot -= winAmount;
-
-      showdownPlayers.shift();
-
+    if (sidepot.amount){
+      sidepots.push(sidepot);
     }
 
+    sortedShowdownPlayers.shift();
 
   }
+
+
+  //
+  // assign the amount of the sidepots
+
+  sidepots.forEach(function(sidepot) {
+
+    let assigned = false;
+    let i = 0;
+
+    //
+    // loop over the list of players who are active at the showdown
+    // until the sidepot is assigned.
+    // !important: it works because the list is sorted so that the players
+    // with an higher cards combination comes first.
+    while(!assigned){
+
+      let player = showdownPlayers[i];
+      if (sidepot.competitors.indexOf(player.id) >= 0){
+
+        if (player.detail.exequo){
+          // handle wins in exequo of a sidepot
+          let exequos = showdownPlayers.filter(sp => sp.detail.exequo == player.detail.exequo && sidepot.competitors.indexOf(sp.id) >= 0);
+          let splitpot = sidepot.amount / exequos.length;
+          exequos.forEach(sp => assignToWinner(gs, sp.id, splitpot));
+        }
+        else {
+          assignToWinner(gs, player.id, sidepot.amount);
+        }
+
+        assigned = true;
+      }
+
+      i++;
+    }
+
+  });
 
 };
