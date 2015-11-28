@@ -22,8 +22,9 @@ tape('only one player at the showdown', function(t) {
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
+  gamestate.players[0].detail = {};
+
   const winner = gamestate.players.slice(1,2); // terence
-  winner[0].detail = {};
 
   const expectedChips = gamestate.pot + config.BUYIN;
 
@@ -44,10 +45,9 @@ tape('winner is not all-in, and there are not ex-equo', function(t) {
   };
 
   gamestate.players[0].status = status.folded;
+  gamestate.players[0].detail = gamestate.players[1].detail = gamestate.players[2].detail = {};
 
   const winner = gamestate.players.filter(p => p.status == status.active);
-
-  winner[0].detail = winner[1].detail = winner[2].detail = {};
 
   const expectedChips = gamestate.pot + config.BUYIN;
 
@@ -63,16 +63,21 @@ tape('winner is not all-in, and there are not ex-equo', function(t) {
 tape('winner is not all-in, and ex-equo dont change anything', function(t) {
 
   const gamestate = {
-    pot: 100,
+    pot: 140,
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
   gamestate.players[0].status = status.folded;
 
-  const winner = gamestate.players.filter(p => p.status == status.active);
+  gamestate.players[0].chipsBet = 20;
+  gamestate.players[1].chipsBet = 40;
+  gamestate.players[2].chipsBet = 40;
+  gamestate.players[2].chipsBet = 40;
 
-  winner[0].detail = {};
-  winner[1].detail = winner[2].detail = { exequo: '#0'};
+  gamestate.players[0].detail = gamestate.players[1].detail = {};
+  gamestate.players[2].detail = gamestate.players[3].detail = { exequo: '#0'};
+
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   const expectedChips = gamestate.pot + config.BUYIN;
 
@@ -99,10 +104,10 @@ tape('winner is all-in, second winner no', function(t) {
   gamestate.players[2].chipsBet = 600;
   gamestate.players[3].chipsBet = 800;
 
-  const winner = gamestate.players.filter(p => p.status == status.active);
+  gamestate.players[0].detail = gamestate.players[1].detail = gamestate.players[2].detail = gamestate.players[3].detail = {};
+  gamestate.players[0][isAllin] = gamestate.players[2][isAllin] = gamestate.players[3][isAllin] = true;
 
-  winner[0].detail = winner[1].detail = winner[2].detail = winner[3].detail = {};
-  winner[0][isAllin] = winner[2][isAllin] = winner[3][isAllin] = true;
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   const mainPot = 800;
   const sidePot = 1800;
@@ -133,10 +138,10 @@ tape('winner is all-in, some players folded', function(t) {
   gamestate.players[2].chipsBet = 600;
   gamestate.players[3].chipsBet = 800;
 
-  const winner = gamestate.players.filter(p => p.status == status.active);
+  gamestate.players[0].detail = gamestate.players[1].detail = gamestate.players[2].detail = gamestate.players[3].detail = {};
+  gamestate.players[2][isAllin] = true;
 
-  winner[0].detail = winner[1].detail = {};
-  winner[0][isAllin] = true;
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   const mainPot = 1800;
   const back = 200;
@@ -167,10 +172,10 @@ tape('winner is all-in, some players folded (one bet more than the winner)', fun
   gamestate.players[2].chipsBet = 600;
   gamestate.players[3].chipsBet = 1200;
 
-  const winner = gamestate.players.filter(p => p.status == status.active);
+  gamestate.players[0].detail = gamestate.players[1].detail = gamestate.players[2].detail = gamestate.players[3].detail = {};
+  gamestate.players[2][isAllin] = true;
 
-  winner[0].detail = winner[1].detail = {};
-  winner[0][isAllin] = true;
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   const mainPot = 2000;
   const back = 800;
@@ -199,10 +204,10 @@ tape('all in all-in', function(t) {
   gamestate.players[2].chipsBet = 600;
   gamestate.players[3].chipsBet = 800;
 
-  const winner = gamestate.players.filter(p => p.status == status.active);
+  gamestate.players[0].detail = gamestate.players[1].detail = gamestate.players[2].detail = gamestate.players[3].detail = {};
+  gamestate.players[0][isAllin] = gamestate.players[1][isAllin] = gamestate.players[2][isAllin] = gamestate.players[3][isAllin] = true;
 
-  winner[0].detail = winner[1].detail = winner[2].detail = winner[3].detail = {};
-  winner[0][isAllin] = winner[1][isAllin] = winner[2][isAllin] = winner[3][isAllin] = true;
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   const mainPot = 800;
   const sidePot = 600;
@@ -233,10 +238,10 @@ tape('all in all-in, case two', function(t) {
   gamestate.players[2].chipsBet = 600;
   gamestate.players[3].chipsBet = 1000;
 
-  const winner = gamestate.players.filter(p => p.status == status.active);
+  gamestate.players[0].detail = gamestate.players[1].detail = gamestate.players[2].detail = gamestate.players[3].detail = {};
+  gamestate.players[0][isAllin] = gamestate.players[1][isAllin] = gamestate.players[2][isAllin] = gamestate.players[3][isAllin] = true;
 
-  winner[0].detail = winner[1].detail = winner[2].detail = winner[3].detail = {};
-  winner[0][isAllin] = winner[1][isAllin] = winner[2][isAllin] = winner[3][isAllin] = true;
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   const mainPot = 800;
   const sidePot = 1200;
@@ -269,9 +274,10 @@ tape('ex-equo winners', function(t) {
   gamestate.players[2].chipsBet = 30;
   gamestate.players[3].chipsBet = 20;
 
-  const winner = gamestate.players.filter(p => p.status == status.active);
+  gamestate.players[0].detail = gamestate.players[3].detail = {};
+  gamestate.players[1].detail = gamestate.players[2].detail = { exequo: '#0' };
 
-  winner[0].detail = winner[1].detail = { exequo: '#0' };
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   const expectedChips = gamestate.pot/2 + config.BUYIN;
 
@@ -300,9 +306,10 @@ tape('three ex-equo winners', function(t) {
   gamestate.players[2].chipsBet = 60;
   gamestate.players[3].chipsBet = 60;
 
-  const winner = gamestate.players.filter(p => p.status == status.active);
+  gamestate.players[0].detail = {};
+  gamestate.players[1].detail = gamestate.players[2].detail = gamestate.players[3].detail = { exequo: '#0' };
 
-  winner[0].detail = winner[1].detail = winner[2].detail = { exequo: '#0' };
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   const expectedChips = gamestate.pot/3 + config.BUYIN;
 
@@ -330,12 +337,12 @@ tape('winner is all-in, exequo seconds', function(t) {
   gamestate.players[2].chipsBet = 600;
   gamestate.players[3].chipsBet = 600;
 
+  gamestate.players[0].detail = gamestate.players[3].detail = {};
+  gamestate.players[1].detail = gamestate.players[2].detail = { exequo: '#0' }
+
+  gamestate.players[0][isAllin] = true;
+
   const winner = gamestate.players.filter(p => p.status == status.active);
-
-  winner[0].detail = winner[3].detail = {};
-  winner[1].detail = winner[2].detail = { exequo: '#0' }
-
-  winner[0][isAllin] = true;
 
   const mainPot = 800;
   const halfSidePot = 600;
@@ -364,12 +371,12 @@ tape('winner is all-in, one of the exequo seconds too', function(t) {
   gamestate.players[2].chipsBet = 1000;
   gamestate.players[3].chipsBet = 1000;
 
+  gamestate.players[0].detail = gamestate.players[3].detail = {};
+  gamestate.players[1].detail = gamestate.players[2].detail = { exequo: '#0' };
+
+  gamestate.players[0][isAllin] = gamestate.players[1][isAllin] = true;
+
   const winner = gamestate.players.filter(p => p.status == status.active);
-
-  winner[0].detail = winner[3].detail = {};
-  winner[1].detail = winner[2].detail = { exequo: '#0' };
-
-  winner[0][isAllin] = winner[1][isAllin] = true;
 
   const mainPot = 800;
   const commonPot = 1200;
@@ -400,12 +407,12 @@ tape('winner is all-in, two exequo all-in seconds, third wins', function(t) {
   gamestate.players[3].chipsBet = 1800;
   gamestate.players[4].chipsBet = 2100;
 
+  gamestate.players[0].detail = gamestate.players[3].detail = gamestate.players[4].detail = {};
+  gamestate.players[1].detail = gamestate.players[2].detail = { exequo: '#0' };
+
+  gamestate.players[0][isAllin] = gamestate.players[1][isAllin] = gamestate.players[2][isAllin] = gamestate.players[3][isAllin] = true;
+
   const winner = gamestate.players.filter(p => p.status == status.active);
-
-  winner[0].detail = winner[3].detail = winner[4].detail = {};
-  winner[1].detail = winner[2].detail = { exequo: '#0' };
-
-  winner[0][isAllin] = winner[1][isAllin] = winner[2][isAllin] = winner[3][isAllin] = true;
 
   const mainPot = 3000;
   const commonPot = 150;
@@ -438,10 +445,10 @@ tape('winner is all-in, all is in exequo', function(t) {
   gamestate.players[3].chipsBet = 1980;
   gamestate.players[4].chipsBet = 890;
 
-  const winner = gamestate.players.filter(p => p.status == status.active);
+  gamestate.players[0].detail = gamestate.players[1].detail = gamestate.players[2].detail = gamestate.players[3].detail = gamestate.players[4].detail = { exequo: '#0' };
+  gamestate.players[0][isAllin] = gamestate.players[1][isAllin] = gamestate.players[2][isAllin] = gamestate.players[3][isAllin] = true;
 
-  winner[0].detail = winner[1].detail = winner[2].detail = winner[3].detail = winner[4].detail = { exequo: '#0' };
-  winner[0][isAllin] = winner[1][isAllin] = winner[2][isAllin] = winner[3][isAllin] = true;
+  const winner = gamestate.players.filter(p => p.status == status.active);
 
   const mainPot = 1600;
   const sidePot = 1360;
@@ -475,13 +482,13 @@ tape('winner is all-in, pair of exequos', function(t) {
   gamestate.players[3].chipsBet = 3800;
   gamestate.players[4].chipsBet = 3800;
 
+  gamestate.players[0].detail = {};
+  gamestate.players[1].detail = gamestate.players[2].detail = { exequo: '#0' };
+  gamestate.players[3].detail = gamestate.players[4].detail = { exequo: '#1' }
+
+  gamestate.players[0][isAllin] = gamestate.players[1][isAllin] = gamestate.players[2][isAllin] = true;
+
   const winner = gamestate.players.filter(p => p.status == status.active);
-
-  winner[0].detail = {};
-  winner[1].detail = winner[2].detail = { exequo: '#0' };
-  winner[3].detail = winner[4].detail = { exequo: '#1' }
-
-  winner[0][isAllin] = winner[1][isAllin] = winner[2][isAllin] = true;
 
   const mainPot = 2000;
   const sidePot = 800;
