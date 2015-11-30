@@ -7,11 +7,19 @@ const status = require('../domain/player-status');
 const isAllin = Symbol.for('allin');
 
 
+function safeSum(a, b){
+  return (a * 100 + b * 100) / 100;
+}
+
+function safeDiff(a, b){
+  return (a * 100 - b * 100) / 100;
+}
 
 function assignToWinner(gs, winnerId, amount){
   amount = typeof amount == 'undefined' ? gs.pot : amount;
-  gs.players.find(player => player.id == winnerId).chips += amount;
-  gs.pot -= amount;
+  let winner = gs.players.find(player => player.id == winnerId);
+  winner.chips = safeSum(winner.chips, amount);
+  gs.pot = safeDiff(gs.pot, amount);
 }
 
 
@@ -48,8 +56,8 @@ exports = module.exports = function assignPot(gs, showdownResults) {
 
     handPlayers.forEach((player) => {
       let playerContribute = Math.min(player.chipsBet, currPlayerAmount);
-      player.chipsBet -= playerContribute;
-      sidepot.amount += playerContribute;
+      player.chipsBet = safeDiff(player.chipsBet, playerContribute);
+      sidepot.amount = safeSum(sidepot.amount, playerContribute);
     });
 
     if (sidepot.amount){
@@ -82,7 +90,7 @@ exports = module.exports = function assignPot(gs, showdownResults) {
         if (player.detail.exequo){
           // handle wins in exequo of a sidepot
           let exequos = showdownPlayers.filter(sp => sp.detail.exequo == player.detail.exequo && sidepot.competitors.indexOf(sp.id) >= 0);
-          let splitpot = sidepot.amount / exequos.length;
+          let splitpot = Number.parseFloat((sidepot.amount / exequos.length).toFixed(2));
           exequos.forEach(sp => assignToWinner(gs, sp.id, splitpot));
         }
         else {

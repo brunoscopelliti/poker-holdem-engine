@@ -507,3 +507,68 @@ tape('winner is all-in, pair of exequos', function(t) {
   t.end();
 
 });
+
+tape('ex-equo winners, easy shit numbers', function(t) {
+
+  const gamestate = {
+    pot: 305,
+    players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
+  };
+
+  gamestate.players[0].status = gamestate.players[3].status = status.folded;
+
+  gamestate.players[0].chipsBet = 75;
+  gamestate.players[1].chipsBet = 100;
+  gamestate.players[2].chipsBet = 100;
+  gamestate.players[3].chipsBet = 30;
+
+  gamestate.players[0].detail = gamestate.players[3].detail = {};
+  gamestate.players[1].detail = gamestate.players[2].detail = { exequo: '#0' };
+
+  const winner = gamestate.players.filter(p => p.status == status.active);
+
+  const expectedChips = gamestate.pot/2 + config.BUYIN;
+
+  sut(gamestate, winner);
+
+  t.equal(gamestate.pot, 0, 'pot is assigned');
+  t.equal(gamestate.players[0].chips, config.BUYIN, 'bud wins nothing');
+  t.equal(gamestate.players[1].chips, expectedChips, 'terence wins half pot');
+  t.equal(gamestate.players[2].chips, expectedChips, 'chuck wins half pot');
+  t.equal(gamestate.players[3].chips, config.BUYIN, 'silvester wins nothing');
+
+  t.end();
+
+});
+
+tape('three ex-equo winners, shit numbers', function(t) {
+
+  const gamestate = {
+    pot: 215,
+    players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
+  };
+
+  gamestate.players[0].chipsBet = 60;
+  gamestate.players[1].chipsBet = 60;
+  gamestate.players[2].chipsBet = 60;
+  gamestate.players[3].chipsBet = 35;
+
+  gamestate.players[0].detail = gamestate.players[1].detail = gamestate.players[2].detail = { exequo: '#0' };
+  gamestate.players[3][isAllin] = true;
+  gamestate.players[3].detail = {};
+
+  const winner = gamestate.players.filter(p => p.status == status.active);
+
+  const expectedChips = Number.parseFloat((gamestate.pot/3).toFixed(2))+ config.BUYIN;
+
+  sut(gamestate, winner);
+
+  t.ok(Math.abs(gamestate.pot)-0.01 < 0.009, 'pot is assigned');
+  t.equal(gamestate.players[0].chips, expectedChips, 'bud wins part of the pot');
+  t.equal(gamestate.players[1].chips, expectedChips, 'terence wins part of the pot');
+  t.equal(gamestate.players[2].chips, expectedChips, 'chuck wins part of the pot');
+  t.equal(gamestate.players[3].chips, config.BUYIN, 'silvester wins nothing');
+
+  t.end();
+
+});
