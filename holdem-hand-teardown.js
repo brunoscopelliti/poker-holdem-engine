@@ -10,8 +10,7 @@ const status = require('./domain/player-status');
 
 const showdown = require('./holdem/showdown');
 const assignPot = require('./holdem/assign-pot');
-
-
+const updatePlayersStatus = require('./holdem/update-players-status');
 
 
 exports = module.exports = function teardown(gs){
@@ -35,14 +34,14 @@ exports = module.exports = function teardown(gs){
 
         //
         // 3) update players' status
-        // @todo
+        updatePlayersStatus(gs.players);
 
         //
         // 4) reset pot
         gs.pot = 0;
 
         // @todo resolve promise
-        res();
+        res(gs);
       });
 
   });

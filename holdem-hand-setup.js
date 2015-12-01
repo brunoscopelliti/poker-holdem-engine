@@ -47,9 +47,6 @@ exports = module.exports = function setup(gs){
         delete player[badge];
         player.chipsBet = 0;
         player.cards = player.bestCards = [];
-        if (player.status == status.folded){
-          player.status = status.active;
-        }
       });
 
 
