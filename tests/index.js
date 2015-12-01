@@ -1,6 +1,16 @@
 
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
+//
+// browserify, and winston do not play well together...
+// setup the winston object as if it was really here.
+const winston = require('winston');
+winston.loggers = { add: function(){}, get: function() { return { info: function() {} }; } };
+winston.transports = { File: function() {} };
+
+
 const sut = require('../index');
 
 const tape = require('tape');

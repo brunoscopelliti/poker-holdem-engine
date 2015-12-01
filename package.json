@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Texas hold'em poker engine",
   "main": "index.js",
+  "browser": {
+    "winston": false
+  },
   "scripts": {
     "test": "tape tests/*.js",
     "pretest": "browserify tests/*.js -o tests/bundle.js"
@@ -32,7 +35,8 @@
     "merge-descriptors": "^1.0.0",
     "poker-combinations": "^1.0.0",
     "poker-deck": "^1.0.0",
-    "poker-rank": "^1.0.0"
+    "poker-rank": "^1.0.0",
+    "winston": "^2.1.1"
   },
   "devDependencies": {
     "connect": "^3.4.0",
