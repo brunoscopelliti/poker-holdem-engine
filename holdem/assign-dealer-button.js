@@ -16,5 +16,6 @@ exports = module.exports = function assignDB(gs){
   let newDB = getNextActive(gs.players, currDB);
 
   gs.players[newDB][hasDB] = true;
+  return newDB;
 
 };

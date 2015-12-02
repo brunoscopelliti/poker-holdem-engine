@@ -11,6 +11,10 @@ const payBlinds = require('./holdem/pay-blinds');
 const shuffleCards = require('./holdem/shuffle-cards');
 const assignCards = require('./holdem/assign-player-cards');
 
+const winston = require('./log-setup');
+const gamestory = winston.loggers.get('gamestory');
+const errors = winston.loggers.get('errors');
+
 exports = module.exports = function setup(gs){
 
   // prepare a poker hand, so that it can be played...
@@ -22,11 +26,11 @@ exports = module.exports = function setup(gs){
   return new Promise(function(res, rej){
     setTimeout(function() {
 
+      const tag = { id: gs.tournamentId };
+
       let hasBB = Symbol.for('hasBB');
       let isAllin = Symbol.for('allin');
       let badge = Symbol.for('show-first');
-
-
 
       //
       // 0) reset initial conditions
@@ -56,11 +60,16 @@ exports = module.exports = function setup(gs){
 
       gs.sb = computeSB(gs);
 
+      gamestory.info('Computed the small blind: it is %d chips', gs.sb, tag);
+
+
       //
       // 2) assign to the player in turn the dealer button
       // only active player can receive the button
 
-      assignDB(gs);
+      let dbi = assignDB(gs);
+
+      gamestory.info('The dealer button is assigned to player %d', dbi, tag);
 
 
       //
@@ -69,12 +78,15 @@ exports = module.exports = function setup(gs){
 
       payBlinds(gs);
 
+      gamestory.info('Blinds were payed. We currently have a pot of %d; and the minimum amount to play is %d.', gs.pot, gs.callAmount, tag);
+
 
       //
       // 4) prepare a random sorted deck of cards
       // i'm using Fisher–Yates algorithm to achieve 'randomness'
 
       let deck = gs._deck = shuffleCards();
+
 
       //
       // 5) assign two cards to each active player

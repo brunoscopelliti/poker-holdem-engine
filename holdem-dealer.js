@@ -7,6 +7,9 @@ const handSetup = require('./holdem-hand-setup');
 const play = require('./holdem-loop');
 const handTeardown = require('./holdem-hand-teardown');
 
+const winston = require('./log-setup');
+const gamestory = winston.loggers.get('gamestory');
+const errors = winston.loggers.get('errors');
 
 exports = module.exports = function* dealer(gs, testFn){
 
@@ -15,9 +18,14 @@ exports = module.exports = function* dealer(gs, testFn){
 
   while (gs.status != 'stop'){
 
+    gs.handId = `${gs.tournamentId}_${gs[progressive]}`;
+
+    gamestory.info('Going to play the hand %s', gs.handId);
+
     if (gs.status == 'pause'){
       //
       // break here until the tournament is resumed
+      gamestory.info('Tournament %s is now in pause.', gamestate.tournamentId);
       yield gs.status;
     }
 
@@ -26,14 +34,15 @@ exports = module.exports = function* dealer(gs, testFn){
     // check the number of player still active
     // and eventually start with fresh chips
 
-
     if (gs.status == 'play'){
 
       //
       // setup the hand, so that it can be played
       let cards = yield handSetup(gs);
 
-      yield save(gs, 'gs:updated');
+      yield save(gs, { type: 'setup', handId: gs.handId, pot: gs.pot, sb: gs.sb, players: gs.players.map(p => Object.assign({}, p)) });
+
+      console.log(chalk.red('post'));
 
       //
       // play the game
@@ -61,23 +70,25 @@ exports = module.exports = function* dealer(gs, testFn){
 
   }
 
-  //
-  // tournament is finished
-
-  // @todo are there other operations?
-
 };
 
 
-
+//
+// @param data {Object}
+// @param data.type: Indicates the type of update; For example "setup" contains the info to bootstrap a new hand, "bet" simply the info about a specific bet.
 function save(gs, data) {
+
+  if (Array.isArray(data.players)){
+    let hasDB = Symbol.for('hasDB');
+    data.players.forEach(player => player.hasDB = player[hasDB]);
+  }
 
   //
   // ready to save an update on mongoDB
   return new Promise(function(resolve, reject) {
     // be patient until the update is completed
-    gs.emit('storage:ready', {});
-    gs.once('storage:completed', function() {
+    gs.emit('gamestate:updated', data);
+    gs.once('storage:completed', function(info) {
       resolve();
     });
   });

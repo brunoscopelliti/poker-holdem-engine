@@ -6,6 +6,9 @@ const status = require('../domain/player-status');
 const getDB = require('../lib/get-dealerbutton-index');
 const eachFrom = require('../lib/loop-from');
 
+const winston = require('../log-setup');
+const gamestory = winston.loggers.get('gamestory');
+const errors = winston.loggers.get('errors');
 
 exports = module.exports = function assignCards(gs, deck) {
 
@@ -17,6 +20,9 @@ exports = module.exports = function assignCards(gs, deck) {
   function assignCard(player){
     if (player.status == status.active){
       player.cards.push(deck.shift());
+      if (player.cards.length == 2){
+        gamestory.info('Player %d has %s', player.id, JSON.stringify(player.cards));
+      }
     }
   }
 

@@ -29,9 +29,9 @@ const createPlayer = require('./holdem/player-factory');
 
 
 const winston = require('./log-setup');
+const tag = {};
 const gamestory = winston.loggers.get('gamestory');
 const errors = winston.loggers.get('errors');
-
 
 
 gamestate.on('game:start', function(setupData) {
@@ -50,7 +50,7 @@ gamestate.on('game:start', function(setupData) {
 
     //
     // the unique id of the current tournament
-    gamestate.tournamentId = setupData.tournamentId;
+    gamestate.tournamentId = tag.id = setupData.tournamentId;
 
     //
     // the players
@@ -60,10 +60,21 @@ gamestate.on('game:start', function(setupData) {
 
   }
 
-  gamestory.info('Tournament %s is going to start.', gamestate.tournamentId);
+  gamestory.info('Tournament %s is going to start.', gamestate.tournamentId, tag);
+  gamestory.info('The number of participants is %d; they are %s.', gamestate.players.length, gamestate.players.map(p => p.name).toString().replace(/,/g, ', '), tag);
 
   // start the game
-  return run(dealer, gamestate);
+  return void run(dealer, gamestate).then(function() {
+
+    // the tournament is finished
+    // is there something else to do?
+
+  }).catch(function(err) {
+    //
+    // an error occurred during the dealer generator execution;
+    // if the exception is not handled before... there's nothing here i can do.
+    errors.error('An error occurred during tournament %s: %s.', gamestate.tournamentId, err.message);
+  });
 
 });
 
@@ -77,7 +88,7 @@ gamestate.on('game:pause', function() {
     return;
   }
 
-  gamestory.info('Tournament %s is in pause.', gamestate.tournamentId);
+  gamestory.info('Tournament %s is going to be paused.', gamestate.tournamentId, tag);
 
   gamestate.status = 'pause';
 
@@ -92,7 +103,7 @@ gamestate.on('game:end', function() {
     return;
   }
 
-  gamestory.info('Tournament %s is going to finish.', gamestate.tournamentId);
+  gamestory.info('Tournament %s is going to finish.', gamestate.tournamentId, tag);
 
   gamestate.status = 'stop';
 
