@@ -47,6 +47,7 @@ exports = module.exports = function setup(gs){
 
       // list of winners of the previous hand
       gs.winners = [];
+      gs.rank = [];
 
       // reset player conditions
       gs.players.forEach(player => {

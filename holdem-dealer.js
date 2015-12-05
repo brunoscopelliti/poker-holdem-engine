@@ -1,9 +1,14 @@
 
 'use strict';
 
+const config = require('./config');
+
 const chalk = require('chalk');
 
+const status = require('./domain/player-status');
+
 const save = require('./storage').save;
+
 const handSetup = require('./holdem-hand-setup');
 const play = require('./holdem-loop');
 const handTeardown = require('./holdem-hand-teardown');
@@ -14,12 +19,47 @@ const errors = winston.loggers.get('errors');
 
 exports = module.exports = function* dealer(gs, testFn){
 
+  //
+  // Usually a tournament is composed by many games.
+  // Everytime a player eliminates all the others, start a new game.
+  let game = Symbol.for('tournament-game');
+
+  //
+  // As a tournament is made by one or more games,
+  // a game is composed by one or more "hands".
   let progressive = Symbol.for('hand-progressive');
-  gs[progressive] = 0;
+
+  //
+  // current game/round of the tournament.
+  gs[game] = gs[progressive] = 0;
 
   while (gs.status != 'stop'){
 
-    gs.handId = `${gs.tournamentId}_${gs[progressive]}`;
+    const activePlayers = gs.players.filter(player => player.status == status.active);
+
+    //
+    // before a new game hand starts,
+    // check the number of the active players.
+    // if there is only one active player
+    // we reward the winner of the current game,
+    // and then start a fresh new game.
+    if (activePlayers.length === 1){
+      // compute the points earned by each player
+      gs.rank.unshift(activePlayers[0].id);
+      let awards = config.AWARDS.find(x => x.N === gs.rank.length).P;
+      let playerPoints = gs.rank.map((r,i) => ({ id: r, points: awards[i] }));
+      gamestory.info('Result for game %d: %s', gs[game], JSON.stringify(playerPoints), { id: gs.handId });
+      yield save(gs, { type: 'points', tournamentId: gs.tournamentId, gameId: gs[game], rank: playerPoints });
+
+      // restore players' initial conditions
+      gs.players.forEach(player => { player.status = status.active; player.chips = config.BUYIN; });
+
+      // start a new game
+      gs[progressive] = 0;
+      gs[game]++;
+    }
+
+    gs.handId = `${gs.tournamentId}_${gs[game]}-${gs[progressive]}`;
 
     gamestory.info('Starting hand %s', gs.handId, { id: gs.handId });
 
@@ -31,10 +71,6 @@ exports = module.exports = function* dealer(gs, testFn){
       yield gs.status;
     }
 
-
-    // @todo
-    // check the number of player still active
-    // and eventually start with fresh chips
 
     if (gs.status == 'play'){
 

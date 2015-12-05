@@ -3,11 +3,15 @@
 
 process.env.NODE_ENV = 'test';
 
+const sinon = require('sinon');
+const storage = require('../storage');
+let saveStub = sinon.stub(storage, 'save');
+
 //
 // browserify, and winston do not play well together...
 // setup the winston object as if it was really here.
 const winston = require('winston');
-winston.loggers = { add: function(){}, get: function() { return { info: function() {} }; } };
+winston.loggers = { add: function(){}, get: function() { return { info: function() {}, error: function() {} }; } };
 winston.transports = { File: function() {} };
 
 
@@ -15,7 +19,6 @@ const sut = require('../index');
 
 const tape = require('tape');
 const chalk = require('chalk');
-const sinon = require('sinon');
 
 tape('game:* listeners', t => t.end());
 

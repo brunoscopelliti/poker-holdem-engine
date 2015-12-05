@@ -19,6 +19,7 @@ tape('only one player at the showdown', function(t) {
 
   const gamestate = {
     pot: 100,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
@@ -41,6 +42,7 @@ tape('winner is not all-in, and there are not ex-equo', function(t) {
 
   const gamestate = {
     pot: 100,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
@@ -64,6 +66,7 @@ tape('winner is not all-in, and ex-equo dont change anything', function(t) {
 
   const gamestate = {
     pot: 140,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
@@ -96,6 +99,7 @@ tape('winner is all-in, second winner no', function(t) {
 
   const gamestate = {
     pot: 2600,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
@@ -128,6 +132,7 @@ tape('winner is all-in, some players folded', function(t) {
 
   const gamestate = {
     pot: 2000,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
@@ -162,6 +167,7 @@ tape('winner is all-in, some players folded (one bet more than the winner)', fun
 
   const gamestate = {
     pot: 2800,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
@@ -196,6 +202,7 @@ tape('all in all-in', function(t) {
 
   const gamestate = {
     pot: 2000,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
@@ -230,6 +237,7 @@ tape('all in all-in, case two', function(t) {
 
   const gamestate = {
     pot: 2600,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
@@ -264,6 +272,7 @@ tape('ex-equo winners', function(t) {
 
   const gamestate = {
     pot: 100,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
@@ -297,6 +306,7 @@ tape('three ex-equo winners', function(t) {
 
   const gamestate = {
     pot: 210,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
@@ -329,6 +339,7 @@ tape('winner is all-in, exequo seconds', function(t) {
 
   const gamestate = {
     pot: 2000,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
@@ -363,6 +374,7 @@ tape('winner is all-in, one of the exequo seconds too', function(t) {
 
   const gamestate = {
     pot: 2800,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
@@ -398,6 +410,7 @@ tape('winner is all-in, two exequo all-in seconds, third wins', function(t) {
 
   const gamestate = {
     pot: 5550,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }, { name: 'jean-claude' }].map(createPlayer)
   };
 
@@ -436,6 +449,7 @@ tape('winner is all-in, all is in exequo', function(t) {
 
   const gamestate = {
     pot: 4570,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }, { name: 'jean-claude' }].map(createPlayer)
   };
 
@@ -473,6 +487,7 @@ tape('winner is all-in, pair of exequos', function(t) {
 
   const gamestate = {
     pot: 10000,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }, { name: 'jean-claude' }].map(createPlayer)
   };
 
@@ -512,6 +527,7 @@ tape('ex-equo winners, easy shit numbers', function(t) {
 
   const gamestate = {
     pot: 305,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
@@ -545,6 +561,7 @@ tape('three ex-equo winners, shit numbers', function(t) {
 
   const gamestate = {
     pot: 215,
+    winners: [],
     players: [{ name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'silvester' }].map(createPlayer)
   };
 
