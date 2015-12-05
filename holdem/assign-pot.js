@@ -3,17 +3,11 @@
 
 const status = require('../domain/player-status');
 
+const safeSum = require('../lib/safe-math').safeSum;
+const safeDiff = require('../lib/safe-math').safeDiff;
 
 const isAllin = Symbol.for('allin');
 
-
-function safeSum(a, b){
-  return (a * 100 + b * 100) / 100;
-}
-
-function safeDiff(a, b){
-  return (a * 100 - b * 100) / 100;
-}
 
 function assignToWinner(gs, winnerId, amount){
   amount = typeof amount == 'undefined' ? gs.pot : amount;

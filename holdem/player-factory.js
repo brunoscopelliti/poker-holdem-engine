@@ -7,6 +7,8 @@ const status = require('../domain/player-status');
 const sortByRank = require('poker-rank');
 const getCombinations = require('poker-combinations');
 
+const safeSum = require('../lib/safe-math').safeSum;
+const safeDiff = require('../lib/safe-math').safeDiff;
 const fake = Symbol('fake-test');
 const progressive = Symbol.for('hand-progressive');
 const hasDB = Symbol('hasDB');
@@ -103,8 +105,9 @@ const actions = {
       amount = this.chips;
     }
 
+    const isAllin = this.isAllin(amount);
 
-    if (this.chipsBet + amount < gs.callAmount){
+    if (safeSum(this.chipsBet, amount) < gs.callAmount){
 
       //
       // player is betting less than the required amount;
@@ -124,10 +127,10 @@ const actions = {
 
     //
     // update chip values
-    this.chipsBet += amount;
-    this.chips -= amount;
+    this.chipsBet = safeSum(amount, this.chipsBet);
+    this.chips = safeDiff(this.chips, amount);
 
-    gs.pot += amount;
+    gs.pot = safeSum(gs.pot, amount);
     gs.callAmount = Math.max(this.chipsBet, gs.callAmount);
 
   },
