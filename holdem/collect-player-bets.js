@@ -8,7 +8,12 @@ const eachFrom = require('../lib/loop-from');
 exports = module.exports = function takeBet(gs, fromIndex) {
 
   return eachFrom(gs.players, fromIndex, function(player, i) {
-    if (player.status == status.active){
+
+    //
+    // only the active players have the right to bet.
+    // if the player is already in allin,
+    // ask him a new bet does not make sense
+    if (player.status == status.active && !player[Symbol.for('allin')]){
       return player.talk(gs).then(function(betAmount) {
 
         // if the current hand must be decided with the showdown,
@@ -25,7 +30,7 @@ exports = module.exports = function takeBet(gs, fromIndex) {
           gs.players.forEach(player => delete player[badge]);
           player[badge] = true;
         }
-        
+
         return player.bet(gs, betAmount);
 
       }).catch(function() {
