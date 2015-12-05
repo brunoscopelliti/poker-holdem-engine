@@ -3,12 +3,12 @@
 
 const session = Object.create(null);
 
-session.pre = 0;
+session.pre = 'pre-flop';
 
-session.flop = 1;
+session.flop = 'flop';
 
-session.turn = 2;
+session.turn = 'turn';
 
-session.river = 3;
+session.river = 'river';
 
 exports = module.exports = Object.freeze(session);
