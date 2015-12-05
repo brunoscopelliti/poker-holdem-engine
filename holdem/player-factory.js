@@ -7,6 +7,7 @@ const status = require('../domain/player-status');
 const sortByRank = require('poker-rank');
 const getCombinations = require('poker-combinations');
 
+const save = require('../storage').save;
 const safeSum = require('../lib/safe-math').safeSum;
 const safeDiff = require('../lib/safe-math').safeDiff;
 const fake = Symbol('fake-test');
@@ -86,7 +87,7 @@ const actions = {
 
     // @todo send http request
     // to get the bet amount...
-    return Promise.resolve(gs.sb * 2);
+    return Promise.resolve(ps.callAmount);
 
   },
 
@@ -114,13 +115,13 @@ const actions = {
       // unless he is betting all the chips he owns
       // we treat this as a "fold" declaration
 
-      if (!this.isAllin(amount)){
-        return void this.fold();
+      if (!isAllin){
+        return this.fold(gs);
       }
     }
 
 
-    if (this.isAllin(amount)){
+    if (isAllin){
       let allin = Symbol.for('allin');
       this[allin] = true;
     }
@@ -132,6 +133,9 @@ const actions = {
 
     gs.pot = safeSum(gs.pot, amount);
     gs.callAmount = Math.max(this.chipsBet, gs.callAmount);
+
+
+    return save(gs, { type: 'bet', handId: gs.handId, session: gs.session, playerId: this.id, amount: amount });
 
   },
 
@@ -155,8 +159,9 @@ const actions = {
 
   //
   // change the player status to folded
-  fold: function fold(){
-    this.status = status.folded
+  fold: function fold(gs){
+    this.status = status.folded;
+    return save(gs, { type: 'status', handId: gs.handId, session: gs.session, playerId: this.id, status: 'folded' });
   }
 
 }

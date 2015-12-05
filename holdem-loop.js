@@ -5,6 +5,7 @@ const config = require('./config');
 
 const chalk = require('chalk');
 
+const save = require('./storage').save;
 const run = require('./lib/generator-runner');
 
 const status = require('./domain/player-status');
@@ -66,6 +67,9 @@ function* handLoop(gs){
         // we have to continue with the flop session.
         // add three cards on the table
         gs.community_cards.push(gs._deck.shift(), gs._deck.shift(), gs._deck.shift());
+
+        yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: gs.community_cards });
+
       }
       else {
         //
@@ -96,7 +100,9 @@ function* handLoop(gs){
         // until there are more than one "active" player, and the game
         // has not reached the river session, we coninue to run the loop.
         // add another card on the table
-        gs.community_cards.push(gs._deck.shift());
+        const newCard = gs._deck.shift();
+        gs.community_cards.push(newCard);
+        yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: [newCard] });
       }
       else {
         //
@@ -116,19 +122,10 @@ function* handLoop(gs){
 
 exports = module.exports = function play(gs){
 
-  //
-  // return a promise that will be settled when the hand is completed
-  return new Promise(function(resolve, reject){
-
-    return run(handLoop, gs).then(resolve).catch(function() {
-
-      // @todo
-      // define what to to in this case;
-      // ???
-      console.log(chalk.bold.red('something bad happened inside the loop'));
-
-    });
-
+  return run(handLoop, gs).catch(function(err) {
+    let tag = { id: gs.handId };
+    errors.error('An error occurred during the execution of the loop. Stack:', err.stack, tag);
+    errors.error('Game state: %s.', JSON.stringify(gs), tag);
   });
 
 };

@@ -2,6 +2,7 @@
 'use strict';
 
 const status = require('../domain/player-status');
+const save = require('../storage').save;
 
 const safeSum = require('../lib/safe-math').safeSum;
 const safeDiff = require('../lib/safe-math').safeDiff;
@@ -14,6 +15,7 @@ function assignToWinner(gs, winnerId, amount){
   let winner = gs.players.find(player => player.id == winnerId);
   winner.chips = safeSum(winner.chips, amount);
   gs.pot = safeDiff(gs.pot, amount);
+  gs.winners.push({ id: winner.id, name: winner.name, amount: amount });
 }
 
 
@@ -28,7 +30,8 @@ exports = module.exports = function assignPot(gs, showdownResults) {
   // then this player takes all the pot amount
   if (showdownPlayers.length == 1 || (!showdownPlayers[0][isAllin] && !showdownPlayers[0].detail.exequo)){
     let winner = showdownPlayers[0];
-    return void assignToWinner(gs, winner.id);
+    assignToWinner(gs, winner.id);
+    return save(gs, { type: 'win', handId: gs.handId, winners: gs.winners });
   }
 
 
@@ -98,5 +101,7 @@ exports = module.exports = function assignPot(gs, showdownResults) {
     }
 
   });
+
+  return save(gs, { type: 'win', handId: gs.handId, winners: gs.winners });
 
 };
