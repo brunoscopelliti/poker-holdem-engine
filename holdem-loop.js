@@ -45,7 +45,7 @@ function* handLoop(gs){
   // the hand continues until
   // all the community cards are shown
   // and there are more than an active player
-  while (gs.community_cards.length < 5 && activePlayers.length > 1){
+  while (gs.community_cards.length <= 5 && activePlayers.length > 1){
 
     //
     // preflop session
@@ -108,13 +108,16 @@ function* handLoop(gs){
 
       activePlayers = gs.players.filter(p => p.status === status.active);
 
-      if (activePlayers.length > 1) {
+      if (activePlayers.length > 1 && gs.community_cards.length < 5) {
         //
         // until there are more than one "active" player, and the game
         // has not reached the river session, we coninue to run the loop.
         // add another card on the table
         const newCard = gs._deck.shift();
         gs.community_cards.push(newCard);
+
+        gs.session = gs.community_cards.length == 4 ? session.turn : session.river;
+
         yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: [newCard] });
 
         gamestory.info('There are still %d active players after the %s betting session.', activePlayers.length, gs.session, tag);
