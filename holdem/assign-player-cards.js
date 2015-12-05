@@ -21,7 +21,7 @@ exports = module.exports = function assignCards(gs, deck) {
     if (player.status == status.active){
       player.cards.push(deck.shift());
       if (player.cards.length == 2){
-        gamestory.info('Player %d has %s', player.id, JSON.stringify(player.cards));
+        gamestory.info('%s has %s', player.name, JSON.stringify(player.cards), { id: gs.handId, type: 'cards' });
       }
     }
   }

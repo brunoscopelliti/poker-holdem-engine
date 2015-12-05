@@ -5,6 +5,7 @@
 // configure poker settings
 const config = require('./config');
 
+const chalk = require('chalk');
 const EventEmitter = require('events').EventEmitter;
 
 const mixin = require('merge-descriptors');
@@ -68,12 +69,13 @@ gamestate.on('game:start', function(setupData) {
 
     // the tournament is finished
     // is there something else to do?
+    console.log(chalk.bod.green('tournament is finished'));
 
   }).catch(function(err) {
     //
     // an error occurred during the dealer generator execution;
     // if the exception is not handled before... there's nothing here i can do.
-    errors.error('An error occurred during tournament %s: %s.', gamestate.tournamentId, err.message);
+    errors.error('An error occurred during tournament %s: %s. Stack: %s', gamestate.tournamentId, err.message, err.stack, { id: gamestate.handId });
   });
 
 });

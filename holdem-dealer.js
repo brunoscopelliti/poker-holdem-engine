@@ -21,12 +21,13 @@ exports = module.exports = function* dealer(gs, testFn){
 
     gs.handId = `${gs.tournamentId}_${gs[progressive]}`;
 
-    gamestory.info('Going to play the hand %s', gs.handId);
+    gamestory.info('Starting hand %s', gs.handId, { id: gs.handId });
 
+
+    //
+    // break here until the tournament is resumed
     if (gs.status == 'pause'){
-      //
-      // break here until the tournament is resumed
-      gamestory.info('Tournament %s is now in pause.', gamestate.tournamentId);
+      gamestory.info('Tournament %s is now in pause.', gs.tournamentId, { id: gs.handId });
       yield gs.status;
     }
 
@@ -42,8 +43,6 @@ exports = module.exports = function* dealer(gs, testFn){
       let cards = yield handSetup(gs);
 
       yield save(gs, { type: 'setup', handId: gs.handId, pot: gs.pot, sb: gs.sb, players: gs.players.map(p => Object.assign({}, p)) });
-
-      console.log(chalk.red('post'));
 
       //
       // play the game

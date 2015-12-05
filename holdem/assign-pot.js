@@ -9,6 +9,9 @@ const safeDiff = require('../lib/safe-math').safeDiff;
 
 const isAllin = Symbol.for('allin');
 
+const winston = require('../log-setup');
+const gamestory = winston.loggers.get('gamestory');
+const errors = winston.loggers.get('errors');
 
 function assignToWinner(gs, winnerId, amount){
   amount = typeof amount == 'undefined' ? gs.pot : amount;
@@ -22,6 +25,8 @@ function assignToWinner(gs, winnerId, amount){
 
 exports = module.exports = function assignPot(gs, showdownResults) {
 
+  const tag = { id: gs.handId };
+
   const showdownPlayers = showdownResults.slice(0);
 
   //
@@ -30,6 +35,7 @@ exports = module.exports = function assignPot(gs, showdownResults) {
   // then this player takes all the pot amount
   if (showdownPlayers.length == 1 || (!showdownPlayers[0][isAllin] && !showdownPlayers[0].detail.exequo)){
     let winner = showdownPlayers[0];
+    gamestory.info('%s wins the entire pot of %d', winner.name, gs.pot, tag);
     assignToWinner(gs, winner.id);
     return save(gs, { type: 'win', handId: gs.handId, winners: gs.winners });
   }
@@ -102,6 +108,7 @@ exports = module.exports = function assignPot(gs, showdownResults) {
 
   });
 
+  gs.winners.forEach(w => gamestory.info('%s wins a part of the pot; the amount is %d', w.name, w.amount, tag));
   return save(gs, { type: 'win', handId: gs.handId, winners: gs.winners });
 
 };

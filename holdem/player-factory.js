@@ -10,6 +10,11 @@ const getCombinations = require('poker-combinations');
 const save = require('../storage').save;
 const safeSum = require('../lib/safe-math').safeSum;
 const safeDiff = require('../lib/safe-math').safeDiff;
+
+const winston = require('../log-setup');
+const gamestory = winston.loggers.get('gamestory');
+const errors = winston.loggers.get('errors');
+
 const fake = Symbol('fake-test');
 const progressive = Symbol.for('hand-progressive');
 const hasDB = Symbol('hasDB');
@@ -65,6 +70,7 @@ const actions = {
         return mysterious;
       }
       delete mysterious.cards;
+      delete mysterious.bestCards;
       return mysterious;
     });
 
@@ -84,6 +90,11 @@ const actions = {
       let lib = fakePlayers[this[fake]];
       return Promise.resolve(lib.bet(Object.freeze(ps), x => x));
     }
+
+    const tag = { id: gs.handId, type: 'bet' };
+
+    gamestory.info('We\'re asking to %s the amount of his bet on the basis of %s', this.name, JSON.stringify(ps), tag);
+    gamestory.info('%s bets %d', this.name, ps.callAmount, tag);
 
     // @todo send http request
     // to get the bet amount...
@@ -116,12 +127,14 @@ const actions = {
       // we treat this as a "fold" declaration
 
       if (!isAllin){
+        gamestory.info('%s folded', this.name, { id: gs.handId, type: 'status' });
         return this.fold(gs);
       }
     }
 
 
     if (isAllin){
+      gamestory.info('%s is allin', this.name, { id: gs.handId, type: 'status' });
       let allin = Symbol.for('allin');
       this[allin] = true;
     }
@@ -134,6 +147,7 @@ const actions = {
     gs.pot = safeSum(gs.pot, amount);
     gs.callAmount = Math.max(this.chipsBet, gs.callAmount);
 
+    gamestory.info('Game state after %s\'s bet: %s', this.name, JSON.stringify({ pot:gs.pot, callAmount: gs.callAmount, player: { name: this.name, chips: this.chips, chipsBet: this.chipsBet } }), { id: gs.handId, type: 'bet' });
 
     return save(gs, { type: 'bet', handId: gs.handId, session: gs.session, playerId: this.id, amount: amount });
 
@@ -145,7 +159,9 @@ const actions = {
   showdown: function showdown(commonCards){
     let combs = getCombinations(this.cards.concat(commonCards), 5);
     let bestHand = sortByRank(combs)[0];
-    return this.bestCards = combs[bestHand.index];
+    this.bestCards = combs[bestHand.index];
+    gamestory.info('%s\'s best combination is: %s', this.name, JSON.stringify(this.bestCards));
+    return this.bestCards;
   },
 
 

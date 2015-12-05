@@ -12,6 +12,9 @@ const status = require('./domain/player-status');
 const session = require('./domain/game-session');
 const takeBets = require('./holdem/collect-player-bets');
 
+const winston = require('./log-setup');
+const gamestory = winston.loggers.get('gamestory');
+const errors = winston.loggers.get('errors');
 
 function isBetRoundFinished(gs){
 
@@ -33,6 +36,9 @@ function* handLoop(gs){
   const hasBB = Symbol.for('hasBB');
   const hasDB = Symbol.for('hasDB');
 
+  const tag = { id: gs.handId, type: 'session' };
+  const cardTag = { id: gs.handId, type: 'cards' };
+
   let activePlayers = gs.players.filter(p => p.status === active);
 
   //
@@ -46,6 +52,8 @@ function* handLoop(gs){
     if (gs.community_cards.length == 0){
 
       gs.session = session.pre;
+
+      gamestory.info('The %s betting session is starting.', gs.session, tag);
 
       // check if there are active players
       // who still have to call, or fold
@@ -70,11 +78,14 @@ function* handLoop(gs){
 
         yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: gs.community_cards });
 
+        gamestory.info('There are still %d active players after the %s betting session.', activePlayers.length, gs.session, tag);
+        gamestory.info('Flop cards are: %s', JSON.stringify(gs.community_cards), cardTag);
       }
       else {
         //
         // ... otherwise, we stop the loop immediately
         // returning the control on the runner
+        gamestory.info('Only one player after the %s betting session.', gs.session, tag);
         return gs;
       }
 
@@ -82,6 +93,8 @@ function* handLoop(gs){
     else {
 
       gs.session = gs.community_cards.length == 3 ? session.flop : (gs.community_cards.length == 4 ? session.turn : session.river);
+
+      gamestory.info('The %s betting session is starting.', gs.session, tag);
 
       do {
         let dbIndex = gs.players.findIndex(player => player[hasDB]);
@@ -103,11 +116,15 @@ function* handLoop(gs){
         const newCard = gs._deck.shift();
         gs.community_cards.push(newCard);
         yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: [newCard] });
+
+        gamestory.info('There are still %d active players after the %s betting session.', activePlayers.length, gs.session, tag);
+        gamestory.info('%s card is: %s', gs.session, JSON.stringify(newCard), cardTag);
       }
       else {
         //
         // ... otherwise, we stop the loop immediately
         // returning the control on the runner
+        gamestory.info('Only one player after the %s betting session.', gs.session, tag);
         return gs;
       }
 

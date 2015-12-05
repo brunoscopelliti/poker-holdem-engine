@@ -26,7 +26,7 @@ exports = module.exports = function setup(gs){
   return new Promise(function(res, rej){
     setTimeout(function() {
 
-      const tag = { id: gs.tournamentId };
+      const tag = { id: gs.handId };
 
       let hasBB = Symbol.for('hasBB');
       let isAllin = Symbol.for('allin');
@@ -45,6 +45,9 @@ exports = module.exports = function setup(gs){
       // the cards on the table
       gs.community_cards = [];
 
+      // list of winners of the previous hand
+      gs.winners = [];
+
       // reset player conditions
       gs.players.forEach(player => {
         player[hasBB] = player[isAllin] = false;
@@ -53,6 +56,7 @@ exports = module.exports = function setup(gs){
         player.cards = player.bestCards = [];
       });
 
+      gamestory.info('Players: %s', JSON.stringify(gs.players.map(p => ({ name: p.name, status: p.status, chips: p.chips }))), tag);
 
       //
       // 1) compute the small blind level for the current hand
@@ -60,7 +64,7 @@ exports = module.exports = function setup(gs){
 
       gs.sb = computeSB(gs);
 
-      gamestory.info('Computed the small blind: it is %d chips', gs.sb, tag);
+      gamestory.info('Small blind: %d chips', gs.sb, tag);
 
 
       //
@@ -69,7 +73,7 @@ exports = module.exports = function setup(gs){
 
       let dbi = assignDB(gs);
 
-      gamestory.info('The dealer button is assigned to player %d', dbi, tag);
+      gamestory.info('Dealer button is assigned to %s (%d)', gs.players[dbi].name, dbi, tag);
 
 
       //
@@ -78,7 +82,7 @@ exports = module.exports = function setup(gs){
 
       payBlinds(gs);
 
-      gamestory.info('Blinds were payed. We currently have a pot of %d; and the minimum amount to play is %d.', gs.pot, gs.callAmount, tag);
+      gamestory.info('Blinds were payed. Pot is %d; Minimum amount to play is %d.', gs.pot, gs.callAmount, tag);
 
 
       //
