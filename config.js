@@ -8,12 +8,10 @@ const config = {
   HANDWAIT: 1000,
 
   // the amount of initial chips for each player
-  // BUYIN: 5000,
-  BUYIN: 100,
+  BUYIN: 1000,
 
   // the progression of small blinds
-  // SMALL_BLINDS: [10, 20, 25, 50, 100, 125, 200, 250, 500, 750, 1000, 1500, 2000],
-  SMALL_BLINDS: [10, 20, 40],
+  SMALL_BLINDS: [10, 20, 25, 50, 100, 125, 200],
 
   // duration of a small blind value, in terms of "played hands"
   // if 0, the value is equal to the number of players
@@ -28,6 +26,22 @@ const config = {
 if (process.env.NODE_ENV === 'production'){
 
   Object.assign(config, process.env);
+
+}
+else if (process.env.NODE_ENV === 'test'){
+
+  // the progression of small blinds
+  // as the unit tests expect it to be
+  const unitBlinds = [10, 20, 25, 50, 100, 125, 200, 250, 500, 750, 1000, 1500, 2000];
+  const unitBlindsPeriod = 0;
+
+  // the amount of initial chips for each player
+  // as the unit tests expect it to be
+  const unitBuyin = 5000;
+
+  config.BLINDS_PERIOD = unitBlindsPeriod;
+  config.SMALL_BLINDS = unitBlinds;
+  config.BUYIN = unitBuyin;
 
 }
 
