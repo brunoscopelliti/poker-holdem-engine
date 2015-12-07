@@ -33,7 +33,7 @@ function* teardownOps(gs){
   //
   // 1) showdown
   // sort the player by the strength of their best point
-  let sortedPlayers = yield showdown(activePlayers, gs.community_cards);
+  let sortedPlayers = yield showdown(activePlayers, gs.commonCards);
   gamestory.info('Showdown results: %s', JSON.stringify(sortedPlayers), tag);
   yield save(gs, { type: 'showdown', handId: gs.handId, players: sortedPlayers.map(p => Object.assign({}, p)) });
 

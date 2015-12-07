@@ -6,7 +6,7 @@ const sortByRank = require('poker-rank');
 const eachFrom = require('../lib/loop-from');
 const getFirst = require('../lib/get-first-to-showdown-index');
 
-exports = module.exports = function(players, community_cards) {
+exports = module.exports = function(players, commonCards) {
 
   if (players.length === 1){
     return Promise.resolve(players);
@@ -16,7 +16,7 @@ exports = module.exports = function(players, community_cards) {
   const shownCards = [];
 
   function showdown(player){
-    let cards = player.showdown(community_cards);
+    let cards = player.showdown(commonCards);
     cards[id] = player.id;
     shownCards.push(cards);
   }

@@ -58,7 +58,7 @@ const actions = {
 
     // list of the community cards on the table
     // everyone is able to access this same list
-    ps.community_cards = gs.community_cards;
+    ps.commonCards = gs.commonCards;
 
     // the list of the players...
     // make sure that the current players can see only its cards

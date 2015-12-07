@@ -43,7 +43,7 @@ exports = module.exports = function setup(gs){
       gs.callAmount = 0;
 
       // the cards on the table
-      gs.community_cards = [];
+      gs.commonCards = [];
 
       // list of winners of the previous hand
       gs.winners = [];

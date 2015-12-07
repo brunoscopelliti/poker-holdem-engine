@@ -45,11 +45,11 @@ function* handLoop(gs){
   // the hand continues until
   // all the community cards are shown
   // and there are more than an active player
-  while (gs.community_cards.length <= 5 && activePlayers.length > 1){
+  while (gs.commonCards.length <= 5 && activePlayers.length > 1){
 
     //
     // preflop session
-    if (gs.community_cards.length == 0){
+    if (gs.commonCards.length == 0){
 
       gs.session = session.pre;
 
@@ -74,12 +74,12 @@ function* handLoop(gs){
         // since there are still more than one "active" player
         // we have to continue with the flop session.
         // add three cards on the table
-        gs.community_cards.push(gs._deck.shift(), gs._deck.shift(), gs._deck.shift());
+        gs.commonCards.push(gs._deck.shift(), gs._deck.shift(), gs._deck.shift());
 
-        yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: gs.community_cards });
+        yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: gs.commonCards });
 
         gamestory.info('There are still %d active players after the %s betting session.', activePlayers.length, gs.session, tag);
-        gamestory.info('Flop cards are: %s', JSON.stringify(gs.community_cards), cardTag);
+        gamestory.info('Flop cards are: %s', JSON.stringify(gs.commonCards), cardTag);
       }
       else {
         //
@@ -92,7 +92,7 @@ function* handLoop(gs){
     }
     else {
 
-      gs.session = gs.community_cards.length == 3 ? session.flop : (gs.community_cards.length == 4 ? session.turn : session.river);
+      gs.session = gs.commonCards.length == 3 ? session.flop : (gs.commonCards.length == 4 ? session.turn : session.river);
 
       gamestory.info('The %s betting session is starting.', gs.session, tag);
 
@@ -108,15 +108,15 @@ function* handLoop(gs){
 
       activePlayers = gs.players.filter(p => p.status === status.active);
 
-      if (activePlayers.length > 1 && gs.community_cards.length < 5) {
+      if (activePlayers.length > 1 && gs.commonCards.length < 5) {
         //
         // until there are more than one "active" player, and the game
         // has not reached the river session, we coninue to run the loop.
         // add another card on the table
         const newCard = gs._deck.shift();
-        gs.community_cards.push(newCard);
+        gs.commonCards.push(newCard);
 
-        gs.session = gs.community_cards.length == 4 ? session.turn : session.river;
+        gs.session = gs.commonCards.length == 4 ? session.turn : session.river;
 
         yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: [newCard] });
 

@@ -1,0 +1,55 @@
+{
+
+  "tournamentId": "@mongoTournamentId",
+
+  "handId": "",
+
+  "status": "['play', 'pause', 'stop']",
+
+  "session": "['pre', 'flop', 'turn', 'river']",
+
+  // amount of the small blind
+  // big bind is always twice
+  "sb": 20,
+
+  // the amount that must be bet in order to remain active
+  // otherwise fold
+  "callAmount": 80,
+
+  // amount of the pot
+  // is the sum of the "handBet" of all the players
+  "pot": 240,
+
+  "players": [
+
+    {
+      "id": "range(0 ... players.length)",
+
+      "name": "",
+
+      // the total amount of chips the player bet
+      // in the current "hand".
+      // it is the sum of the chips the player bet
+      // in each "betting session" of the current hand.
+      // "betting session": [preflop, flop, turn, river]
+      "chipsBet": 40,
+
+      // amount of chips which weren't be yet
+      "chips": 1000,
+
+      "cards": [],
+
+      "status": "['active', 'folded', 'out']",
+
+      "version": "Poker folder star!"
+    }
+
+  ],
+
+  "winners": [],
+
+  "rank": [ winnerId, second, third, fourth, fifth],
+
+  "commonCards": []
+
+}
