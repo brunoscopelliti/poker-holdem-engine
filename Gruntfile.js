@@ -16,7 +16,7 @@ module.exports = function (grunt) {
           port: 8081,
           protocol: 'http'
         },
-        unit: {
+        test: {
           options: {
             base: './'
           }
@@ -39,7 +39,12 @@ module.exports = function (grunt) {
         },
         unit: {
           files: {
-            'tests/bundle.js': ['./tests/*.js', './tests/**/*.js', '!./tests/bundle.js']
+            'tests/bundle.js': ['./tests/*.js', './tests/**/*.js', '!./tests/dealer.js', '!./tests/bundle.js']
+          }
+        },
+        integ: {
+          files: {
+            'tests/bundle.js': ['./fake-players/*.js', './tests/dealer.js']
           }
         }
       },
@@ -53,6 +58,7 @@ module.exports = function (grunt) {
 
     });
 
-    grunt.registerTask('unit', ['browserify:unit', 'connect:unit']);
+    grunt.registerTask('unit', ['browserify:unit', 'connect:test']);
+    grunt.registerTask('integ', ['browserify:integ', 'connect:test']);
 
 };
