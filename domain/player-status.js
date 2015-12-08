@@ -3,13 +3,10 @@
 
 const status = Object.create(null);
 
-// @todo
-// use string, instead of numbers
+status.active = 'active';
 
-status.active = 0;
+status.folded = 'folded';
 
-status.folded = 1;
-
-status.out = 2;
+status.out = 'out';
 
 exports = module.exports = Object.freeze(status);

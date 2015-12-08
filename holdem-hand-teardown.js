@@ -48,7 +48,7 @@ function* teardownOps(gs){
     let player = activePlayers[i];
     if (player.chips === 0){
       gamestory.info('%s (%d) is out.', player.name, player.id, { id: gs.handId, type: 'status' });
-      yield save(gs, { type: 'status', handId: gs.handId, playerId: player.id, status: 'out' });
+      yield save(gs, { type: 'status', handId: gs.handId, playerId: player.id, status: status.out });
     }
   }
 
