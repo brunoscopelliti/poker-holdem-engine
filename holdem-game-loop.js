@@ -10,7 +10,7 @@ const status = require('./domain/player-status');
 const save = require('./storage').save;
 
 const handSetup = require('./holdem-hand-setup');
-const play = require('./holdem-loop');
+const play = require('./holdem-bet-loop');
 const handTeardown = require('./holdem-hand-teardown');
 
 const winston = require('./log-setup');

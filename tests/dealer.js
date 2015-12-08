@@ -69,7 +69,7 @@ const gamestate = (function setupGamestate(){
 
 
 
-const sut = require('../holdem-dealer');
+const sut = require('../holdem-game-loop');
 
 tape('dealer', t => t.end());
 

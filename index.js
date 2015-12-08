@@ -22,7 +22,7 @@ mixin(gamestate, EventEmitter.prototype, false);
 const status = require('./domain/player-status');
 
 const run = require('./lib/generator-runner');
-const dealer = exports._dealer = require('./holdem-dealer');
+const dealer = exports._dealer = require('./holdem-game-loop');
 
 
 const createPlayer = require('./holdem/player-factory');
