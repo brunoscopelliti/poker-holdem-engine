@@ -8,10 +8,11 @@ winston.loggers.add('gamestory', {
     level: 'info',
     colorize: true,
     label: 'gamestory'
-  },
-  file: {
-    filename: './log-gamestory.txt'
   }
+  // ,
+  // file: {
+  //   filename: './log-gamestory.txt'
+  // }
 });
 
 winston.loggers.add('errors', {
