@@ -59,24 +59,24 @@ gamestate.on('game:start', function(setupData) {
 
     gamestate.started = true;
 
+    gamestory.info('Tournament %s is going to start.', gamestate.tournamentId, tag);
+    gamestory.info('The number of participants is %d; they are %s.', gamestate.players.length, gamestate.players.map(p => p.name).toString().replace(/,/g, ', '), tag);
+
+    // start the game
+    return void run(dealer, gamestate).then(function() {
+
+      // the tournament is finished
+      // is there something else to do?
+      console.log(chalk.bold.green('tournament is finished'));
+
+    }).catch(function(err) {
+      //
+      // an error occurred during the dealer generator execution;
+      // if the exception is not handled before... there's nothing here i can do.
+      errors.error('An error occurred during tournament %s: %s. Stack: %s', gamestate.tournamentId, err.message, err.stack, { id: gamestate.handId });
+    });
+
   }
-
-  gamestory.info('Tournament %s is going to start.', gamestate.tournamentId, tag);
-  gamestory.info('The number of participants is %d; they are %s.', gamestate.players.length, gamestate.players.map(p => p.name).toString().replace(/,/g, ', '), tag);
-
-  // start the game
-  return void run(dealer, gamestate).then(function() {
-
-    // the tournament is finished
-    // is there something else to do?
-    console.log(chalk.bod.green('tournament is finished'));
-
-  }).catch(function(err) {
-    //
-    // an error occurred during the dealer generator execution;
-    // if the exception is not handled before... there's nothing here i can do.
-    errors.error('An error occurred during tournament %s: %s. Stack: %s', gamestate.tournamentId, err.message, err.stack, { id: gamestate.handId });
-  });
 
 });
 

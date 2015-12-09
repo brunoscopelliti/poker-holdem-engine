@@ -68,7 +68,14 @@ exports = module.exports = function* dealer(gs, testFn){
     // break here until the tournament is resumed
     if (gs.status == 'pause'){
       gamestory.info('Tournament %s is now in pause.', gs.tournamentId, { id: gs.handId });
-      yield gs.status;
+      yield new Promise(function(res) {
+        let time = setInterval(function() {
+          if (gs.status == 'play'){
+            clearInterval(time);
+            res();
+          }
+        }, 2500);
+      });
     }
 
 

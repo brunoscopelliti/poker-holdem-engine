@@ -8,10 +8,10 @@ const config = {
   HANDWAIT: 250,
 
   // the amount of initial chips for each player
-  BUYIN: 1000,
+  BUYIN: 300,
 
   // the progression of small blinds
-  SMALL_BLINDS: [10, 20, 25, 50, 100, 125, 200],
+  SMALL_BLINDS: [10, 20, 25, 50, 100, 125, 150],
 
   // duration of a small blind value, in terms of "played hands"
   // if 0, the value is equal to the number of players
