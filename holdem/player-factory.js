@@ -4,6 +4,8 @@
 const config = require('../config');
 const status = require('../domain/player-status');
 
+const request = require('request');
+
 const sortByRank = require('poker-rank');
 const getCombinations = require('poker-combinations');
 
@@ -27,6 +29,8 @@ if (process.env.NODE_ENV === 'test'){
   fakePlayers.pair = require('../fake-players/pair');
 }
 
+
+const urlHeroku_ = Symbol('heroku-service');
 
 const actions = {
 
@@ -98,7 +102,26 @@ const actions = {
 
     // @todo send http request
     // to get the bet amount...
-    return Promise.resolve(ps.callAmount);
+
+    const service = `${this[urlHeroku_]}bet`
+
+    return new Promise(function(resolve, reject) {
+
+      request.post(service, {
+        body: ps,
+        json: true
+      }, function (err, response, body) {
+        if (err){
+          return void reject(err);
+        }
+
+        // @todo complete
+        console.log('>', body);
+        resolve(body);
+
+      });
+
+    });
 
   },
 
@@ -107,6 +130,12 @@ const actions = {
   // updates the player state, and the game state
   // accordingly to the player bet
   bet: function bet(gs, amount){
+
+    //
+    // sanitization
+    if (typeof amount != 'number' || Number.isNaN){
+      amount = 0;
+    }
 
     //
     // amount should be in the range [ 0 ... player.chips ]
@@ -192,6 +221,9 @@ exports = module.exports = function factory(obj, i){
   player.id = i;
   player.name = obj.name;
   player.version = 'Poker folder star!';
+
+  // url of the host where the bot is running
+  player[urlHeroku_] = obj.url;
 
   player.chips = config.BUYIN;
   player.status = status.active;
