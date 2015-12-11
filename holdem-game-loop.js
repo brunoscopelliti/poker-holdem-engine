@@ -47,7 +47,7 @@ exports = module.exports = function* dealer(gs, testFn){
       // compute the points earned by each player
       gs.rank.unshift(activePlayers[0].id);
       let awards = config.AWARDS.find(x => x.N === gs.rank.length).P;
-      let playerPoints = gs.rank.map((r,i) => ({ id: r, points: awards[i] }));
+      let playerPoints = gs.rank.map((r,i) => ({ id: r, pts: awards[i] }));
       gamestory.info('Result for game %d: %s', gs[game], JSON.stringify(playerPoints), { id: gs.handId });
       yield save(gs, { type: 'points', tournamentId: gs.tournamentId, gameId: gs[game], rank: playerPoints });
 
