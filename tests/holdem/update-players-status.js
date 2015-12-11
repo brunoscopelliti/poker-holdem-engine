@@ -29,7 +29,7 @@ tape('folded players become active, and who has zero chips goes out', function(t
 
   t.equal(gamestate.players.filter(x => x.status == status.active).length, 3, 'folded players become active');
   t.equal(gamestate.players.filter(x => x.status == status.out).length, 1, 'who has 0 chips is out');
-  t.equal(gamestate.rank[0], 3, 'silvester is out');
+  t.equal(gamestate.rank[0], 'silvester', 'silvester is out');
 
   // terence is eliminated
   gamestate.players[1].chips = 0;
@@ -38,7 +38,7 @@ tape('folded players become active, and who has zero chips goes out', function(t
 
   t.equal(gamestate.players.filter(x => x.status == status.active).length, 2, 'folded players become active');
   t.equal(gamestate.players.filter(x => x.status == status.out).length, 2, 'who has 0 chips is out');
-  t.deepEqual(gamestate.rank, [1, 3], 'terence and silvester are out');
+  t.deepEqual(gamestate.rank, ['terence', 'silvester'], 'terence and silvester are out');
 
   t.end();
 
