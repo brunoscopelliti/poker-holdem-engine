@@ -1,19 +1,23 @@
 
 'use strict';
 
+const config = require('./config');
+
 const winston = module.exports = require('winston');
 
-winston.loggers.add('gamestory', {
+const gamestorySettings = {
   console: {
     level: 'info',
     colorize: true,
     label: 'gamestory'
   }
-  // ,
-  // file: {
-  //   filename: './log-gamestory.txt'
-  // }
-});
+};
+
+if (config.SAVE_LOG){
+  gamestorySettings.file = { filename: './log-gamestory.txt' };
+}
+
+winston.loggers.add('gamestory', gamestorySettings);
 
 winston.loggers.add('errors', {
   console: {

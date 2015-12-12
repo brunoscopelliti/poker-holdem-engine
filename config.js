@@ -3,6 +3,9 @@
 
 const config = {
 
+  // define if the log should be saved on file
+  SAVE_LOG: true,
+
   // time (expressed in ms) to wait after an hand ends,
   // before a new one can start
   HANDWAIT: 1000,
