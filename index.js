@@ -67,12 +67,9 @@ gamestate.on('game:start', function(setupData) {
     // start the game
     return void run(dealer, gamestate).then(function() {
 
+      //
       // the tournament is finished
-      // is there something else to do?
-
-      // todo yes
-      // kill the thread
-      console.log(chalk.bold.green('tournament is finished'));
+      return gamestate.emit('tournament-finished', { tournamentId: gamestate.tournamentId });
 
     }).catch(function(err) {
       //
