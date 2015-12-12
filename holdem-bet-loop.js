@@ -36,8 +36,8 @@ function* handLoop(gs){
   const hasBB = Symbol.for('hasBB');
   const hasDB = Symbol.for('hasDB');
 
-  const tag = { id: gs.handId, type: 'session' };
-  const cardTag = { id: gs.handId, type: 'cards' };
+  const tag = { id: gs.handId, type: 'session', pid: process.pid };
+  const cardTag = { id: gs.handId, type: 'cards', pid: process.pid };
 
   let activePlayers = gs.players.filter(p => p.status === active);
 
@@ -143,7 +143,7 @@ function* handLoop(gs){
 exports = module.exports = function play(gs){
 
   return run(handLoop, gs).catch(function(err) {
-    let tag = { id: gs.handId };
+    let tag = { id: gs.handId, pid: process.pid };
     errors.error('An error occurred during the execution of the loop. Stack:', err.stack, tag);
     errors.error('Game state: %s.', JSON.stringify(gs), tag);
   });

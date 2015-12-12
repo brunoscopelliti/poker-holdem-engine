@@ -23,7 +23,7 @@ const errors = winston.loggers.get('errors');
 
 function* teardownOps(gs){
 
-  const tag = { id: gs.handId };
+  const tag = { id: gs.handId, pid: process.pid };
 
   //
   // in this phase of the hand only the active players can partecipate
@@ -47,7 +47,7 @@ function* teardownOps(gs){
   for (let i=0; i<activePlayers.length; i++){
     let player = activePlayers[i];
     if (player.chips === 0){
-      gamestory.info('%s (%d) is out.', player.name, player.id, { id: gs.handId, type: 'status' });
+      gamestory.info('%s (%d) is out.', player.name, player.id, { id: gs.handId, pid: process.pid, type: 'status' });
       yield save(gs, { type: 'status', handId: gs.handId, playerId: player.id, status: status.out });
     }
   }
@@ -64,7 +64,7 @@ function* teardownOps(gs){
 exports = module.exports = function teardown(gs){
 
   return run(teardownOps, gs).catch(function(err) {
-    let tag = { id: gs.handId };
+    let tag = { id: gs.handId, pid: process.pid };
     errors.error('An error occurred during the execution of the teardown. Stack: %s.', err.stack, tag);
     errors.error('Game state: %s.', JSON.stringify(gs), tag);
   });

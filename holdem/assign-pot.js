@@ -25,7 +25,7 @@ function assignToWinner(gs, winnerId, amount){
 
 exports = module.exports = function assignPot(gs, showdownResults) {
 
-  const tag = { id: gs.handId };
+  const tag = { id: gs.handId, pid: process.pid };
 
   const showdownPlayers = showdownResults.slice(0);
 

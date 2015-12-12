@@ -48,7 +48,7 @@ exports = module.exports = function* dealer(gs, testFn){
       gs.rank.unshift(activePlayers[0].name);
       let awards = config.AWARDS.find(x => x.N === gs.rank.length).P;
       let playerPoints = gs.rank.map((r,i) => ({ name: r, pts: awards[i] }));
-      gamestory.info('Result for game %d: %s', gs[game], JSON.stringify(playerPoints), { id: gs.handId });
+      gamestory.info('Result for game %d: %s', gs[game], JSON.stringify(playerPoints), { id: gs.handId, pid: process.pid });
       yield save(gs, { type: 'points', tournamentId: gs.tournamentId, gameId: gs[game], rank: playerPoints });
 
       // restore players' initial conditions
@@ -61,13 +61,13 @@ exports = module.exports = function* dealer(gs, testFn){
 
     gs.handId = `${gs.tournamentId}_${gs[game]}-${gs[progressive]}`;
 
-    gamestory.info('Starting hand %s', gs.handId, { id: gs.handId });
+    gamestory.info('Starting hand %s', gs.handId, { id: gs.handId, pid: process.pid });
 
 
     //
     // break here until the tournament is resumed
     if (gs.status == 'pause'){
-      gamestory.info('Tournament %s is now in pause.', gs.tournamentId, { id: gs.handId });
+      gamestory.info('Tournament %s is now in pause.', gs.tournamentId, { id: gs.handId, pid: process.pid });
       yield new Promise(function(res) {
         let time = setInterval(function() {
           if (gs.status == 'play'){

@@ -95,7 +95,7 @@ const actions = {
       return Promise.resolve(lib.bet(Object.freeze(ps), x => x));
     }
 
-    const tag = { id: gs.handId, type: 'bet' };
+    const tag = { id: gs.handId, pid: process.pid, type: 'bet' };
 
     gamestory.info('We\'re asking to %s (%d) the amount of his bet on the basis of %s', this.name, this.id, JSON.stringify(ps), tag);
 
@@ -154,14 +154,14 @@ const actions = {
       // we treat this as a "fold" declaration
 
       if (!isAllin){
-        gamestory.info('%s (%d) folded', this.name, this.id, { id: gs.handId, type: 'status' });
+        gamestory.info('%s (%d) folded', this.name, this.id, { id: gs.handId, pid: process.pid, type: 'status' });
         return this.fold(gs);
       }
     }
 
 
     if (isAllin){
-      gamestory.info('%s (%d) is allin', this.name, this.id, { id: gs.handId, type: 'status' });
+      gamestory.info('%s (%d) is allin', this.name, this.id, { id: gs.handId, pid: process.pid, type: 'status' });
       let allin = Symbol.for('allin');
       this[allin] = true;
     }
@@ -174,7 +174,7 @@ const actions = {
     gs.pot = safeSum(gs.pot, amount);
     gs.callAmount = Math.max(this.chipsBet, gs.callAmount);
 
-    gamestory.info('Game state after %s (%d)\'s bet: %s', this.name, this.id, JSON.stringify({ pot:gs.pot, callAmount: gs.callAmount, player: { name: this.name, chips: this.chips, chipsBet: this.chipsBet } }), { id: gs.handId, type: 'bet' });
+    gamestory.info('Game state after %s (%d)\'s bet: %s', this.name, this.id, JSON.stringify({ pot:gs.pot, callAmount: gs.callAmount, player: { name: this.name, chips: this.chips, chipsBet: this.chipsBet } }), { id: gs.handId, pid: process.pid, type: 'bet' });
 
     return save(gs, { type: 'bet', handId: gs.handId, session: gs.session, playerId: this.id, amount: amount });
 
