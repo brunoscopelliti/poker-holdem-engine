@@ -27,7 +27,7 @@ function* setupOps(gs){
   yield new Promise(res => setTimeout(res, config.HANDWAIT));
 
 
-  const tag = { id: gs.handId, pid: process.pid };
+  const tag = { id: gs.handId };
 
   let hasBB = Symbol.for('hasBB');
   let isAllin = Symbol.for('allin');
@@ -101,7 +101,7 @@ exports = module.exports = function setup(gs){
 
   // prepare a poker hand, so that it can be played...
   return run(setupOps, gs).catch(function(err) {
-    let tag = { id: gs.handId, pid: process.pid };
+    let tag = { id: gs.handId };
     errors.error('An error occurred during the execution of the setup. Stack: %s.', err.stack, tag);
     errors.error('Game state: %s.', JSON.stringify(gs), tag);
   });

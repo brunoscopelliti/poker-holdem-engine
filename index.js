@@ -47,9 +47,9 @@ gamestate.on('game:start', function(setupData) {
 
   gamestate.status = 'play';
 
-  tag.pid = process.pid;
-
   if (!gamestate.started){
+
+    gamestate.pid = process.pid;
 
     //
     // the unique id of the current tournament
@@ -66,16 +66,14 @@ gamestate.on('game:start', function(setupData) {
 
     // start the game
     return void run(dealer, gamestate).then(function() {
-
-      //
       // the tournament is finished
+      // this thread is going to be killed :P
       return gamestate.emit('tournament-finished', { tournamentId: gamestate.tournamentId });
-
     }).catch(function(err) {
       //
       // an error occurred during the dealer generator execution;
       // if the exception is not handled before... there's nothing here i can do.
-      errors.error('An error occurred during tournament %s: %s. Stack: %s', gamestate.tournamentId, err.message, err.stack, { id: gamestate.handId, pid: process.pid });
+      errors.error('An error occurred during tournament %s: %s. Stack: %s', gamestate.tournamentId, err.message, err.stack, { id: gamestate.handId });
     });
 
   }
