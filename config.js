@@ -4,7 +4,7 @@
 const config = {
 
   // define if the log should be saved on file
-  SAVE_LOG: true,
+  SAVE_LOG: false,
 
   // time (expressed in ms) to wait after an hand ends,
   // before a new one can start
@@ -22,7 +22,7 @@ const config = {
 
   // points the players receive on the basis of their placement in a game;
   // the value of a placement changes in function of the number of players
-  AWARDS: [ { N: 3, P: [2, 0, -1] }, { N: 4, P: [2, 0, 0, -1] }, { N: 5, P: [3, 1, 0, 0, -1] }, { N: 6, P: [3, 1, 0, 0, -1, -1] } ]
+  AWARDS: [ { N: 3, P: [2, 0, -1] }, { N: 4, P: [2, 1, 0, -1] }, { N: 5, P: [3, 1, 0, 0, -1] }, { N: 6, P: [4, 2, 1, 0, -1, -2] } ]
 
 };
 
