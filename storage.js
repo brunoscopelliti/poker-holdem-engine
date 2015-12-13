@@ -15,7 +15,7 @@ exports.save = function save(gs, data) {
   // ready to save an update on mongoDB
   return new Promise(function(resolve, reject) {
     // be patient until the update is completed
-    gs.emit('gamestate:updated', data);
+    gs.emit('gamestate:updated', Object.assign({}, data));
     gs.once('storage:completed', function(info) {
       resolve();
     });
