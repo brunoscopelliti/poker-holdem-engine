@@ -5,6 +5,10 @@ const session = require('../domain/game-session');
 const status = require('../domain/player-status');
 const eachFrom = require('../lib/loop-from');
 
+const winston = require('../log-setup');
+const gamestory = winston.loggers.get('gamestory');
+const errors = winston.loggers.get('errors');
+
 exports = module.exports = function takeBet(gs, fromIndex) {
 
   return eachFrom(gs.players, fromIndex, function(player, i) {
@@ -33,15 +37,10 @@ exports = module.exports = function takeBet(gs, fromIndex) {
 
         return player.bet(gs, betAmount);
 
-      }).catch(function() {
-
-        // @todo retry in case there was a network problem
-
-        //
-        // in case of error
-        // just fold!
+      }).catch(function(err) {
+        // in case of error just fold/check!
+        errors.error('%s failed to bet. Details: %s', player.name, JSON.stringify(err));
         return player.bet(gs, 0);
-
       });
     }
   });

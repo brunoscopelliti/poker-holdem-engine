@@ -29,8 +29,8 @@ const createPlayer = require('./holdem/player-factory');
 
 
 
-const winston = require('./log-setup');
 const tag = {};
+const winston = require('./log-setup');
 const gamestory = winston.loggers.get('gamestory');
 const errors = winston.loggers.get('errors');
 

@@ -15,7 +15,7 @@ const showdown = require('./holdem/showdown');
 const assignPot = require('./holdem/assign-pot');
 const updatePlayersStatus = require('./holdem/update-players-status');
 
-const winston = require('./log-setup');
+const winston = require('winston');
 const gamestory = winston.loggers.get('gamestory');
 const errors = winston.loggers.get('errors');
 

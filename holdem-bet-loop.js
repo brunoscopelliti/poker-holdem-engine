@@ -12,7 +12,7 @@ const status = require('./domain/player-status');
 const session = require('./domain/game-session');
 const takeBets = require('./holdem/collect-player-bets');
 
-const winston = require('./log-setup');
+const winston = require('winston');
 const gamestory = winston.loggers.get('gamestory');
 const errors = winston.loggers.get('errors');
 

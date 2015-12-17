@@ -13,7 +13,7 @@ const handSetup = require('./holdem-hand-setup');
 const play = require('./holdem-bet-loop');
 const handTeardown = require('./holdem-hand-teardown');
 
-const winston = require('./log-setup');
+const winston = require('winston');
 const gamestory = winston.loggers.get('gamestory');
 const errors = winston.loggers.get('errors');
 
@@ -31,7 +31,7 @@ exports = module.exports = function* dealer(gs, testFn){
 
   //
   // current game/round of the tournament.
-  gs[game] = gs[progressive] = 0;
+  gs[game] = gs[progressive] = 1;
 
   while (gs.status != 'stop'){
 

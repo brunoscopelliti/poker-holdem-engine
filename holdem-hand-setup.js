@@ -13,7 +13,7 @@ const payBlinds = require('./holdem/pay-blinds');
 const shuffleCards = require('./holdem/shuffle-cards');
 const assignCards = require('./holdem/assign-player-cards');
 
-const winston = require('./log-setup');
+const winston = require('winston');
 const gamestory = winston.loggers.get('gamestory');
 const errors = winston.loggers.get('errors');
 

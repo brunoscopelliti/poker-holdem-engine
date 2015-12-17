@@ -100,13 +100,10 @@ const actions = {
     gamestory.info('We\'re asking to %s (%d) the amount of his bet on the basis of %s', this.name, this.id, JSON.stringify(ps), tag);
 
 
-    // @todo send http request
-    // to get the bet amount...
-
+    // send a network request to the Heroku's service
+    // to get the bot's bet amount
     const service = `${this[urlHeroku_]}bet`
-
     return new Promise((resolve, reject) => {
-
       request.post(service, { body: ps, json: true }, (err, response, playerBetAmount) => {
         if (err){
           return void reject(err);
@@ -114,7 +111,6 @@ const actions = {
         gamestory.info('%s (%d) bets %d', this.name, this.id, playerBetAmount, tag);
         resolve(playerBetAmount);
       });
-
     });
 
   },
