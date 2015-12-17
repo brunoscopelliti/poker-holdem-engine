@@ -55,7 +55,7 @@ exports = module.exports = function* dealer(gs, testFn){
       gs.players.forEach(player => { player.status = status.active; player.chips = config.BUYIN; });
 
       // start a new game
-      gs[progressive] = 0;
+      gs[progressive] = 1;
       gs[game]++;
     }
 

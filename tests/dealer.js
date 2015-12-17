@@ -108,9 +108,9 @@ tape('game simulation', function(t){
   // run assertion after each played hand
   function assert(){
 
-    t.equal(gamestate.sb, gamestate[progressive] >= gamestate.players.length ? 20 : 10, 'smallblind check');
+    t.equal(gamestate.sb, gamestate[progressive]-1 >= gamestate.players.length ? 20 : 10, 'smallblind check');
 
-    let initialBB = 2 + gamestate[progressive];
+    let initialBB = 2 + gamestate[progressive]-1;
     let i = initialBB >= gamestate.players.length-1 ? initialBB%gamestate.players.length : initialBB;
     t.ok(gamestate.players[i][hasBB], 'dealerbutton check');
 
