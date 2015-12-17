@@ -26,11 +26,12 @@ const progressive = Symbol.for('hand-progressive');
 tape('get-smallblind-amount', t => t.end());
 
 tcase([
-  { description: 'get correct smallblind level', args: [ 0 ], result: 10 },
-  { args: [ 1 ], result: 10 },
-  { args: [ 2 ], result: 20 },
+  { description: 'get correct smallblind level', args: [ 1 ], result: 10 },
+  { args: [ 2 ], result: 10 },
   { args: [ 3 ], result: 20 },
-  { args: [ 4 ], result: 25 },
+  { args: [ 4 ], result: 20 },
+  { args: [ 5 ], result: 25 },
+  { args: [ 6 ], result: 25 },
   { args: [ 75 ], result: 2000 },
 ], function(val) {
 
