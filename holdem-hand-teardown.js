@@ -38,7 +38,7 @@ function* teardownOps(gs){
   gamestory.info('Showdown results: %s', JSON.stringify(sortedPlayers), tag);
   yield save(gs, { type: 'showdown', handId: gs.handId,
     players: sortedPlayers.length == 1 ?
-      sortedPlayers.map(p => { let player = Object.assign({}, p); player.cards = []; return player; }) : sortedPlayers.map(p => Object.assign({}, p)) });
+      sortedPlayers.map(p => { let player = Object.assign({}, p); player.cards = player.bestCards = []; return player; }) : sortedPlayers.map(p => Object.assign({}, p)) });
 
   //
   // 2) assign pot to the winner(s) of the current hand

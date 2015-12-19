@@ -11,6 +11,11 @@ const errors = winston.loggers.get('errors');
 
 exports = module.exports = function takeBet(gs, fromIndex) {
 
+  // @todo.
+  // when there is only an active player who is not in allin
+  // it's not necessary to ask the bet
+  
+
   return eachFrom(gs.players, fromIndex, function(player, i) {
 
     //

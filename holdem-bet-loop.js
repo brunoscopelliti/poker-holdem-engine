@@ -76,6 +76,7 @@ function* handLoop(gs){
         // add three cards on the table
         gs.commonCards.push(gs._deck.shift(), gs._deck.shift(), gs._deck.shift());
 
+        gs.session = session.flop;
         yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: gs.commonCards });
 
         gamestory.info('There are still %d active players after the %s betting session.', activePlayers.length, gs.session, tag);
