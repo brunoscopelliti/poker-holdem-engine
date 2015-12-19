@@ -8,7 +8,8 @@ exports.save = function save(gs, data) {
 
   if (Array.isArray(data.players)){
     let hasDB = Symbol.for('hasDB');
-    data.players.forEach(player => player.hasDB = player[hasDB]);
+    let allin = Symbol.for('allin');
+    data.players.forEach(player => { player.hasDB = player[hasDB]; player.isAllin = player[allin]; });
   }
 
   //
