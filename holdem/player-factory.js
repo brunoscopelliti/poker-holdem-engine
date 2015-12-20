@@ -88,7 +88,7 @@ const actions = {
     // in order to remain in the game;
     // it depends by how much he bet previously;
     // so it can change for each player
-    ps.callAmount = Math.max(gs.callAmount - this.chipsBet, 0);
+    ps.callAmount = Math.max(safeDiff(gs.callAmount, this.chipsBet), 0);
 
     if (this[fake]){
       let lib = fakePlayers[this[fake]];
