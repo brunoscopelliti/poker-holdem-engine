@@ -17,6 +17,7 @@ const errors = winston.loggers.get('errors');
 const EventEmitter = require('events').EventEmitter;
 const mixin = require('merge-descriptors');
 
+const gamestatus = require('./domain/game-status');
 const createPlayer = require('./holdem/player-factory');
 const run = require('./lib/generator-runner');
 
@@ -39,42 +40,41 @@ gamestate.on('game:start', function(setupData) {
   // that the tournament is starting for the first time, or
   // it is resuming after a break.
 
-  if (gamestate.status == 'play'){
+  if (gamestate.status == gamestatus.play)
     return;
-  }
 
-  gamestate.status = 'play';
+  gamestate.status = gamestatus.play;
 
-  if (!gamestate[hasStarted]){
+  if (gamestate[hasStarted])
+    return;
 
-    gamestate[pid] = process.pid;
 
+  gamestate[pid] = process.pid;
+
+  //
+  // the unique id of the current tournament
+  gamestate.tournamentId = tag.id = setupData.tournamentId;
+
+  //
+  // the players
+  gamestate.players = setupData.players.map(createPlayer);
+
+  gamestate[hasStarted] = true;
+
+  gamestory.info('Tournament %s is going to start.', gamestate.tournamentId, tag);
+  gamestory.info('The number of participants is %d; they are %s.', gamestate.players.length, gamestate.players.map(p => p.name).toString().replace(/,/g, ', '), tag);
+
+  // start the game
+  return void run(dealer, gamestate).then(function() {
+    // the tournament is finished
+    // this thread is going to be killed :P
+    return gamestate.emit('tournament-finished', { tournamentId: gamestate.tournamentId });
+  }).catch(function(err) {
     //
-    // the unique id of the current tournament
-    gamestate.tournamentId = tag.id = setupData.tournamentId;
-
-    //
-    // the players
-    gamestate.players = setupData.players.map(createPlayer);
-
-    gamestate[hasStarted] = true;
-
-    gamestory.info('Tournament %s is going to start.', gamestate.tournamentId, tag);
-    gamestory.info('The number of participants is %d; they are %s.', gamestate.players.length, gamestate.players.map(p => p.name).toString().replace(/,/g, ', '), tag);
-
-    // start the game
-    return void run(dealer, gamestate).then(function() {
-      // the tournament is finished
-      // this thread is going to be killed :P
-      return gamestate.emit('tournament-finished', { tournamentId: gamestate.tournamentId });
-    }).catch(function(err) {
-      //
-      // an error occurred during the dealer generator execution;
-      // if the exception is not handled before... there's nothing here i can do.
-      errors.error('An error occurred during tournament %s: %s. Stack: %s', gamestate.tournamentId, err.message, err.stack, { id: gamestate.handId });
-    });
-
-  }
+    // an error occurred during the dealer generator execution;
+    // if the exception is not handled before... there's nothing here i can do.
+    errors.error('An error occurred during tournament %s: %s. Stack: %s', gamestate.tournamentId, err.message, err.stack, { id: gamestate.handId });
+  });
 
 });
 
@@ -84,13 +84,12 @@ gamestate.on('game:pause', function() {
   //
   // take a break!
 
-  if (gamestate.status == 'pause'){
+  if (gamestate.status == gamestatus.pause)
     return;
-  }
 
   gamestory.info('Tournament %s is going to be paused.', gamestate.tournamentId, tag);
 
-  gamestate.status = 'pause';
+  gamestate.status = gamestatus.pause;
 
 });
 
@@ -99,12 +98,11 @@ gamestate.on('game:end', function() {
 
   //
   // game is over
-  if (gamestate.status == 'stop'){
+  if (gamestate.status == gamestatus.stop || gamestate.status == gamestatus.latest)
     return;
-  }
 
   gamestory.info('Tournament %s is going to finish.', gamestate.tournamentId, tag);
 
-  gamestate.status = 'stop';
+  gamestate.status = gamestatus.latest;
 
 });

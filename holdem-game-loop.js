@@ -6,6 +6,7 @@ const config = require('./config');
 const winston = require('winston');
 const gamestory = winston.loggers.get('gamestory');
 
+const gamestatus = require('./domain/game-status');
 const status = require('./domain/player-status');
 
 const save = require('./storage').save;
@@ -32,7 +33,7 @@ exports = module.exports = function* dealer(gs, testFn){
   // current game/round of the tournament.
   gs[game] = gs[progressive] = 1;
 
-  while (gs.status != 'stop'){
+  while (gs.status != gamestatus.stop){
 
     const activePlayers = gs.players.filter(player => player.status == status.active);
 
@@ -53,6 +54,13 @@ exports = module.exports = function* dealer(gs, testFn){
       // restore players' initial conditions
       gs.players.forEach(player => { player.status = status.active; player.chips = config.BUYIN; });
 
+      if (gs.status == gamestatus.latest){
+        // the game that has just finished was declared to be the latest
+        // of the tournament.
+        gs.status = gamestatus.stop;
+        continue;
+      }
+
       // start a new game
       gs[progressive] = 1;
       gs[game]++;
@@ -65,20 +73,20 @@ exports = module.exports = function* dealer(gs, testFn){
 
     //
     // break here until the tournament is resumed
-    if (gs.status == 'pause'){
+    if (gs.status == gamestatus.pause){
       gamestory.info('Tournament %s is now in pause.', gs.tournamentId, { id: gs.handId });
       yield new Promise(function(res) {
         let time = setInterval(function() {
-          if (gs.status == 'play'){
+          if (gs.status == gamestatus.play){
             clearInterval(time);
             res();
           }
-        }, 2500);
+        }, 5000);
       });
     }
 
 
-    if (gs.status == 'play'){
+    if (gs.status == gamestatus.play){
 
       //
       // setup the hand, so that it can be played
