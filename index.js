@@ -84,7 +84,7 @@ gamestate.on('game:pause', function() {
   //
   // take a break!
 
-  if (gamestate.status == gamestatus.pause)
+  if (gamestate.status != gamestatus.play)
     return;
 
   gamestory.info('Tournament %s is going to be paused.', gamestate.tournamentId, tag);

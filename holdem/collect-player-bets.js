@@ -29,7 +29,19 @@ exports = module.exports = function takeBet(gs, fromIndex) {
     // there should be at least another active player (not in allin)
     // other than the current player
 
-    if (player.status == status.active && !player[isAllin] && gs.players.filter(x => x.id != player.id && x.status == status.active && !x[isAllin]).length > 0){
+    // @todo Fix ASAP!
+
+    // original one
+    //if (player.status == status.active && !player[Symbol.for('allin')]){
+
+
+    // this broke everything
+    //if (player.status == status.active && !player[isAllin] &&
+    //  gs.players.filter(x => x.id != player.id && x.status == status.active && !x[isAllin]).length > 0){
+
+
+    if (player.status == status.active && !player[Symbol.for('allin')]){
+
       return player.talk(gs).then(function(betAmount) {
 
         // if the current hand must be decided with the showdown,

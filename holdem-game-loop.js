@@ -88,7 +88,7 @@ exports = module.exports = function* dealer(gs, testFn){
     }
 
 
-    if (gs.status == gamestatus.play){
+    if (gs.status == gamestatus.play || gs.status == gamestatus.latest){
 
       //
       // setup the hand, so that it can be played
