@@ -1,6 +1,6 @@
 {
   "name": "poker-holdem-engine",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Texas hold'em poker engine",
   "main": "index.js",
   "browser": {

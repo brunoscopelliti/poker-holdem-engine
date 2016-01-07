@@ -11,18 +11,25 @@ const errors = winston.loggers.get('errors');
 
 exports = module.exports = function takeBet(gs, fromIndex) {
 
-  // @todo.
-  // when there is only an active player who is not in allin
-  // it's not necessary to ask the bet
-  
+  let isAllin = Symbol.for('allin');
 
   return eachFrom(gs.players, fromIndex, function(player, i) {
 
     //
+    // * player.status == status.active
     // only the active players have the right to bet.
-    // if the player is already in allin,
+
+    //
+    // * !player[Symbol.for('allin')]
+    // if the current player is already in allin,
     // ask him a new bet does not make sense
-    if (player.status == status.active && !player[Symbol.for('allin')]){
+
+    //
+    // * gs.players.filter(x => x.id != player.id && x.status == status.active && !x[Symbol.for('allin')]).length > 0
+    // there should be at least another active player (not in allin)
+    // other than the current player
+
+    if (player.status == status.active && !player[isAllin] && gs.players.filter(x => x.id != player.id && x.status == status.active && !x[isAllin]).length > 0){
       return player.talk(gs).then(function(betAmount) {
 
         // if the current hand must be decided with the showdown,
