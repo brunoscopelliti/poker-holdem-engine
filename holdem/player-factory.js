@@ -18,7 +18,10 @@ const gamestory = winston.loggers.get('gamestory');
 const errors = winston.loggers.get('errors');
 
 const fake = Symbol('fake-test');
-const progressive = Symbol.for('hand-progressive');
+
+const gameProgressive = Symbol.for('game-progressive');
+const roundProgressive = Symbol.for('hand-progressive');
+
 const hasDB = Symbol('hasDB');
 
 const fakePlayers = {};
@@ -49,8 +52,11 @@ const actions = {
     // the unique id of the current tournament
     ps.tournamentId = gs.tournamentId;
 
+    // game number of the current tournament
+    ps.game = gs[gameProgressive];
+
     // round number of the current tournament
-    ps.round = gs[progressive];
+    ps.round = gs[roundProgressive];
 
     // value of the small blinds
     // ... big blind is always twice

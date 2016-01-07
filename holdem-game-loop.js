@@ -22,7 +22,7 @@ exports = module.exports = function* dealer(gs, testFn){
   //
   // Usually a tournament is composed by many games.
   // Everytime a player eliminates all the others, start a new game.
-  let game = Symbol.for('tournament-game');
+  let game = Symbol.for('game-progressive');
 
   //
   // As a tournament is made by one or more games,

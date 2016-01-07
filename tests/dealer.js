@@ -98,7 +98,7 @@ tape('game simulation', function(t){
 
   let hasDB = Symbol.for('hasDB');
   let hasBB = Symbol.for('hasBB');
-  let game = Symbol.for('tournament-game');
+  let game = Symbol.for('game-progressive');
   let progressive = Symbol.for('hand-progressive');
 
 
