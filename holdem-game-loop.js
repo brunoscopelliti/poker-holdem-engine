@@ -19,15 +19,17 @@ const handTeardown = require('./holdem-hand-teardown');
 
 exports = module.exports = function* dealer(gs, testFn){
 
+  const pid = Symbol.for('process-id');
+
   //
   // Usually a tournament is composed by many games.
   // Everytime a player eliminates all the others, start a new game.
-  let game = Symbol.for('game-progressive');
+  const game = Symbol.for('game-progressive');
 
   //
   // As a tournament is made by one or more games,
   // a game is composed by one or more "hands".
-  let progressive = Symbol.for('hand-progressive');
+  const progressive = Symbol.for('hand-progressive');
 
   //
   // current game/round of the tournament.
@@ -66,7 +68,7 @@ exports = module.exports = function* dealer(gs, testFn){
       gs[game]++;
     }
 
-    gs.handId = `${gs.pid}_${gs.tournamentId}_${gs[game]}-${gs[progressive]}`;
+    gs.handId = `${gs[pid]}_${gs.tournamentId}_${gs[game]}-${gs[progressive]}`;
 
     gamestory.info('Starting hand %s', gs.handId, { id: gs.handId });
 
