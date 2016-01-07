@@ -7,6 +7,7 @@ const sinon = require('sinon');
 const storage = require('../storage');
 let saveStub = sinon.stub(storage, 'save');
 
+
 //
 // browserify, and winston do not play well together...
 // setup the winston object as if it was really here.
@@ -14,6 +15,7 @@ const winston = require('winston');
 winston.loggers = { add: function(){}, get: function() { return { info: function() {}, error: function() {} }; } };
 winston.transports = { File: function() {} };
 
+const dealer = require('../holdem-game-loop');
 
 const sut = require('../index');
 
@@ -24,7 +26,7 @@ tape('game:* listeners', t => t.end());
 
 tape('game:start listener', function(t) {
 
-  let dealerStub = sinon.stub(sut._dealer.prototype, 'next');
+  let dealerStub = sinon.stub(dealer.prototype, 'next');
 
   sut.gamestate.emit('game:start', { players: [
     { name: 'Bluffers', members: [{ githubUsername: 'pok-bluffers' }] },

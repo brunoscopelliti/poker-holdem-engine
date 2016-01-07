@@ -5,35 +5,33 @@
 // configure poker settings
 const config = require('./config');
 
-const chalk = require('chalk');
-const EventEmitter = require('events').EventEmitter;
-
-const mixin = require('merge-descriptors');
-
-
 //
-// gamestate contains the information about the state
-// of the game.
-const gamestate = exports.gamestate = {};
-mixin(gamestate, EventEmitter.prototype, false);
-
-
-
-const status = require('./domain/player-status');
-
-const run = require('./lib/generator-runner');
-const dealer = exports._dealer = require('./holdem-game-loop');
-
-
-const createPlayer = require('./holdem/player-factory');
-
-
-
+// log utilities
 const tag = {};
 const winston = require('./log-setup');
 const gamestory = winston.loggers.get('gamestory');
 const errors = winston.loggers.get('errors');
 
+
+
+const EventEmitter = require('events').EventEmitter;
+const mixin = require('merge-descriptors');
+
+const createPlayer = require('./holdem/player-factory');
+const run = require('./lib/generator-runner');
+
+const dealer = require('./holdem-game-loop');
+
+
+
+//
+// gamestate contains the information about the state
+// of the game.
+const gamestate = exports.gamestate = mixin({}, EventEmitter.prototype, false);
+
+
+const hasStarted = Symbol('has-tournament-started');
+const pid = Symbol.for('process-id');
 
 gamestate.on('game:start', function(setupData) {
 
@@ -47,9 +45,9 @@ gamestate.on('game:start', function(setupData) {
 
   gamestate.status = 'play';
 
-  if (!gamestate.started){
+  if (!gamestate[hasStarted]){
 
-    gamestate.pid = process.pid;
+    gamestate[pid] = process.pid;
 
     //
     // the unique id of the current tournament
@@ -59,7 +57,7 @@ gamestate.on('game:start', function(setupData) {
     // the players
     gamestate.players = setupData.players.map(createPlayer);
 
-    gamestate.started = true;
+    gamestate[hasStarted] = true;
 
     gamestory.info('Tournament %s is going to start.', gamestate.tournamentId, tag);
     gamestory.info('The number of participants is %d; they are %s.', gamestate.players.length, gamestate.players.map(p => p.name).toString().replace(/,/g, ', '), tag);

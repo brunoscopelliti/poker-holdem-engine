@@ -2,38 +2,27 @@
 'use strict';
 
 const config = require('../config');
-const status = require('../domain/player-status');
+
+const winston = require('../log-setup');
+const gamestory = winston.loggers.get('gamestory');
 
 const request = require('request');
-
 const sortByRank = require('poker-rank');
 const getCombinations = require('poker-combinations');
+
+const status = require('../domain/player-status');
 
 const save = require('../storage').save;
 const safeSum = require('../lib/safe-math').safeSum;
 const safeDiff = require('../lib/safe-math').safeDiff;
 
-const winston = require('../log-setup');
-const gamestory = winston.loggers.get('gamestory');
-const errors = winston.loggers.get('errors');
 
-const fake = Symbol('fake-test');
-
+const hasDB = Symbol('hasDB');
+const herokuService = Symbol('heroku-service');
 const gameProgressive = Symbol.for('game-progressive');
 const roundProgressive = Symbol.for('hand-progressive');
 
-const hasDB = Symbol('hasDB');
 
-const fakePlayers = {};
-if (process.env.NODE_ENV === 'test'){
-  fakePlayers.aggressive = require('../fake-players/aggressive');
-  fakePlayers.caller = require('../fake-players/caller');
-  fakePlayers.folder = require('../fake-players/folder');
-  fakePlayers.pair = require('../fake-players/pair');
-}
-
-
-const urlHeroku_ = Symbol('heroku-service');
 
 const actions = {
 
@@ -96,11 +85,6 @@ const actions = {
     // so it can change for each player
     ps.callAmount = Math.max(safeDiff(gs.callAmount, this.chipsBet), 0);
 
-    if (this[fake]){
-      let lib = fakePlayers[this[fake]];
-      return Promise.resolve(lib.bet(Object.freeze(ps), x => x));
-    }
-
     const tag = { id: gs.handId, type: 'bet' };
 
     gamestory.info('We\'re asking to %s (%d) the amount of his bet on the basis of %s', this.name, this.id, JSON.stringify(ps), tag);
@@ -108,7 +92,7 @@ const actions = {
 
     // send a network request to the Heroku's service
     // to get the bot's bet amount
-    const service = `${this[urlHeroku_]}bet`
+    const service = `${this[herokuService]}bet`
     return new Promise((resolve, reject) => {
       request.post(service, { body: ps, json: true }, (err, response, playerBetAmount) => {
         if (err){
@@ -223,7 +207,7 @@ exports = module.exports = function factory(obj, i){
   player.version = 'Poker folder star!';
 
   // url of the host where the bot is running
-  player[urlHeroku_] = obj.url;
+  player[herokuService] = obj.url;
 
   player.chips = config.BUYIN;
   player.status = status.active;
@@ -237,13 +221,6 @@ exports = module.exports = function factory(obj, i){
   // in each "betting session" of the current hand.
   // "betting session": [preflop, flop, turn, river]
   player.chipsBet = 0;
-
-
-  if (obj.lib){
-    // for test...
-    // in test this is a fake bot module that simulate the player's behaviour
-    player[fake] = obj.lib;
-  }
 
   return player;
 

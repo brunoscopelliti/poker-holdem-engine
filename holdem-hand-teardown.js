@@ -1,10 +1,9 @@
 
 'use strict';
 
-const config = require('./config');
-
-const sortByRank = require('poker-rank');
-const getCombinations = require('poker-combinations');
+const winston = require('winston');
+const gamestory = winston.loggers.get('gamestory');
+const errors = winston.loggers.get('errors');
 
 const status = require('./domain/player-status');
 
@@ -14,10 +13,6 @@ const save = require('./storage').save;
 const showdown = require('./holdem/showdown');
 const assignPot = require('./holdem/assign-pot');
 const updatePlayersStatus = require('./holdem/update-players-status');
-
-const winston = require('winston');
-const gamestory = winston.loggers.get('gamestory');
-const errors = winston.loggers.get('errors');
 
 
 

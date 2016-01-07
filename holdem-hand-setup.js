@@ -3,7 +3,9 @@
 
 const config = require('./config');
 
-const status = require('./domain/player-status');
+const winston = require('winston');
+const gamestory = winston.loggers.get('gamestory');
+const errors = winston.loggers.get('errors');
 
 const run = require('./lib/generator-runner');
 
@@ -12,10 +14,6 @@ const assignDB = require('./holdem/assign-dealer-button');
 const payBlinds = require('./holdem/pay-blinds');
 const shuffleCards = require('./holdem/shuffle-cards');
 const assignCards = require('./holdem/assign-player-cards');
-
-const winston = require('winston');
-const gamestory = winston.loggers.get('gamestory');
-const errors = winston.loggers.get('errors');
 
 
 
@@ -86,15 +84,15 @@ function* setupOps(gs){
   //
   // 4) prepare a random sorted deck of cards
   // i'm using Fisher–Yates algorithm to achieve 'randomness'
-  let deck = gs._deck = shuffleCards();
+  let deck = gs.deck = shuffleCards();
 
 
   //
   // 5) assign two cards to each active player
   // first player who receive a card is the one next the dealer button
-  return yield assignCards(gs, deck)
+  return yield assignCards(gs, deck);
 
-};
+}
 
 
 exports = module.exports = function setup(gs){

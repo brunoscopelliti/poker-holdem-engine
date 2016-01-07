@@ -3,7 +3,8 @@
 
 const config = require('./config');
 
-const chalk = require('chalk');
+const winston = require('winston');
+const gamestory = winston.loggers.get('gamestory');
 
 const status = require('./domain/player-status');
 
@@ -13,9 +14,7 @@ const handSetup = require('./holdem-hand-setup');
 const play = require('./holdem-bet-loop');
 const handTeardown = require('./holdem-hand-teardown');
 
-const winston = require('winston');
-const gamestory = winston.loggers.get('gamestory');
-const errors = winston.loggers.get('errors');
+
 
 exports = module.exports = function* dealer(gs, testFn){
 
@@ -83,7 +82,7 @@ exports = module.exports = function* dealer(gs, testFn){
 
       //
       // setup the hand, so that it can be played
-      let cards = yield handSetup(gs);
+      yield handSetup(gs);
 
       yield save(gs, { type: 'setup', handId: gs.handId, pot: gs.pot, sb: gs.sb, players: gs.players.map(p => Object.assign({}, p)) });
 

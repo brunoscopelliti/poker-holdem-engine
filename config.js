@@ -8,7 +8,7 @@ const config = {
 
   // time (expressed in ms) to wait after an hand ends,
   // before a new one can start
-  HANDWAIT: 1000,
+  HANDWAIT: 500,
 
   // the amount of initial chips for each player
   BUYIN: 300,

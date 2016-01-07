@@ -1,9 +1,9 @@
 
 'use strict';
 
-const config = require('./config');
-
-const chalk = require('chalk');
+const winston = require('winston');
+const gamestory = winston.loggers.get('gamestory');
+const errors = winston.loggers.get('errors');
 
 const save = require('./storage').save;
 const run = require('./lib/generator-runner');
@@ -12,9 +12,6 @@ const status = require('./domain/player-status');
 const session = require('./domain/game-session');
 const takeBets = require('./holdem/collect-player-bets');
 
-const winston = require('winston');
-const gamestory = winston.loggers.get('gamestory');
-const errors = winston.loggers.get('errors');
 
 function isBetRoundFinished(gs){
 
@@ -74,7 +71,7 @@ function* handLoop(gs){
         // since there are still more than one "active" player
         // we have to continue with the flop session.
         // add three cards on the table
-        gs.commonCards.push(gs._deck.shift(), gs._deck.shift(), gs._deck.shift());
+        gs.commonCards.push(gs.deck.shift(), gs.deck.shift(), gs.deck.shift());
 
         gs.session = session.flop;
         yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: gs.commonCards });
@@ -114,7 +111,7 @@ function* handLoop(gs){
         // until there are more than one "active" player, and the game
         // has not reached the river session, we coninue to run the loop.
         // add another card on the table
-        const newCard = gs._deck.shift();
+        const newCard = gs.deck.shift();
         gs.commonCards.push(newCard);
 
         gs.session = gs.commonCards.length == 4 ? session.turn : session.river;

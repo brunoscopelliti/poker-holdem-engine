@@ -1,6 +1,9 @@
 
 'use strict';
 
+const winston = require('../log-setup');
+const gamestory = winston.loggers.get('gamestory');
+
 const status = require('../domain/player-status');
 const save = require('../storage').save;
 
@@ -8,10 +11,6 @@ const safeSum = require('../lib/safe-math').safeSum;
 const safeDiff = require('../lib/safe-math').safeDiff;
 
 const isAllin = Symbol.for('allin');
-
-const winston = require('../log-setup');
-const gamestory = winston.loggers.get('gamestory');
-const errors = winston.loggers.get('errors');
 
 function assignToWinner(gs, winnerId, amount){
   amount = typeof amount == 'undefined' ? gs.pot : amount;

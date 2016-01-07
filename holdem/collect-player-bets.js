@@ -1,19 +1,19 @@
 
 'use strict';
 
+const winston = require('../log-setup');
+const errors = winston.loggers.get('errors');
+
 const session = require('../domain/game-session');
 const status = require('../domain/player-status');
 const eachFrom = require('../lib/loop-from');
 
-const winston = require('../log-setup');
-const gamestory = winston.loggers.get('gamestory');
-const errors = winston.loggers.get('errors');
 
 exports = module.exports = function takeBet(gs, fromIndex) {
 
   let isAllin = Symbol.for('allin');
 
-  return eachFrom(gs.players, fromIndex, function(player, i) {
+  return eachFrom(gs.players, fromIndex, function(player) {
 
     //
     // * player.status == status.active
