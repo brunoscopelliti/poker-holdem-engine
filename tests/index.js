@@ -56,7 +56,12 @@ tape('game:end listener', function(t) {
 
   sut.gamestate.emit('game:end', { players: [] });
 
-  t.equal(sut.gamestate.status, 'stop', 'listen game:end event');
+  t.equal(sut.gamestate.status, 'latest', 'listen game:end event');
   t.end();
 
+});
+
+tape('reset gamestate.status', function(t) {
+  sut.gamestate.status = 'stop';
+  t.end();
 });
