@@ -24,48 +24,48 @@ exports = module.exports = function takeBet(gs, fromIndex) {
     // if the current player is already in allin,
     // ask him a new bet does not make sense
 
-    //
-    // * gs.players.filter(x => x.id != player.id && x.status == status.active && !x[Symbol.for('allin')]).length > 0
-    // there should be at least another active player (not in allin)
-    // other than the current player
-
-    // @todo Fix ASAP!
-
-    // original one
-    //if (player.status == status.active && !player[Symbol.for('allin')]){
-
-
-    // this broke everything
-    //if (player.status == status.active && !player[isAllin] &&
-    //  gs.players.filter(x => x.id != player.id && x.status == status.active && !x[isAllin]).length > 0){
-
 
     if (player.status == status.active && !player[Symbol.for('allin')]){
 
-      return player.talk(gs).then(function(betAmount) {
+      //
+      // * player.chipsBet < gs.callAmount
+      // an active player not in allin, who have bet less than the required amount
+      // should always have a chance to call.
 
-        // if the current hand must be decided with the showdown,
-        // the showdown procedure follows the following rule:
+      //
+      // * gs.players.filter(x => x.id != player.id && x.status == status.active && !x[Symbol.for('allin')]).length > 0
+      // however for the raise to have sense there should be at least another active player (not in allin)
+      // other than the current player
 
-        // * if during the 'river' session someone has made a bet,
-        // the one who has made the first final bet is the one who has
-        // to showdown first.
-        // * otherwise the showdown starts from the player next to
-        // the dealer button
+      if (player.chipsBet < gs.callAmount || gs.players.filter(x => x.id != player.id && x.status == status.active && !x[isAllin]).length > 0){
+        return player.talk(gs)
+          .then(function(betAmount) {
 
-        if (gs.session === session.river && betAmount > gs.callAmount){
-          let badge = Symbol.for('show-first');
-          gs.players.forEach(player => delete player[badge]);
-          player[badge] = true;
-        }
+            // if the current hand must be decided with the showdown,
+            // the showdown procedure follows the following rule:
 
-        return player.bet(gs, betAmount);
+            // * if during the 'river' session someone has made a bet,
+            // the one who has made the first final bet is the one who has
+            // to showdown first.
+            // * otherwise the showdown starts from the player next to
+            // the dealer button
 
-      }).catch(function(err) {
-        // in case of error just fold/check!
-        errors.error('%s failed to bet. Details: %s', player.name, JSON.stringify(err));
-        return player.bet(gs, 0);
-      });
+            if (gs.session === session.river && betAmount > gs.callAmount){
+              let badge = Symbol.for('show-first');
+              gs.players.forEach(player => delete player[badge]);
+              player[badge] = true;
+            }
+
+            return player.bet(gs, betAmount);
+
+          }).
+          catch(function(err) {
+            // in case of error just fold/check!
+            errors.error('%s failed to bet. Details: %s', player.name, JSON.stringify(err));
+            return player.bet(gs, 0);
+          });
+      }
+
     }
   });
 
