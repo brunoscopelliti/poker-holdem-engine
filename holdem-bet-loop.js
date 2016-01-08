@@ -67,17 +67,19 @@ function* handLoop(gs){
       activePlayers = gs.players.filter(p => p.status === active);
 
       if (activePlayers.length > 1){
+
+        gamestory.info('There are still %d active players after the %s betting session.', activePlayers.length, gs.session, tag);
+
         //
         // since there are still more than one "active" player
         // we have to continue with the flop session.
         // add three cards on the table
         gs.commonCards.push(gs.deck.shift(), gs.deck.shift(), gs.deck.shift());
 
+        gamestory.info('Flop cards are: %s', JSON.stringify(gs.commonCards), cardTag);
+
         gs.session = session.flop;
         yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: gs.commonCards });
-
-        gamestory.info('There are still %d active players after the %s betting session.', activePlayers.length, gs.session, tag);
-        gamestory.info('Flop cards are: %s', JSON.stringify(gs.commonCards), cardTag);
       }
       else {
         //
@@ -107,6 +109,9 @@ function* handLoop(gs){
       activePlayers = gs.players.filter(p => p.status === status.active);
 
       if (activePlayers.length > 1 && gs.commonCards.length < 5) {
+
+        gamestory.info('There are still %d active players after the %s betting session.', activePlayers.length, gs.session, tag);
+
         //
         // until there are more than one "active" player, and the game
         // has not reached the river session, we coninue to run the loop.
@@ -116,10 +121,9 @@ function* handLoop(gs){
 
         gs.session = gs.commonCards.length == 4 ? session.turn : session.river;
 
-        yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: [newCard] });
-
-        gamestory.info('There are still %d active players after the %s betting session.', activePlayers.length, gs.session, tag);
         gamestory.info('%s card is: %s', gs.session, JSON.stringify(newCard), cardTag);
+
+        yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: [newCard] });
       }
       else {
         //
