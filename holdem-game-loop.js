@@ -24,12 +24,12 @@ exports = module.exports = function* dealer(gs, testFn){
   //
   // Usually a tournament is composed by many games.
   // Everytime a player eliminates all the others, start a new game.
-  const game = Symbol.for('game-progressive');
+  const gameProgressive = Symbol.for('game-progressive');
 
   //
   // As a tournament is made by one or more games,
   // a game is composed by one or more "hands".
-  const progressive = Symbol.for('hand-progressive');
+  const handProgressive = Symbol.for('hand-progressive');
 
   //
   // current game/round of the tournament.
@@ -50,8 +50,8 @@ exports = module.exports = function* dealer(gs, testFn){
       gs.rank.unshift(activePlayers[0].name);
       let awards = config.AWARDS.find(x => x.N === gs.rank.length).P;
       let playerPoints = gs.rank.map((r,i) => ({ name: r, pts: awards[i] }));
-      gamestory.info('Result for game %d: %s', gs[game], JSON.stringify(playerPoints), { id: gs.handId });
-      yield save(gs, { type: 'points', tournamentId: gs.tournamentId, gameId: gs[game], rank: playerPoints });
+      gamestory.info('Result for game %d: %s', gs[gameProgressive], JSON.stringify(playerPoints), { id: gs.handId });
+      yield save(gs, { type: 'points', tournamentId: gs.tournamentId, gameId: gs[gameProgressive], rank: playerPoints });
 
       // restore players' initial conditions
       gs.players.forEach(player => { player.status = status.active; player.chips = config.BUYIN; });
@@ -64,11 +64,11 @@ exports = module.exports = function* dealer(gs, testFn){
       }
 
       // start a new game
-      gs[progressive] = 1;
-      gs[game]++;
+      gs[handProgressive] = 1;
+      gs[gameProgressive]++;
     }
 
-    gs.handId = `${gs[pid]}_${gs.tournamentId}_${gs[game]}-${gs[progressive]}`;
+    gs.handId = `${gs[pid]}_${gs.tournamentId}_${gs[gameProgressive]}-${gs[handProgressive]}`;
 
     gamestory.info('Starting hand %s', gs.handId, { id: gs.handId });
 
@@ -116,9 +116,9 @@ exports = module.exports = function* dealer(gs, testFn){
     }
 
     //
-    // this is the gs[progressive]° hand played
+    // this is the gs[handProgressive]° hand played
     // this info is important to compute the blinds level
-    gs[progressive]++;
+    gs[handProgressive]++;
 
   }
 
