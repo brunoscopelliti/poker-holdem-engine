@@ -56,6 +56,13 @@ gamestate.on('game:start', function(setupData) {
   gamestate.tournamentId = tag.id = setupData.tournamentId;
 
   //
+  // in order to be able to restart a tournament from a given game
+  // after a system accident
+  if (setupData.restore){
+    gamestate.emergency = { gameId: setupData.gameId, handId: 1 };
+  }
+
+  //
   // the players
   gamestate.players = setupData.players.map(createPlayer);
 

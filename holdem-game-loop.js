@@ -33,7 +33,15 @@ exports = module.exports = function* dealer(gs, testFn){
 
   //
   // current game/round of the tournament.
-  gs[game] = gs[progressive] = 1;
+  if (!gs.emergency){
+    gs[gameProgressive] = gs[handProgressive] = 1;
+  }
+  else {
+    gs[gameProgressive] = gs.emergency.gameId;
+    gs[handProgressive] = gs.emergency.handId;
+    delete gs.emergency;
+  }
+
 
   while (gs.status != gamestatus.stop){
 
