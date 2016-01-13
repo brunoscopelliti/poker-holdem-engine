@@ -33,9 +33,9 @@
     "chalk": "1.1.1",
     "knuth-shuffle": "1.0.1",
     "merge-descriptors": "1.0.0",
-    "poker-combinations": "1.0.0",
+    "poker-combinations": "1.1.0",
     "poker-deck": "1.0.0",
-    "poker-rank": "1.0.0",
+    "poker-rank": "1.1.0",
     "winston": "2.1.1",
     "request": "2.67.0"
   },
