@@ -16,9 +16,9 @@ const save = require('../storage').save;
 const safeSum = require('../lib/safe-math').safeSum;
 const safeDiff = require('../lib/safe-math').safeDiff;
 
-
-const hasDB = Symbol('hasDB');
 const herokuService = Symbol('heroku-service');
+
+const hasDB = Symbol.for('hasDB');
 const gameProgressive = Symbol.for('game-progressive');
 const roundProgressive = Symbol.for('hand-progressive');
 
@@ -46,6 +46,10 @@ const actions = {
 
     // round number of the current tournament
     ps.round = gs[roundProgressive];
+
+    // count the number of time
+    // that players had already have the possibility to bet in the current session.
+    ps.spinCount = gs.spinCount;
 
     // value of the small blinds
     // ... big blind is always twice

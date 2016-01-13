@@ -52,11 +52,17 @@ function* handLoop(gs){
 
       gamestory.info('The %s betting session is starting.', gs.session, tag);
 
+      // count the number of time
+      // that players had already have the possibility to bet in the current session.
+      // it is reset every time a new session (flop, turn, or river) begins.
+      gs.spinCount = 0;
+
       // check if there are active players
       // who still have to call, or fold
       while (!isBetRoundFinished(gs)){
         let bbIndex = gs.players.findIndex(player => player[hasBB]);
         yield takeBets(gs, bbIndex);
+        gs.spinCount++;
       }
 
       //
@@ -96,9 +102,12 @@ function* handLoop(gs){
 
       gamestory.info('The %s betting session is starting.', gs.session, tag);
 
+      gs.spinCount = 0;
+
       do {
         let dbIndex = gs.players.findIndex(player => player[hasDB]);
         yield takeBets(gs, dbIndex);
+        gs.spinCount++;
       } while(!isBetRoundFinished(gs));
 
       //
