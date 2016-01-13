@@ -1,6 +1,11 @@
 
 'use strict';
 
+const sinon = require('sinon');
+const request = require('request');
+
+const postStub = sinon.stub(request, 'post');
+
 const config = require('../../config');
 const status = require('../../domain/player-status');
 
@@ -8,7 +13,6 @@ const sut = require('../../holdem/player-factory');
 
 const tape = require('tape');
 const chalk = require('chalk');
-const sinon = require('sinon');
 
 
 tape('player factory', t => t.end());
@@ -32,7 +36,88 @@ tape('create new player', function(t) {
 //
 // player#talk
 
-// @todo
+tape('player#talk', t => t.end());
+
+tape('player#talk check json', function(t) {
+
+  const hasDB = Symbol.for('hasDB');
+  const gamestate = {
+    [Symbol.for('game-progressive')]: 1,
+    [Symbol.for('hand-progressive')]: 2,
+    callAmount: 40,
+    pot: 60,
+    sb: 20,
+    commonCards: [{rank:'A', type:'C'}, {rank:'A', type:'D'}, {rank:'K', type:'H'}],
+    players: []
+  };
+
+  let terence = sut({ name: 'terence' }, 0);
+  let bud = sut({ name: 'bud' }, 1);
+
+  terence.cards = [{rank:'A', type:'H'}, {rank:'A', type:'S'}];
+  terence.chipsBet = 40;
+
+  bud.cards = [{rank:'2', type:'H'}, {rank:'7', type:'S'}];
+  bud.chipsBet = 20;
+  bud[hasDB] = true;
+
+  gamestate.players.push(terence, bud);
+
+  terence.talk(gamestate);
+  t.ok(postStub.calledOnce, 'called terence service');
+
+  let infoKnownByTerence = postStub.getCall(0).args[1].body;
+
+  t.equal(infoKnownByTerence.game, 1, 'check game');
+  t.equal(infoKnownByTerence.round, 2, 'check round');
+
+  t.equal(infoKnownByTerence.me, 0, 'check index');
+  t.equal(infoKnownByTerence.db, 1, 'check dealerbutton index');
+
+  t.equal(infoKnownByTerence.callAmount, 0, 'callAmount is 0');
+  t.equal(infoKnownByTerence.pot, 60, 'pot is 60');
+  t.equal(infoKnownByTerence.sb, 20, 'smallblind is 20');
+
+  t.equal(infoKnownByTerence.commonCards.length, 3), 'terence knows common cards';
+
+  t.equal(infoKnownByTerence.players[0].cards.length, 2), 'terence knows his cards';
+  t.equal(infoKnownByTerence.players[1].cards, undefined), 'terence don\'t know bud\'s cards';
+
+  infoKnownByTerence.players.forEach(function(player) {
+    ['name', 'id', 'status', 'chips', 'chipsBet']
+      .forEach(prop => t.ok(player.hasOwnProperty(prop), 'check player visible property'));
+  });
+
+  postStub.reset();
+
+  bud.talk(gamestate);
+  t.ok(postStub.calledOnce, 'called bud service');
+
+  let infoKnownByBud = postStub.getCall(0).args[1].body;
+
+  t.equal(infoKnownByBud.game, 1, 'check game');
+  t.equal(infoKnownByBud.round, 2, 'check round');
+
+  t.equal(infoKnownByBud.me, 1, 'check index');
+  t.equal(infoKnownByBud.db, 1, 'check dealerbutton index');
+
+  t.equal(infoKnownByBud.callAmount, 20, 'callAmount is 0');
+  t.equal(infoKnownByBud.pot, 60, 'pot is 60');
+  t.equal(infoKnownByBud.sb, 20, 'smallblind is 20');
+
+  t.equal(infoKnownByBud.commonCards.length, 3), 'bud knows common cards';
+
+  t.equal(infoKnownByBud.players[1].cards.length, 2), 'bud knows his cards';
+  t.equal(infoKnownByBud.players[0].cards, undefined), 'bud don\'t know bud\'s cards';
+
+  infoKnownByBud.players.forEach(function(player) {
+    ['name', 'id', 'status', 'chips', 'chipsBet']
+      .forEach(prop => t.ok(player.hasOwnProperty(prop), 'check player visible property'));
+  });
+
+  t.end();
+
+});
 
 
 //
