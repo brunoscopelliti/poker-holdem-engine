@@ -46,7 +46,6 @@ function* setupOps(gs){
 
   // list of winners of the previous hand
   gs.winners = [];
-  gs.rank = [];
 
   // reset player conditions
   gs.players.forEach(player => {

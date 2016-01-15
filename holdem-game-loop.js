@@ -55,14 +55,16 @@ exports = module.exports = function* dealer(gs, testFn){
     // and then start a fresh new game.
     if (activePlayers.length === 1){
       // compute the points earned by each player
-      gs.rank.unshift(activePlayers[0].name);
-      let awards = config.AWARDS.find(x => x.N === gs.rank.length).P;
+      let playerCount = gs.rank.unshift(activePlayers[0].name);
+      let awards = config.AWARDS.find(x => x.N === playerCount).P;
       let playerPoints = gs.rank.map((r,i) => ({ name: r, pts: awards[i] }));
+
       gamestory.info('Result for game %d: %s', gs[gameProgressive], JSON.stringify(playerPoints), { id: gs.handId });
       yield save(gs, { type: 'points', tournamentId: gs.tournamentId, gameId: gs[gameProgressive], rank: playerPoints });
 
       // restore players' initial conditions
       gs.players.forEach(player => { player.status = status.active; player.chips = config.BUYIN; });
+      gs.rank = [];
 
       if (gs.status == gamestatus.latest){
         // the game that has just finished was declared to be the latest
