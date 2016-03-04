@@ -138,27 +138,38 @@ const actions = {
       amount = this.chips;
     }
 
-    const isAllin = this.isAllin(amount);
 
-    if (safeSum(this.chipsBet, amount) < gs.callAmount){
+    if (this.isAllin(amount)){
+      gamestory.info('%s (%d) is allin', this.name, this.id, { id: gs.handId, type: 'status' });
+      this[Symbol.for('allin')] = true;
+    }
+    else {
 
-      //
-      // player is betting less than the required amount;
-      // unless he is betting all the chips he owns
-      // we treat this as a "fold" declaration
+      // the total amount of chips which the player
+      // has bet in the current hand
+      const chipsBet = safeSum(this.chipsBet, amount);
 
-      if (!isAllin){
+      if (chipsBet < gs.callAmount){
+        // player is betting less than the required amount;
+        // since he is not betting all the chips he owns
+        // we treat this as a "fold" declaration
         gamestory.info('%s (%d) folded', this.name, this.id, { id: gs.handId, type: 'status' });
         return this.fold(gs);
       }
+      else if (chipsBet > gs.callAmount) {
+        // player is betting a raise;
+        // since the player is not going allin,
+        // we accept only raise of an amount that is multiple of the small blind.
+        const raiseAmount = safeDiff(chipsBet, gs.callAmount);
+        if (raiseAmount % gs.sb != 0){
+          // in case the raise amount is not a multiple of the small blind
+          // the raise, is treated as a simple call.
+          amount = safeDiff(amount, raiseAmount);
+        }
+      }
+
     }
 
-
-    if (isAllin){
-      gamestory.info('%s (%d) is allin', this.name, this.id, { id: gs.handId, type: 'status' });
-      let allin = Symbol.for('allin');
-      this[allin] = true;
-    }
 
     //
     // update chip values

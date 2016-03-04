@@ -248,15 +248,10 @@ tape('player all-in, but less than the callAmount', function(t){
 
 });
 
-tape('player raises', function(t){
+tape('player raises (the raise amount is multiple of the small blind)', function(t){
 
-  const gamestate = {
-    callAmount: 20,
-    pot: 100,
-    players: []
-  };
-
-  let player = sut({ name: 'terence' }, 0);
+  const gamestate = { callAmount: 20, pot: 100, sb: 10, players: [] };
+  const player = sut({ name: 'terence' }, 0);
 
   gamestate.players.push(player);
 
@@ -271,6 +266,28 @@ tape('player raises', function(t){
   t.end();
 
 });
+
+tape('player raises (the raise amount is not multiple of the small blind)', function(t){
+
+  // in this case the bet is treated as a simple call.
+
+  const gamestate = { callAmount: 20, pot: 100, sb: 10, players: [] };
+  const player = sut({ name: 'terence' }, 0);
+
+  gamestate.players.push(player);
+
+  player.bet(gamestate, '45');
+
+  t.strictEqual(player.status, status.active, 'check status');
+  t.strictEqual(gamestate.callAmount, 20, 'check callAmount');
+  t.strictEqual(gamestate.pot, 120, 'check pot');
+  t.strictEqual(player.chips, config.BUYIN-20, 'check chips');
+  t.strictEqual(player.chipsBet, 20, 'check player bet');
+
+  t.end();
+
+});
+
 
 tape('player folds', function(t){
 
