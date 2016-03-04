@@ -118,6 +118,10 @@ const actions = {
     //
     // sanitization
     if (typeof amount != 'number'){
+      // yep, i really mean parseFloat.
+      // a player usually does not own, or bet a decimal amount;
+      // however after a plot split it's possible that a player has
+      // a not-integer amount of chips.
       amount = Number.parseFloat(amount);
     }
 
