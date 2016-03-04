@@ -127,13 +127,8 @@ tape('player#bet', t => t.end());
 
 tape('player checks', function(t){
 
-  const gamestate = {
-    callAmount: 0,
-    pot: 100,
-    players: []
-  };
-
-  let player = sut({ name: 'terence' }, 0);
+  const gamestate = { callAmount: 0, pot: 100, players: [] };
+  const player = sut({ name: 'terence' }, 0);
 
   gamestate.players.push(player);
 
@@ -151,13 +146,9 @@ tape('player checks', function(t){
 
 tape('player checks after a call', function(t){
 
-  const gamestate = {
-    callAmount: 20,
-    pot: 100,
-    players: []
-  };
+  const gamestate = { callAmount: 20, pot: 100, players: [] };
 
-  let player = sut({ name: 'terence' }, 0);
+  const player = sut({ name: 'terence' }, 0);
   player.chipsBet = 20;
   player.chips = config.BUYIN-20;
 
@@ -177,13 +168,8 @@ tape('player checks after a call', function(t){
 
 tape('negative amount is treated as a bet of zero', function(t){
 
-  const gamestate = {
-    callAmount: 0,
-    pot: 100,
-    players: []
-  };
-
-  let player = sut({ name: 'terence' }, 0);
+  const gamestate = { callAmount: 0, pot: 100, players: [] };
+  const player = sut({ name: 'terence' }, 0);
 
   gamestate.players.push(player);
 
@@ -201,13 +187,8 @@ tape('negative amount is treated as a bet of zero', function(t){
 
 tape('player calls', function(t){
 
-  const gamestate = {
-    callAmount: 20,
-    pot: 100,
-    players: []
-  };
-
-  let player = sut({ name: 'terence' }, 0);
+  const gamestate = { callAmount: 20, pot: 100, players: [] };
+  const player = sut({ name: 'terence' }, 0);
 
   gamestate.players.push(player);
 
@@ -225,14 +206,10 @@ tape('player calls', function(t){
 
 tape('player all-in', function(t){
 
-  const gamestate = {
-    callAmount: 2 * config.BUYIN,
-    pot: 0,
-    players: []
-  };
+  const allin = Symbol.for('allin');
 
-  let allin = Symbol.for('allin');
-  let player = sut({ name: 'terence' }, 0);
+  const gamestate = { callAmount: 2 * config.BUYIN, pot: 0, players: [] };
+  const player = sut({ name: 'terence' }, 0);
 
   gamestate.players.push(player);
 
@@ -251,14 +228,10 @@ tape('player all-in', function(t){
 
 tape('player all-in, but less than the callAmount', function(t){
 
-  const gamestate = {
-    callAmount: 2 * config.BUYIN,
-    pot: 0,
-    players: []
-  };
+  const allin = Symbol.for('allin');
 
-  let allin = Symbol.for('allin');
-  let player = sut({ name: 'terence' }, 0);
+  const gamestate = { callAmount: 2 * config.BUYIN, pot: 0, players: [] };
+  const player = sut({ name: 'terence' }, 0);
 
   gamestate.players.push(player);
 
