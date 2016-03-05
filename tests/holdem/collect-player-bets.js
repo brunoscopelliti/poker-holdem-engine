@@ -93,6 +93,7 @@ tape('river bet round', function(t) {
   let players = [{ name: 'silvester' }, { name: 'bud' }, { name: 'terence' }, { name: 'chuck' }, { name: 'jean-claude' }];
 
   const gamestate = {
+    sb: 25,
     callAmount: 0,
     pot: 0,
     players: players.map(createPlayer)

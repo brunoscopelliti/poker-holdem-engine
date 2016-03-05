@@ -288,7 +288,6 @@ tape('player raises (the raise amount is not multiple of the small blind)', func
 
 });
 
-
 tape('player folds', function(t){
 
   const gamestate = {
@@ -313,9 +312,12 @@ tape('player folds', function(t){
 
 });
 
+
+
 tape('two players fake game till showdown', function(t){
 
   const gamestate = {
+    sb: 125,
     callAmount: 0,
     pot: 0,
     players: []
@@ -348,6 +350,7 @@ tape('two players fake game till showdown', function(t){
 tape('two players fake game, bud folds', function(t){
 
   const gamestate = {
+    sb: 125,
     callAmount: 0,
     pot: 0,
     players: []
@@ -373,6 +376,7 @@ tape('two players fake game, bud folds', function(t){
   t.end();
 
 });
+
 
 
 //
