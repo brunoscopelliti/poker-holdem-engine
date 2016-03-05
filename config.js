@@ -1,6 +1,13 @@
 
 'use strict';
 
+
+// TODO
+// this configuration shouldn't have ever be existed;
+// this parameter should be configured from the app who controls the start of a new game.
+// move away... just keep the fallback for unit test
+
+
 const config = {
 
   // define if the log should be saved on file
