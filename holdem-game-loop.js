@@ -55,13 +55,10 @@ exports = module.exports = function* dealer(gs, testFn){
     // and then start a fresh new game.
     if (activePlayers.length === 1){
 
-      // TODO
-      // I don't really need a structure such as [{ N: 3, P: [2, 0, -1] } ...]
-      // simplify!
-
       // compute the points earned by each player
       let playerCount = gs.rank.unshift(activePlayers[0].name);
-      let awards = config.AWARDS.find(x => x.N === playerCount).P;
+
+      let awards = config.AWARDS[playerCount-2];
       let playerPoints = gs.rank.map((r,i) => ({ name: r, pts: awards[i] }));
 
       gamestory.info('Result for game %d: %s', gs[gameProgressive], JSON.stringify(playerPoints), { id: gs.handId });

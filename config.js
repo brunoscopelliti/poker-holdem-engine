@@ -30,10 +30,13 @@ const config = {
   // points the players receive on the basis of their placement in a game;
   // the value of a placement changes in function of the number of players
   AWARDS: [
-    { N: 3, P: [2, 0, -1] },
-    { N: 4, P: [2, 1, 0, -1] },
-    { N: 5, P: [3, 1, 0, 0, -1] },
-    { N: 6, P: [5, 2, 1, 0, -1, -2] }
+    [1, 0],
+    [2, 0, -1],
+    [2, 1, 0, -1],
+    [3, 1, 0, -1, -2],
+    [5, 2, 0, -1, -2, -3],
+    [7, 3, 0, -1, -2, -3, -4],
+    [10, 4, 1, 0, -1, -2, -4, -6]
   ]
 
 };
