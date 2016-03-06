@@ -192,13 +192,32 @@ tape('player calls', function(t){
 
   gamestate.players.push(player);
 
-  player.bet(gamestate, 20);
+  player.bet(gamestate, '20');
 
-  t.equal(player.status, status.active, 'check status');
-  t.equal(gamestate.callAmount, 20, 'check callAmount');
-  t.equal(gamestate.pot, 120, 'check pot');
-  t.equal(player.chips, config.BUYIN-20, 'check chips');
-  t.equal(player.chipsBet, 20, 'check player bet');
+  t.strictEqual(player.status, status.active, 'check status');
+  t.strictEqual(gamestate.callAmount, 20, 'check callAmount');
+  t.strictEqual(gamestate.pot, 120, 'check pot');
+  t.strictEqual(player.chips, config.BUYIN-20, 'check chips');
+  t.strictEqual(player.chipsBet, 20, 'check player bet');
+
+  t.end();
+
+});
+
+tape('player bet invalid amount', function(t){
+
+  const gamestate = { callAmount: 20, pot: 100, players: [] };
+  const player = sut({ name: 'terence' }, 0);
+
+  gamestate.players.push(player);
+
+  player.bet(gamestate, 'doug');
+
+  t.strictEqual(player.status, status.folded, 'check status');
+  t.strictEqual(gamestate.callAmount, 20, 'check callAmount');
+  t.strictEqual(gamestate.pot, 100, 'check pot');
+  t.strictEqual(player.chips, config.BUYIN, 'check chips');
+  t.strictEqual(player.chipsBet, 0, 'check player bet');
 
   t.end();
 
@@ -221,6 +240,29 @@ tape('player all-in', function(t){
   t.strictEqual(gamestate.pot, config.BUYIN, 'check pot');
   t.strictEqual(player.chips, 0, 'check chips');
   t.strictEqual(player.chipsBet, config.BUYIN, 'check player bet');
+
+  t.end();
+
+});
+
+tape('player all-in float', function(t){
+
+  const allin = Symbol.for('allin');
+
+  const gamestate = { callAmount: 20, pot: 20, players: [] };
+  const player = sut({ name: 'terence' }, 0);
+  player.chips = 50.75848;
+
+  gamestate.players.push(player);
+
+  player.bet(gamestate, '50.75848');
+
+  t.strictEqual(player.status, status.active, 'check status');
+  t.strictEqual(player[allin], true, 'player is allin');
+  t.strictEqual(gamestate.callAmount, 50.76, 'check callAmount');
+  t.strictEqual(gamestate.pot, 70.76, 'check pot');
+  t.strictEqual(player.chips, 0, 'check chips');
+  t.strictEqual(player.chipsBet, 50.76, 'check player bet');
 
   t.end();
 
