@@ -6,8 +6,8 @@ const config = require('./config');
 const winston = require('winston');
 const gamestory = winston.loggers.get('gamestory');
 
-const gamestatus = require('./domain/game-status');
-const status = require('./domain/player-status');
+const gameStatus = require('./domain/game-status');
+const playerStatus = require('./domain/player-status');
 
 const save = require('./storage').save;
 
@@ -17,7 +17,7 @@ const handTeardown = require('./holdem-hand-teardown');
 
 
 
-exports = module.exports = function* dealer(gs, testFn){
+exports = module.exports = function* dealer(gs){
 
   const pid = Symbol.for('process-id');
 
@@ -43,9 +43,9 @@ exports = module.exports = function* dealer(gs, testFn){
   }
 
 
-  while (gs.status != gamestatus.stop){
+  while (gs.status != gameStatus.stop){
 
-    const activePlayers = gs.players.filter(player => player.status == status.active);
+    const activePlayers = gs.players.filter(player => player.status == playerStatus.active);
 
     //
     // before a new game hand starts,
@@ -65,13 +65,13 @@ exports = module.exports = function* dealer(gs, testFn){
       yield save(gs, { type: 'points', tournamentId: gs.tournamentId, gameId: gs[gameProgressive], rank: playerPoints });
 
       // restore players' initial conditions
-      gs.players.forEach(player => { player.status = status.active; player.chips = config.BUYIN; });
+      gs.players.forEach(player => { player.status = playerStatus.active; player.chips = config.BUYIN; });
       gs.rank = [];
 
-      if (gs.status == gamestatus.latest){
+      if (gs.status == gameStatus.latest){
         // the game that has just finished was declared to be the latest
         // of the tournament.
-        gs.status = gamestatus.stop;
+        gs.status = gameStatus.stop;
         continue;
       }
 
@@ -87,11 +87,11 @@ exports = module.exports = function* dealer(gs, testFn){
 
     //
     // break here until the tournament is resumed
-    if (gs.status == gamestatus.pause){
+    if (gs.status == gameStatus.pause){
       gamestory.info('Tournament %s is now in pause.', gs.tournamentId, { id: gs.handId });
       yield new Promise(function(res) {
         let time = setInterval(function() {
-          if (gs.status == gamestatus.play){
+          if (gs.status == gameStatus.play){
             clearInterval(time);
             res();
           }
@@ -100,7 +100,7 @@ exports = module.exports = function* dealer(gs, testFn){
     }
 
 
-    if (gs.status == gamestatus.play || gs.status == gamestatus.latest){
+    if (gs.status == gameStatus.play || gs.status == gameStatus.latest){
 
       //
       // setup the hand, so that it can be played
@@ -122,10 +122,6 @@ exports = module.exports = function* dealer(gs, testFn){
 
     }
 
-
-    if (typeof testFn == 'function'){
-      testFn();
-    }
 
     //
     // this is the gs[handProgressive]° hand played
