@@ -1,13 +1,6 @@
 
 'use strict';
 
-
-// TODO
-// this configuration shouldn't have ever be existed;
-// this parameter should be configured from the app who controls the start of a new game.
-// move away... just keep the fallback for unit test
-
-
 const config = {
 
   // define if the log should be saved on file
@@ -44,6 +37,14 @@ const config = {
 if (process.env.NODE_ENV === 'production'){
 
   Object.assign(config, process.env);
+
+  if ('SMALL_BLINDS' in process.env){
+    config.SMALL_BLINDS = JSON.parse(process.env.SMALL_BLINDS);
+  }
+
+  if ('AWARDS' in process.env){
+    config.AWARDS = JSON.parse(process.env.AWARDS);
+  }
 
 }
 else if (process.env.NODE_ENV === 'test'){
