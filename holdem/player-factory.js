@@ -98,7 +98,7 @@ const actions = {
     // to get the bot's bet amount
     const service = `${this[herokuService]}bet`
     return new Promise((resolve, reject) => {
-      request.post(service, { body: ps, json: true, timeout: 5000 }, (err, response, playerBetAmount) => {
+      request.post(service, { body: ps, json: true, followAllRedirects: true, maxRedirects: 1, timeout: 5000 }, (err, response, playerBetAmount) => {
         if (err){
           return void reject(err);
         }
