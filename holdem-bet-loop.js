@@ -138,7 +138,9 @@ function* handLoop(gs){
         //
         // ... otherwise, we stop the loop immediately
         // returning the control on the runner
-        gamestory.info('Only one player after the %s betting session.', gs.session, tag);
+        if (activePlayers.length == 1){
+          gamestory.info('Only one player after the %s betting session.', gs.session, tag);
+        }
         return gs;
       }
 
