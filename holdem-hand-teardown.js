@@ -30,6 +30,7 @@ function* teardownOps(gs){
   // sort the player by the strength of their best point;
   // if there is only one active player at the showdown, his cards are not shown
   let sortedPlayers = yield showdown(activePlayers, gs.commonCards);
+  let sortedPlayersIndexes = sortedPlayers.map(player => player.id);
   gamestory.info('Showdown results: %s', JSON.stringify(sortedPlayers), tag);
   yield save(gs, { type: 'showdown', handId: gs.handId,
     players: sortedPlayers.length == 1 ?
@@ -50,7 +51,7 @@ function* teardownOps(gs){
     }
   }
 
-  updatePlayersStatus(gs);
+  updatePlayersStatus(gs, sortedPlayersIndexes);
 
   //
   // 4) reset pot

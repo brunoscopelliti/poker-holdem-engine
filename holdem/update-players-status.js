@@ -3,7 +3,7 @@
 
 const status = require('../domain/player-status');
 
-exports = module.exports = function updateStatus(gs){
+exports = module.exports = function updateStatus(gs, rankedIndexes){
 
   // gs.rank contains the name of the player in the orders in which
   // they were eliminated...
@@ -12,8 +12,13 @@ exports = module.exports = function updateStatus(gs){
     gs.rank = [];
   }
 
-  return void gs.players.forEach(function(player) {
-    player.status = status.active;
+
+  // rankedIndexes is an array with the active player id sorted on the basis
+  // of their rank in the current hand.
+  // it contains the id of the only players who played the hand
+  // (without folding) till the showdown
+  rankedIndexes.reverse().forEach(function(playerId){
+    let player = gs.players[playerId];
     if (player.chips === 0){
       player.status = status.out;
       if (gs.rank.indexOf(player.name) == -1){
@@ -21,5 +26,9 @@ exports = module.exports = function updateStatus(gs){
       }
     }
   });
+
+  return void gs.players
+    .filter(player => player.status == status.folded)
+    .forEach(player => player.status = status.active);
 
 };

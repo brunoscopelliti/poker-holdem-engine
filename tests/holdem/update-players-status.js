@@ -25,21 +25,40 @@ tape('folded players become active, and who has zero chips goes out', function(t
     rank: []
   }
 
-  sut(gamestate);
+  sut(gamestate, [1, 3]);
 
-  t.equal(gamestate.players.filter(x => x.status == status.active).length, 3, 'folded players become active');
-  t.equal(gamestate.players.filter(x => x.status == status.out).length, 1, 'who has 0 chips is out');
+  t.deepEqual(gamestate.players.map(x=>x.status), ['active', 'active', 'active', 'out'], 'check status');
   t.equal(gamestate.rank[0], 'silvester', 'silvester is out');
 
   // terence is eliminated
+  gamestate.players[0].status = status.active;
   gamestate.players[1].chips = 0;
 
-  sut(gamestate);
+  sut(gamestate, [0, 1]);
 
-  t.equal(gamestate.players.filter(x => x.status == status.active).length, 2, 'folded players become active');
-  t.equal(gamestate.players.filter(x => x.status == status.out).length, 2, 'who has 0 chips is out');
+  t.deepEqual(gamestate.players.map(x=>x.status), ['active', 'out', 'active', 'out'], 'check status');
   t.deepEqual(gamestate.rank, ['terence', 'silvester'], 'terence and silvester are out');
 
+  t.end();
+
+});
+
+tape('ranks is filled on the basis of the order', function(t) {
+
+  const gamestate = {
+    players: [
+      { id: 0, name: 'bud', chips: 250, status: status.active },
+      { id: 1, name: 'terence', chips: 0, status: status.active },
+      { id: 2, name: 'chuck', chips: 0, status: status.active },
+      { id: 3, name: 'silvester', chips: 0, status: status.active }
+    ],
+    rank: []
+  }
+
+  sut(gamestate, [0, 3, 1, 2]);
+
+  t.deepEqual(gamestate.rank, ['silvester', 'terence', 'chuck'], 'order matters for the rankings');
+  t.deepEqual(gamestate.players.map(x=>x.status), ['active', 'out', 'out', 'out'], 'check status');
   t.end();
 
 });
