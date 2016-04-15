@@ -1,7 +1,7 @@
 
 'use strict';
 
-const winston = require('../log-setup');
+const winston = require('../../storage/log-setup');
 const errors = winston.loggers.get('errors');
 
 const session = require('../domain/game-session');

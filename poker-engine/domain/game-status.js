@@ -7,7 +7,8 @@ const status = Object.create(null);
 // and the game proceed
 status.play = 'play';
 
-// tournament is active, but the game is temporarily paused
+// tournament is active,
+// but the game is temporarily paused
 status.pause = 'pause';
 
 // tournament is active, and the game proceed

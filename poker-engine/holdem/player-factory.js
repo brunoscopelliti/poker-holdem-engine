@@ -1,9 +1,9 @@
 
 'use strict';
 
-const config = require('../config');
+const config = require('../../config');
 
-const winston = require('../log-setup');
+const winston = require('../../storage/log-setup');
 const gamestory = winston.loggers.get('gamestory');
 
 const request = require('request');
@@ -12,7 +12,7 @@ const getCombinations = require('poker-combinations');
 
 const status = require('../domain/player-status');
 
-const save = require('../storage').save;
+const save = require('../../storage/storage').save;
 const safeSum = require('../lib/safe-math').safeSum;
 const safeDiff = require('../lib/safe-math').safeDiff;
 

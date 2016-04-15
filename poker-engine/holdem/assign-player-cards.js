@@ -1,7 +1,7 @@
 
 'use strict';
 
-const winston = require('../log-setup');
+const winston = require('../../storage/log-setup');
 const gamestory = winston.loggers.get('gamestory');
 
 const status = require('../domain/player-status');

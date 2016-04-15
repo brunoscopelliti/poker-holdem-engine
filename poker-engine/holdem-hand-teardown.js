@@ -8,7 +8,7 @@ const errors = winston.loggers.get('errors');
 const status = require('./domain/player-status');
 
 const run = require('./lib/generator-runner');
-const save = require('./storage').save;
+const save = require('../storage/storage').save;
 
 const showdown = require('./holdem/showdown');
 const assignPot = require('./holdem/assign-pot');

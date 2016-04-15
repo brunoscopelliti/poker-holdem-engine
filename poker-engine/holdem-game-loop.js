@@ -1,7 +1,7 @@
 
 'use strict';
 
-const config = require('./config');
+const config = require('../config');
 
 const winston = require('winston');
 const gamestory = winston.loggers.get('gamestory');
@@ -9,7 +9,7 @@ const gamestory = winston.loggers.get('gamestory');
 const gameStatus = require('./domain/game-status');
 const playerStatus = require('./domain/player-status');
 
-const save = require('./storage').save;
+const save = require('../storage/storage').save;
 
 const handSetup = require('./holdem-hand-setup');
 const play = require('./holdem-bet-loop');
