@@ -4,7 +4,7 @@
 process.env.NODE_ENV = 'test';
 
 const sinon = require('sinon');
-const storage = require('../storage');
+const storage = require('../storage/storage');
 let saveStub = sinon.stub(storage, 'save');
 
 
@@ -15,7 +15,7 @@ const winston = require('winston');
 winston.loggers = { add: function(){}, get: function() { return { info: function() {}, error: function() {} }; } };
 winston.transports = { File: function() {} };
 
-const dealer = require('../holdem-game-loop');
+const dealer = require('../poker-engine/holdem-game-loop');
 
 const sut = require('../index');
 

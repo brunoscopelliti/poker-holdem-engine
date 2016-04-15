@@ -1,11 +1,11 @@
 
 'use strict';
 
-const session = require('../../domain/game-session');
-const status = require('../../domain/player-status');
-const createPlayer = require('../../holdem/player-factory');
+const session = require('../../poker-engine/domain/game-session');
+const status = require('../../poker-engine/domain/player-status');
+const createPlayer = require('../../poker-engine/holdem/player-factory');
 
-const sut = require('../../holdem/collect-player-bets');
+const sut = require('../../poker-engine/holdem/collect-player-bets');
 
 const tape = require('tape');
 const chalk = require('chalk');

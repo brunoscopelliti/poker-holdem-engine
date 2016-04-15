@@ -1,7 +1,7 @@
 
 'use strict';
 
-const sut = require('../../lib/get-nextplayer-index');
+const sut = require('../../poker-engine/lib/get-nextplayer-index');
 
 const tape = require('tape');
 const tcase = require('tape-case');

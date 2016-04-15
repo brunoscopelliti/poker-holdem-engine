@@ -1,8 +1,8 @@
 
 'use strict';
 
-const status = require('../../domain/player-status');
-const sut = require('../../lib/get-next-active-player-index');
+const status = require('../../poker-engine/domain/player-status');
+const sut = require('../../poker-engine/lib/get-next-active-player-index');
 
 const tape = require('tape');
 const tcase = require('tape-case');

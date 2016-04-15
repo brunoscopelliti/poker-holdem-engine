@@ -1,7 +1,7 @@
 
 'use strict';
 
-const sut = require('../../holdem/get-smallblind-amount');
+const sut = require('../../poker-engine/holdem/get-smallblind-amount');
 
 const tape = require('tape');
 const tcase = require('tape-case');

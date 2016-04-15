@@ -1,7 +1,7 @@
 
 'use strict';
 
-const sut = require('../../lib/safe-math');
+const sut = require('../../poker-engine/lib/safe-math');
 
 const tape = require('tape');
 const chalk = require('chalk');

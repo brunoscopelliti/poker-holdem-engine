@@ -1,7 +1,7 @@
 
 'use strict';
 
-const sut = require('../../lib/loop-from');
+const sut = require('../../poker-engine/lib/loop-from');
 
 const tape = require('tape');
 const chalk = require('chalk');

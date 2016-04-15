@@ -1,7 +1,7 @@
 
 'use strict';
 
-const config = require('./config');
+const config = require('../config');
 const winston = module.exports = require('winston');
 
 if (winston && winston.loggers){

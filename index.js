@@ -8,7 +8,7 @@ const config = require('./config');
 //
 // log utilities
 const tag = {};
-const winston = require('./log-setup');
+const winston = require('./storage/log-setup');
 const gamestory = winston.loggers.get('gamestory');
 const errors = winston.loggers.get('errors');
 
@@ -17,11 +17,11 @@ const errors = winston.loggers.get('errors');
 const EventEmitter = require('events').EventEmitter;
 const mixin = require('merge-descriptors');
 
-const gamestatus = require('./domain/game-status');
-const createPlayer = require('./holdem/player-factory');
-const run = require('./lib/generator-runner');
+const gamestatus = require('./poker-engine/domain/game-status');
+const createPlayer = require('./poker-engine/holdem/player-factory');
+const run = require('./poker-engine/lib/generator-runner');
 
-const dealer = require('./holdem-game-loop');
+const dealer = require('./poker-engine/holdem-game-loop');
 
 
 

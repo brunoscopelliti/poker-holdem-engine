@@ -28,7 +28,7 @@ module.exports = function (grunt) {
           livereload: 35740
         },
         unit: {
-          files: ['./*.js', '!./Gruntfile.js', './domain/*.js', './holdem/*.js', './lib/*.js', './tests/*.js', './tests/**/*.js', '!./tests/bundle.js'],
+          files: ['./*.js', '!./Gruntfile.js', './storage/*.js', './poker-engine/*.js', './poker-engine/**/*.js', './tests/*.js', './tests/**/*.js', '!./tests/bundle.js'],
           tasks: ['eslint:js', 'browserify:unit']
         }
       },
@@ -39,12 +39,7 @@ module.exports = function (grunt) {
         },
         unit: {
           files: {
-            'tests/bundle.js': ['./tests/*.js', './tests/**/*.js', '!./tests/dealer.js', '!./tests/bundle.js']
-          }
-        },
-        integ: {
-          files: {
-            'tests/bundle.js': ['./fake-players/*.js', './tests/dealer.js']
+            'tests/bundle.js': ['./tests/*.js', './tests/**/*.js', '!./tests/bundle.js']
           }
         }
       },
@@ -53,12 +48,11 @@ module.exports = function (grunt) {
         options: {
           configFile: 'eslint.json'
         },
-        js: ['./*.js', '!./Gruntfile.js', './domain/*.js', './holdem/*.js', './lib/*.js']
+        js: ['./*.js', '!./Gruntfile.js', './storage/*.js', './poker-engine/*.js', './poker-engine/**/*.js']
       }
 
     });
 
     grunt.registerTask('unit', ['browserify:unit', 'connect:test']);
-    grunt.registerTask('integ', ['browserify:integ', 'connect:test']);
 
 };

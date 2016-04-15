@@ -1,9 +1,9 @@
 
 'use strict';
 
-const status = require('../../domain/player-status');
+const status = require('../../poker-engine/domain/player-status');
 
-const sut = require('../../holdem/assign-dealer-button');
+const sut = require('../../poker-engine/holdem/assign-dealer-button');
 
 const tape = require('tape');
 const chalk = require('chalk');

@@ -7,9 +7,9 @@ const request = require('request');
 const postStub = sinon.stub(request, 'post');
 
 const config = require('../../config');
-const status = require('../../domain/player-status');
+const status = require('../../poker-engine/domain/player-status');
 
-const sut = require('../../holdem/player-factory');
+const sut = require('../../poker-engine/holdem/player-factory');
 
 const tape = require('tape');
 const chalk = require('chalk');

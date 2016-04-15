@@ -1,7 +1,7 @@
 
 'use strict';
 
-const sut = require('../../lib/get-first-to-showdown-index');
+const sut = require('../../poker-engine/lib/get-first-to-showdown-index');
 
 const tape = require('tape');
 const chalk = require('chalk');

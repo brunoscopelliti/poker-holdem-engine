@@ -2,10 +2,10 @@
 'use strict';
 
 const config = require('../../config');
-const status = require('../../domain/player-status');
-const createPlayer = require('../../holdem/player-factory');
+const status = require('../../poker-engine/domain/player-status');
+const createPlayer = require('../../poker-engine/holdem/player-factory');
 
-const sut = require('../../holdem/pay-blinds');
+const sut = require('../../poker-engine/holdem/pay-blinds');
 
 const tape = require('tape');
 const chalk = require('chalk');
@@ -42,5 +42,5 @@ tape('players next the DB pay blinds', function(t) {
   t.equal(gamestate.players[4].chips, config.BUYIN-40, 'check bb player');
 
   t.end();
-  
+
 });

@@ -1,7 +1,7 @@
 
 'use strict';
 
-const sut = require('../../lib/get-dealerbutton-index');
+const sut = require('../../poker-engine/lib/get-dealerbutton-index');
 
 const tape = require('tape');
 const chalk = require('chalk');
