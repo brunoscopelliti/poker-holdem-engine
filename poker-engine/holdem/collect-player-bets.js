@@ -1,8 +1,8 @@
 
 'use strict';
 
-const winston = require('../../storage/log-setup');
-const errors = winston.loggers.get('errors');
+const winston = require('../../storage/logger');
+// const errors = winston.loggers.get('errors');
 
 const session = require('../domain/game-session');
 const status = require('../domain/player-status');
@@ -61,7 +61,7 @@ exports = module.exports = function takeBet(gs, fromIndex) {
           }).
           catch(function(err) {
             // in case of error just fold/check!
-            errors.error('%s failed to bet. Details: %s', player.name, JSON.stringify(err));
+            // errors.error('%s failed to bet. Details: %s', player.name, JSON.stringify(err));
             return player.bet(gs, 0);
           });
       }

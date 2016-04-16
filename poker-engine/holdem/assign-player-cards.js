@@ -1,8 +1,8 @@
 
 'use strict';
 
-const winston = require('../../storage/log-setup');
-const gamestory = winston.loggers.get('gamestory');
+const winston = require('../../storage/logger');
+// const gamestory = winston.loggers.get('gamestory');
 
 const status = require('../domain/player-status');
 
@@ -18,7 +18,7 @@ exports = module.exports = function assignCards(gs, deck) {
     if (player.status == status.active){
       player.cards.push(deck.shift());
       if (player.cards.length == 2){
-        gamestory.info('%s (%d) has %s', player.name, player.id, JSON.stringify(player.cards), { id: gs.handId, type: 'cards' });
+        // gamestory.info('%s (%d) has %s', player.name, player.id, JSON.stringify(player.cards), { id: gs.handId, type: 'cards' });
       }
     }
   }

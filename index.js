@@ -8,9 +8,9 @@ const config = require('./config');
 //
 // log utilities
 const tag = {};
-const winston = require('./storage/log-setup');
-const gamestory = winston.loggers.get('gamestory');
-const errors = winston.loggers.get('errors');
+const winston = require('./storage/logger');
+// const gamestory = winston.loggers.get('gamestory');
+// const errors = winston.loggers.get('errors');
 
 
 
@@ -68,8 +68,8 @@ gamestate.on('game:start', function(setupData) {
 
   gamestate[hasStarted] = true;
 
-  gamestory.info('Tournament %s is going to start.', gamestate.tournamentId, tag);
-  gamestory.info('The number of participants is %d; they are %s.', gamestate.players.length, gamestate.players.map(p => p.name).toString().replace(/,/g, ', '), tag);
+  // gamestory.info('Tournament %s is going to start.', gamestate.tournamentId, tag);
+  // gamestory.info('The number of participants is %d; they are %s.', gamestate.players.length, gamestate.players.map(p => p.name).toString().replace(/,/g, ', '), tag);
 
   // start the game
   return void run(dealer, gamestate).then(function() {
@@ -80,7 +80,7 @@ gamestate.on('game:start', function(setupData) {
     //
     // an error occurred during the dealer generator execution;
     // if the exception is not handled before... there's nothing here i can do.
-    errors.error('An error occurred during tournament %s: %s. Stack: %s', gamestate.tournamentId, err.message, err.stack, { id: gamestate.handId });
+    // errors.error('An error occurred during tournament %s: %s. Stack: %s', gamestate.tournamentId, err.message, err.stack, { id: gamestate.handId });
   });
 
 });
@@ -94,7 +94,7 @@ gamestate.on('game:pause', function() {
   if (gamestate.status != gamestatus.play)
     return;
 
-  gamestory.info('Tournament %s is going to be paused.', gamestate.tournamentId, tag);
+  // gamestory.info('Tournament %s is going to be paused.', gamestate.tournamentId, tag);
 
   gamestate.status = gamestatus.pause;
 
@@ -108,7 +108,7 @@ gamestate.on('game:end', function() {
   if (gamestate.status == gamestatus.stop || gamestate.status == gamestatus.latest)
     return;
 
-  gamestory.info('Tournament %s is going to finish.', gamestate.tournamentId, tag);
+  // gamestory.info('Tournament %s is going to finish.', gamestate.tournamentId, tag);
 
   gamestate.status = gamestatus.latest;
 

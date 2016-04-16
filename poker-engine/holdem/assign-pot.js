@@ -1,8 +1,8 @@
 
 'use strict';
 
-const winston = require('../../storage/log-setup');
-const gamestory = winston.loggers.get('gamestory');
+const winston = require('../../storage/logger');
+// const gamestory = winston.loggers.get('gamestory');
 
 const status = require('../domain/player-status');
 const save = require('../../storage/storage').save;
@@ -34,7 +34,7 @@ exports = module.exports = function assignPot(gs, showdownResults) {
   // then this player takes all the pot amount
   if (showdownPlayers.length == 1 || (!showdownPlayers[0][isAllin] && !showdownPlayers[0].detail.exequo)){
     let winner = showdownPlayers[0];
-    gamestory.info('%s wins the entire pot of %d', winner.name, gs.pot, tag);
+    // gamestory.info('%s wins the entire pot of %d', winner.name, gs.pot, tag);
     assignToWinner(gs, winner.id);
     return save(gs, { type: 'win', handId: gs.handId, winners: gs.winners });
   }
@@ -107,7 +107,7 @@ exports = module.exports = function assignPot(gs, showdownResults) {
 
   });
 
-  gs.winners.forEach(w => gamestory.info('%s wins a part of the pot; the amount is %d', w.name, w.amount, tag));
+  // gs.winners.forEach(w => gamestory.info('%s wins a part of the pot; the amount is %d', w.name, w.amount, tag));
   return save(gs, { type: 'win', handId: gs.handId, winners: gs.winners });
 
 };

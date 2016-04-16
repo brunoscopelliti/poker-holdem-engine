@@ -3,8 +3,8 @@
 
 const config = require('../../config');
 
-const winston = require('../../storage/log-setup');
-const gamestory = winston.loggers.get('gamestory');
+const winston = require('../../storage/logger');
+// const gamestory = winston.loggers.get('gamestory');
 
 const request = require('request');
 const sortByRank = require('poker-rank');
@@ -91,7 +91,7 @@ const actions = {
 
     const tag = { id: gs.handId, type: 'bet' };
 
-    gamestory.info('We\'re asking to %s (%d) the amount of his bet on the basis of %s', this.name, this.id, JSON.stringify(ps), tag);
+    // gamestory.info('We\'re asking to %s (%d) the amount of his bet on the basis of %s', this.name, this.id, JSON.stringify(ps), tag);
 
 
     // send a network request to the Heroku's service
@@ -102,7 +102,7 @@ const actions = {
         if (err){
           return void reject(err);
         }
-        gamestory.info('%s (%d) bets %d', this.name, this.id, playerBetAmount, tag);
+        // gamestory.info('%s (%d) bets %d', this.name, this.id, playerBetAmount, tag);
         resolve(playerBetAmount);
       });
     });
@@ -140,7 +140,7 @@ const actions = {
 
 
     if (this.isAllin(amount)){
-      gamestory.info('%s (%d) is allin', this.name, this.id, { id: gs.handId, type: 'status' });
+      // gamestory.info('%s (%d) is allin', this.name, this.id, { id: gs.handId, type: 'status' });
       this[Symbol.for('allin')] = true;
     }
     else {
@@ -153,7 +153,7 @@ const actions = {
         // player is betting less than the required amount;
         // since he is not betting all the chips he owns
         // we treat this as a "fold" declaration
-        gamestory.info('%s (%d) folded', this.name, this.id, { id: gs.handId, type: 'status' });
+        // gamestory.info('%s (%d) folded', this.name, this.id, { id: gs.handId, type: 'status' });
         return this.fold(gs);
       }
       else if (chipsBet > gs.callAmount) {
@@ -179,7 +179,7 @@ const actions = {
     gs.pot = safeSum(gs.pot, amount);
     gs.callAmount = Math.max(this.chipsBet, gs.callAmount);
 
-    gamestory.info('Game state after %s (%d)\'s bet: %s', this.name, this.id, JSON.stringify({ pot:gs.pot, callAmount: gs.callAmount, player: { name: this.name, chips: this.chips, chipsBet: this.chipsBet } }), { id: gs.handId, type: 'bet' });
+    // gamestory.info('Game state after %s (%d)\'s bet: %s', this.name, this.id, JSON.stringify({ pot:gs.pot, callAmount: gs.callAmount, player: { name: this.name, chips: this.chips, chipsBet: this.chipsBet } }), { id: gs.handId, type: 'bet' });
 
     return save(gs, { type: 'bet', handId: gs.handId, session: gs.session, playerId: this.id, amount: amount });
 
@@ -192,7 +192,7 @@ const actions = {
     let combs = getCombinations(this.cards.concat(commonCards), 5);
     let bestHand = sortByRank(combs)[0];
     this.bestCards = combs[bestHand.index];
-    gamestory.info('%s (%d)\'s best combination is: %s', this.name, this.id, JSON.stringify(this.bestCards));
+    // gamestory.info('%s (%d)\'s best combination is: %s', this.name, this.id, JSON.stringify(this.bestCards));
     return this.bestCards;
   },
 
