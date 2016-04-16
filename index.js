@@ -19,7 +19,7 @@ const mixin = require('merge-descriptors');
 
 const gamestatus = require('./poker-engine/domain/game-status');
 const createPlayer = require('./poker-engine/holdem/player-factory');
-const run = require('./poker-engine/lib/generator-runner');
+const run = require('./utils/generator-runner');
 
 const dealer = require('./poker-engine/holdem-game-loop');
 

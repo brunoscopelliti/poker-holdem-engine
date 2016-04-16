@@ -1,7 +1,7 @@
 
 'use strict';
 
-const run = require('./generator-runner');
+const run = require('../../utils/generator-runner');
 
 const getNext = require('./get-nextplayer-index');
 

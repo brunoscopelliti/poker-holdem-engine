@@ -7,7 +7,7 @@ const winston = require('winston');
 const gamestory = winston.loggers.get('gamestory');
 const errors = winston.loggers.get('errors');
 
-const run = require('./lib/generator-runner');
+const run = require('../utils/generator-runner');
 
 const computeSB = require('./holdem/get-smallblind-amount');
 const assignDB = require('./holdem/assign-dealer-button');

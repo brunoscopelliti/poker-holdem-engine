@@ -6,7 +6,7 @@ const gamestory = winston.loggers.get('gamestory');
 const errors = winston.loggers.get('errors');
 
 const save = require('../storage/storage').save;
-const run = require('./lib/generator-runner');
+const run = require('../utils/generator-runner');
 
 const status = require('./domain/player-status');
 const session = require('./domain/game-session');
