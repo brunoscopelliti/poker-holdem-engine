@@ -4,6 +4,7 @@
 process.env.NODE_ENV = 'test';
 
 const sinon = require('sinon');
+
 const storage = require('../storage/storage');
 let saveStub = sinon.stub(storage, 'save');
 
