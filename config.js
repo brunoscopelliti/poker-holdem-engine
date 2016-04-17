@@ -11,15 +11,19 @@ const config = {
   // before a new one can start
   HANDWAIT: 500,
 
+  // define the max number of different game after which a tournament
+  // automatically finishes
+  MAX_GAMES: Infinity,
+
   // the amount of initial chips for each player
   BUYIN: 1000,
 
   // the progression of small blinds
   SMALL_BLINDS: [25, 50, 75, 100, 150, 200, 250, 500, 750, 1000, 1500, 2000, 2500, 5000, 7500, 10000],
 
-  // duration of a small blind value, in terms of "played hands"
-  // if 0, the value is equal to the number of players
-  BLINDS_PERIOD: 0,
+  // duration of a small blind value,
+  // expressed in terms of "DB turns of the table"
+  BLINDS_PERIOD: 1,
 
   // points the players receive on the basis of their placement in a game;
   // the value of a placement changes in function of the number of players
