@@ -1,9 +1,9 @@
 
 'use strict';
 
-const winston = require('winston');
-const gamestory = winston.loggers.get('gamestory');
-const errors = winston.loggers.get('errors');
+// const winston = require('winston');
+// const gamestory = winston.loggers.get('gamestory');
+// const errors = winston.loggers.get('errors');
 
 const save = require('../storage/storage').save;
 const run = require('../utils/generator-runner');
@@ -50,7 +50,7 @@ function* handLoop(gs){
 
       gs.session = session.pre;
 
-      gamestory.info('The %s betting session is starting.', gs.session, tag);
+      // gamestory.info('The %s betting session is starting.', gs.session, tag);
 
       // count the number of time
       // that players had already have the possibility to bet in the current session.
@@ -74,7 +74,7 @@ function* handLoop(gs){
 
       if (activePlayers.length > 1){
 
-        gamestory.info('There are still %d active players after the %s betting session.', activePlayers.length, gs.session, tag);
+        // gamestory.info('There are still %d active players after the %s betting session.', activePlayers.length, gs.session, tag);
 
         //
         // since there are still more than one "active" player
@@ -82,7 +82,7 @@ function* handLoop(gs){
         // add three cards on the table
         gs.commonCards.push(gs.deck.shift(), gs.deck.shift(), gs.deck.shift());
 
-        gamestory.info('Flop cards are: %s', JSON.stringify(gs.commonCards), cardTag);
+        // gamestory.info('Flop cards are: %s', JSON.stringify(gs.commonCards), cardTag);
 
         gs.session = session.flop;
         yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: gs.commonCards });
@@ -91,7 +91,7 @@ function* handLoop(gs){
         //
         // ... otherwise, we stop the loop immediately
         // returning the control on the runner
-        gamestory.info('Only one player after the %s betting session.', gs.session, tag);
+        // gamestory.info('Only one player after the %s betting session.', gs.session, tag);
         return gs;
       }
 
@@ -100,7 +100,7 @@ function* handLoop(gs){
 
       gs.session = gs.commonCards.length == 3 ? session.flop : (gs.commonCards.length == 4 ? session.turn : session.river);
 
-      gamestory.info('The %s betting session is starting.', gs.session, tag);
+      // gamestory.info('The %s betting session is starting.', gs.session, tag);
 
       gs.spinCount = 0;
 
@@ -119,7 +119,7 @@ function* handLoop(gs){
 
       if (activePlayers.length > 1 && gs.commonCards.length < 5) {
 
-        gamestory.info('There are still %d active players after the %s betting session.', activePlayers.length, gs.session, tag);
+        // gamestory.info('There are still %d active players after the %s betting session.', activePlayers.length, gs.session, tag);
 
         //
         // until there are more than one "active" player, and the game
@@ -130,7 +130,7 @@ function* handLoop(gs){
 
         gs.session = gs.commonCards.length == 4 ? session.turn : session.river;
 
-        gamestory.info('%s card is: %s', gs.session, JSON.stringify(newCard), cardTag);
+        // gamestory.info('%s card is: %s', gs.session, JSON.stringify(newCard), cardTag);
 
         yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: [newCard] });
       }
@@ -139,7 +139,7 @@ function* handLoop(gs){
         // ... otherwise, we stop the loop immediately
         // returning the control on the runner
         if (activePlayers.length == 1){
-          gamestory.info('Only one player after the %s betting session.', gs.session, tag);
+          // gamestory.info('Only one player after the %s betting session.', gs.session, tag);
         }
         return gs;
       }
@@ -157,8 +157,8 @@ exports = module.exports = function play(gs){
 
   return run(handLoop, gs).catch(function(err) {
     let tag = { id: gs.handId };
-    errors.error('An error occurred during the execution of the loop. Stack:', err.stack, tag);
-    errors.error('Game state: %s.', JSON.stringify(gs), tag);
+    // errors.error('An error occurred during the execution of the loop. Stack:', err.stack, tag);
+    // errors.error('Game state: %s.', JSON.stringify(gs), tag);
   });
 
 };

@@ -3,9 +3,9 @@
 
 const config = require('../config');
 
-const winston = require('winston');
-const gamestory = winston.loggers.get('gamestory');
-const errors = winston.loggers.get('errors');
+// const winston = require('winston');
+// const gamestory = winston.loggers.get('gamestory');
+// const errors = winston.loggers.get('errors');
 
 const run = require('../utils/generator-runner');
 
@@ -55,14 +55,14 @@ function* setupOps(gs){
     player.cards = player.bestCards = [];
   });
 
-  gamestory.info('Players: %s', JSON.stringify(gs.players.map(p => ({ name: p.name, status: p.status, chips: p.chips }))), tag);
+  // gamestory.info('Players: %s', JSON.stringify(gs.players.map(p => ({ name: p.name, status: p.status, chips: p.chips }))), tag);
 
 
   //
   // 1) compute the small blind level for the current hand
   // big blinds is always the double
   gs.sb = computeSB(gs);
-  gamestory.info('Small blind: %d chips', gs.sb, tag);
+  // gamestory.info('Small blind: %d chips', gs.sb, tag);
 
 
   //
@@ -70,14 +70,14 @@ function* setupOps(gs){
   // only active player can receive the button
 
   let dbi = assignDB(gs);
-  gamestory.info('Dealer button is assigned to %s (%d)', gs.players[dbi].name, dbi, tag);
+  // gamestory.info('Dealer button is assigned to %s (%d)', gs.players[dbi].name, dbi, tag);
 
 
   //
   // 3) pay small/big blinds
   // and updates players/table's chips
   payBlinds(gs);
-  gamestory.info('Blinds were payed. Pot is %d; Minimum amount to play is %d.', gs.pot, gs.callAmount, tag);
+  // gamestory.info('Blinds were payed. Pot is %d; Minimum amount to play is %d.', gs.pot, gs.callAmount, tag);
 
 
   //
@@ -99,8 +99,8 @@ exports = module.exports = function setup(gs){
   // prepare a poker hand, so that it can be played...
   return run(setupOps, gs).catch(function(err) {
     let tag = { id: gs.handId };
-    errors.error('An error occurred during the execution of the setup. Stack: %s.', err.stack, tag);
-    errors.error('Game state: %s.', JSON.stringify(gs), tag);
+    // errors.error('An error occurred during the execution of the setup. Stack: %s.', err.stack, tag);
+    // errors.error('Game state: %s.', JSON.stringify(gs), tag);
   });
 
 };

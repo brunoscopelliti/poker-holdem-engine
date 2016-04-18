@@ -3,10 +3,10 @@
 
 const config = require('../config');
 
-const winston = require('winston');
-const gamestory = winston.loggers.get('gamestory');
+// const winston = require('winston');
+// const gamestory = winston.loggers.get('gamestory');
 
-const gameStatus = require('./domain/game-status');
+const gameStatus = require('./domain/tournament-status');
 const playerStatus = require('./domain/player-status');
 
 const save = require('../storage/storage').save;
@@ -61,7 +61,7 @@ exports = module.exports = function* dealer(gs){
       let awards = config.AWARDS[playerCount-2];
       let playerPoints = gs.rank.map((r,i) => ({ name: r, pts: awards[i] }));
 
-      gamestory.info('Result for game %d: %s', gs[gameProgressive], JSON.stringify(playerPoints), { id: gs.handId });
+      //gamestory.info('Result for game %d: %s', gs[gameProgressive], JSON.stringify(playerPoints), { id: gs.handId });
       yield save(gs, { type: 'points', tournamentId: gs.tournamentId, gameId: gs[gameProgressive], rank: playerPoints });
 
       // restore players' initial conditions
@@ -82,13 +82,13 @@ exports = module.exports = function* dealer(gs){
 
     gs.handId = `${gs[pid]}_${gs.tournamentId}_${gs[gameProgressive]}-${gs[handProgressive]}`;
 
-    gamestory.info('Starting hand %s', gs.handId, { id: gs.handId });
+    //gamestory.info('Starting hand %s', gs.handId, { id: gs.handId });
 
 
     //
     // break here until the tournament is resumed
     if (gs.status == gameStatus.pause){
-      gamestory.info('Tournament %s is now in pause.', gs.tournamentId, { id: gs.handId });
+      //gamestory.info('Tournament %s is now in pause.', gs.tournamentId, { id: gs.handId });
       yield new Promise(function(res) {
         let time = setInterval(function() {
           if (gs.status == gameStatus.play){
