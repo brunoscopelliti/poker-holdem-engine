@@ -1,115 +1,188 @@
 
 'use strict';
 
-//
-// configure poker settings
+
 const config = require('./config');
 
-//
-// log utilities
-const tag = {};
-const winston = require('./storage/logger');
-// const gamestory = winston.loggers.get('gamestory');
-// const errors = winston.loggers.get('errors');
+const events = require('events');
+const EventEmitter = events.EventEmitter;
 
 
+const logger = require('./storage/logger');
 
-const EventEmitter = require('events').EventEmitter;
-const mixin = require('merge-descriptors');
-
-const gamestatus = require('./poker-engine/domain/game-status');
-const createPlayer = require('./poker-engine/holdem/player-factory');
 const run = require('./utils/generator-runner');
 
-const dealer = require('./poker-engine/holdem-game-loop');
+const gameloop = require('./poker-engine/holdem-game-loop');
+const tournamentStatus = require('./poker-engine/domain/tournament-status');
+
+// TODO next step
+// const createPlayer = require('./poker-engine/holdem/player-factory');
 
 
 
-//
-// gamestate contains the information about the state
-// of the game.
-const gamestate = exports.gamestate = mixin({}, EventEmitter.prototype, false);
+const setup_ = Symbol('setup-tournament-method');
+
+const tournaments_ = Symbol('tournament-collection');
+
+const gamestate = Object.create(EventEmitter.prototype, {
+
+  /**
+   * @private
+   * @function
+   * @name setup
+   * @desc configure a tournament settings, and let the game begins
+   *
+   * @param {string} tournamentId
+   * @param {Array} players
+   * @param {Number} gameId
+   *
+   * @returns void
+   */
+  [setup_]: {
+    value: function(tournamentId, players, gameId){
+      const gs = {};
+      gs.pid = process.pid;
+      gs.tournamentId = setupData.tournamentId;
+      gs.gameProgressiveId = gameId;
+      gs.handProgressiveId = 1;
+
+      gs.handUniqueId = `${gs.pid}_${gs.tournamentId}_${gs.gameProgressiveId}-${gs.handProgressiveId}`;
 
 
-const hasStarted = Symbol('has-tournament-started');
-const pid = Symbol.for('process-id');
-
-gamestate.on('game:start', function(setupData) {
-
-  // start has a different meaning on the basis of the fact
-  // that the tournament is starting for the first time, or
-  // it is resuming after a break.
-
-  if (gamestate.status == gamestatus.play)
-    return;
-
-  gamestate.status = gamestatus.play;
-
-  if (gamestate[hasStarted])
-    return;
+      logger.info('Setup tournament %s.', tournamentId, { tag: gs.handUniqueId });
 
 
-  gamestate[pid] = process.pid;
+      gs.tournamentStatus = tournamentStatus.play
 
-  //
-  // the unique id of the current tournament
-  gamestate.tournamentId = tag.id = setupData.tournamentId;
+      // TODO next step
+      // gs.players = players.map(createPlayer);
 
-  //
-  // in order to be able to restart a tournament from a given game
-  // after a system accident
-  if (setupData.restore){
-    gamestate.emergency = { gameId: setupData.gameId, handId: 1 };
+      this[tournaments_].set(tournamentId, gs);
+
+      logger.log('debug', 'Tournament players are: %s', gs.players.map(p => p.name).toString().replace(/,/g, ', '), { tag: gs.handUniqueId });
+
+
+      // start the game
+      return void run(gameloop, gs)
+        .then(function() {
+          logger.info('Tournament %s is just finished.', tournamentId, { tag: gs.handUniqueId });
+          this[tournaments_].delete(tournamentId);
+          return this.emit('tournament-finished', { tournamentId: tournamentId });
+        }.bind(this))
+        .catch(function(err) {
+          // an error occurred during the gameloop generator execution;
+          // if the exception is not handled before... there's nothing here i can do.
+          const errorTag = { tag: gs.handUniqueId };
+          logger.error('An error occurred during tournament %s.', gs.tournamentId, errorTag);
+          logger.error('Error: %s.\nStacktrace: %s', err.message, err.stack, errorTag);
+        });
+    }
+  },
+
+
+  /**
+   * @function
+   * @name start
+   * @desc it makes a new tournament start, or resume a paused tournament
+   *
+   * @param {string} tournamentId
+   * @param {Array} players
+   * @param {Number} gameId
+   *
+   * @returns void
+   */
+  start: {
+    value: function(tournamentId, players, gameId){
+
+      // TODO
+      // when node.js will support "ES2015 default parameters"
+      // change the signature to: start(tournamentId, players, gameId = 1)
+
+      gameId = typeof gameId == 'undefined' ? 1 : gameId;
+
+
+
+
+      // start has a different meaning on the basis of the fact
+      // that the tournament is starting for the first time, or
+      // it is resuming after a break.
+
+
+      const gs = this[tournaments_].get(tournamentId);
+
+      // a)
+      // in case the tournament is starting for the first time
+      // we've to setup the tournament.
+
+      if (gs == null)
+        return void this[setup_](tournamentId, players, gameId);
+
+      // b)
+      // in case the tournament has already started, and it'snt
+      // currently running, we just have to activate it.
+
+      if (gs.tournamentStatus != tournamentStatus.pause)
+        return;
+
+      gs.tournamentStatus = tournamentStatus.play;
+    }
+  },
+
+
+  /**
+   * @function
+   * @name pause
+   * @desc pause an active tournament
+   *
+   * @param {string} tournamentId
+   *
+   * @returns void
+   */
+  pause: {
+    value: function(tournamentId) {
+      const gs = this[tournaments_].get(tournamentId);
+
+      if (gs == null)
+        return;
+
+      if (gs.tournamentStatus != tournamentStatus.play)
+        return;
+
+      logger.info('Tournament %s is going to be paused.', gs.tournamentId, { tag: gs.tournamentId });
+      gs.tournamentStatus = tournamentStatus.pause;
+
+    }
+  },
+
+
+  /**
+   * @function
+   * @name quit
+   * @desc terminate an active tournament
+   *
+   * @param {string} tournamentId
+   *
+   * @returns void
+   */
+  quit: {
+    value: function(tournamentId) {
+      const gs = this[tournaments_].get(tournamentId);
+
+      if (gs == null)
+        return;
+
+      if (gs.tournamentStatus != tournamentStatus.play)
+        return;
+
+      logger.info('Tournament %s is going to finish.', gs.tournamentId, { tag: gs.tournamentId });
+      gs.tournamentStatus = tournamentStatus.latest;
+    }
   }
 
-  //
-  // the players
-  gamestate.players = setupData.players.map(createPlayer);
-
-  gamestate[hasStarted] = true;
-
-  // gamestory.info('Tournament %s is going to start.', gamestate.tournamentId, tag);
-  // gamestory.info('The number of participants is %d; they are %s.', gamestate.players.length, gamestate.players.map(p => p.name).toString().replace(/,/g, ', '), tag);
-
-  // start the game
-  return void run(dealer, gamestate).then(function() {
-    // the tournament is finished
-    // this thread is going to be killed :P
-    return gamestate.emit('tournament-finished', { tournamentId: gamestate.tournamentId });
-  }).catch(function(err) {
-    //
-    // an error occurred during the dealer generator execution;
-    // if the exception is not handled before... there's nothing here i can do.
-    // errors.error('An error occurred during tournament %s: %s. Stack: %s', gamestate.tournamentId, err.message, err.stack, { id: gamestate.handId });
-  });
-
 });
 
+// gamestate[tournaments_] contains the game information
+// about the various tournaments
+gamestate[tournaments_] = new Map();
 
-gamestate.on('game:pause', function() {
-
-  //
-  // take a break!
-
-  if (gamestate.status != gamestatus.play)
-    return;
-
-  // gamestory.info('Tournament %s is going to be paused.', gamestate.tournamentId, tag);
-
-  gamestate.status = gamestatus.pause;
-
-});
-
-
-gamestate.on('game:end', function() {
-
-  //
-  // game is over
-  if (gamestate.status == gamestatus.stop || gamestate.status == gamestatus.latest)
-    return;
-
-  // gamestory.info('Tournament %s is going to finish.', gamestate.tournamentId, tag);
-
-  gamestate.status = gamestatus.latest;
-
-});
+exports = module.exports = gamestate;
