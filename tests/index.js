@@ -56,6 +56,91 @@ tape('controller has the methods needed to control the game flow', function(t){
 // TODO
 // Complete tests
 
+tape('start: when tournament is not found should setup a new tournament', function(t){
+
+  const collection_ = getSymbol(sut, 'tournament-collection');
+  sut[collection_] = new Map();
+
+  const setup_ = getSymbol(sut, 'setup-tournament-method');
+  const setupStub = sinon.stub(sut, setup_);
+
+  const players = [{ name: 'arale' }];
+
+  sut.start('x-123', players);
+
+  sinon.assert.calledOnce(setupStub);
+  sinon.assert.calledWith(setupStub, 'x-123', players, 1);
+
+  setupStub.restore();
+
+  t.end();
+});
+
+tape('start: when tournament is not found should setup a new tournament starting from the given "gameId" (tournament recovery)', function(t){
+
+  const collection_ = getSymbol(sut, 'tournament-collection');
+  sut[collection_] = new Map();
+
+  const setup_ = getSymbol(sut, 'setup-tournament-method');
+  const setupStub = sinon.stub(sut, setup_);
+
+  const players = [{ name: 'arale' }];
+
+  sut.start('x-123', players, 10);
+
+  sinon.assert.calledOnce(setupStub);
+  sinon.assert.calledWith(setupStub, 'x-123', players, 10);
+
+  setupStub.restore();
+
+  t.end();
+});
+
+tape('start: when tournament is not paused (status != "pause") should do nothing', function(t){
+
+  const gs = { tournamentStatus: 'latest' };
+  const collection_ = getSymbol(sut, 'tournament-collection');
+
+  sut[collection_] = new Map([['x-123', gs]]);
+
+  const setup_ = getSymbol(sut, 'setup-tournament-method');
+  const setupStub = sinon.stub(sut, setup_);
+
+  const players = [{ name: 'arale' }];
+
+  sut.start('x-123', players);
+
+  sinon.assert.notCalled(setupStub);
+
+  t.equal(gs.tournamentStatus, 'latest');
+
+  setupStub.restore();
+
+  t.end();
+});
+
+tape('start: when tournament is paused (status = "pause") should set tournament status to "play"', function(t){
+
+  const gs = { tournamentStatus: 'pause' };
+  const collection_ = getSymbol(sut, 'tournament-collection');
+
+  sut[collection_] = new Map([['x-123', gs]]);
+
+  const setup_ = getSymbol(sut, 'setup-tournament-method');
+  const setupStub = sinon.stub(sut, setup_);
+
+  const players = [{ name: 'arale' }];
+
+  sut.start('x-123', players);
+
+  sinon.assert.notCalled(setupStub);
+
+  t.equal(gs.tournamentStatus, 'play');
+
+  setupStub.restore();
+
+  t.end();
+});
 
 
 

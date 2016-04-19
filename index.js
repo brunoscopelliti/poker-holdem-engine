@@ -39,6 +39,7 @@ const gamestate = Object.create(EventEmitter.prototype, {
    * @returns void
    */
   [setup_]: {
+    writable: process.env.NODE_ENV === 'test',
     value: function(tournamentId, players, gameId){
       const gs = {};
       gs.pid = process.pid;
