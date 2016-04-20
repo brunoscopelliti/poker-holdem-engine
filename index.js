@@ -12,7 +12,7 @@ const logger = require('./storage/logger');
 
 const run = require('./utils/generator-runner');
 
-const gameloop = require('./poker-engine/holdem-game-loop');
+const gameloop = require('./poker-engine/game-loop');
 const tournamentStatus = require('./poker-engine/domain/tournament-status');
 
 // TODO next step
