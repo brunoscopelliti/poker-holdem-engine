@@ -10,7 +10,7 @@ const EventEmitter = events.EventEmitter;
 
 const logger = require('./storage/logger');
 
-const run = require('./utils/generator-runner');
+const run = require('./utils/generator-runner').run;
 
 const gameloop = require('./poker-engine/game-loop');
 const tournamentStatus = require('./poker-engine/domain/tournament-status');
@@ -43,7 +43,7 @@ const gamestate = Object.create(EventEmitter.prototype, {
     value: function(tournamentId, players, gameId){
       const gs = {};
       gs.pid = process.pid;
-      gs.tournamentId = setupData.tournamentId;
+      gs.tournamentId = tournamentId;
       gs.gameProgressiveId = gameId;
       gs.handProgressiveId = 1;
 
@@ -57,6 +57,7 @@ const gamestate = Object.create(EventEmitter.prototype, {
 
       // TODO next step
       // gs.players = players.map(createPlayer);
+      gs.players = [];
 
       this[tournaments_].set(tournamentId, gs);
 

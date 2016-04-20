@@ -4,7 +4,7 @@
 // from Async & Performance
 // by Kyle '@getify' Simpson
 
-exports = module.exports = function run(gen) {
+exports.run = function run(gen) {
 
   var args = [].slice.call(arguments, 1)
 

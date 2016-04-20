@@ -9,6 +9,10 @@ const EventEmitter = require('events').EventEmitter;
 const tape = require('tape');
 const sinon = require('sinon');
 
+const genRunner = require('../utils/generator-runner');
+const runStub = sinon.stub(genRunner, 'run').returns(Promise.resolve());
+
+
 const getSymbol = require('./utils/get-symbol');
 
 
@@ -24,6 +28,7 @@ winston.Logger = function() {
 
 
 const sut = require('../index');
+const gameloop = require('../poker-engine/game-loop');
 
 
 tape('holdem engine controller', t => t.end());
@@ -53,8 +58,37 @@ tape('controller has the methods needed to control the game flow', function(t){
 
 
 
-// TODO
-// Complete tests
+tape('setup: should initialize the gamestate, and start the game loop', function(t){
+
+  const players = [{ name: 'arale' }, { name: 'bender' }, { name: 'marvin' }];
+
+  const setup_ = getSymbol(sut, 'setup-tournament-method');
+  const tournaments_ = getSymbol(sut, 'tournament-collection');
+
+  sut.once('tournament-finished', function(data){
+    t.ok(!sut[tournaments_].has('a-123'), 'tournament data is deleted');
+    t.equal(data.tournamentId, 'a-123');
+    t.end();
+  });
+
+  sut[setup_]('a-123', players, 1);
+
+  const gamestate = sut[tournaments_].get('a-123');
+
+  t.ok(gamestate.hasOwnProperty('pid'));
+  t.equal(gamestate.tournamentId, 'a-123');
+  t.equal(gamestate.gameProgressiveId, 1);
+  t.equal(gamestate.handProgressiveId, 1);
+  t.ok(gamestate.handUniqueId.endsWith('a-123_1-1'));
+  t.equal(gamestate.tournamentStatus, 'play');
+
+  // TODO test players
+
+  t.ok(runStub.calledOnce);
+  t.ok(runStub.calledWith(gameloop, gamestate));
+});
+
+
 
 tape('start: when tournament is not found should setup a new tournament', function(t){
 
@@ -68,8 +102,8 @@ tape('start: when tournament is not found should setup a new tournament', functi
 
   sut.start('x-123', players);
 
-  sinon.assert.calledOnce(setupStub);
-  sinon.assert.calledWith(setupStub, 'x-123', players, 1);
+  t.ok(setupStub.calledOnce);
+  t.ok(setupStub.calledWith('x-123', players, 1));
 
   setupStub.restore();
 
@@ -88,8 +122,8 @@ tape('start: when tournament is not found should setup a new tournament starting
 
   sut.start('x-123', players, 10);
 
-  sinon.assert.calledOnce(setupStub);
-  sinon.assert.calledWith(setupStub, 'x-123', players, 10);
+  t.ok(setupStub.calledOnce);
+  t.ok(setupStub.calledWith('x-123', players, 10));
 
   setupStub.restore();
 
@@ -110,7 +144,7 @@ tape('start: when tournament is not paused (status != "pause") should do nothing
 
   sut.start('x-123', players);
 
-  sinon.assert.notCalled(setupStub);
+  t.ok(!setupStub.called);
 
   t.equal(gs.tournamentStatus, 'latest');
 
@@ -133,7 +167,7 @@ tape('start: when tournament is paused (status = "pause") should set tournament 
 
   sut.start('x-123', players);
 
-  sinon.assert.notCalled(setupStub);
+  t.ok(!setupStub.called);
 
   t.equal(gs.tournamentStatus, 'play');
 
