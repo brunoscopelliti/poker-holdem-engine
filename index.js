@@ -1,27 +1,24 @@
 
 'use strict';
 
-
 const config = require('./config');
 
 const events = require('events');
 const EventEmitter = events.EventEmitter;
 
-
 const logger = require('./storage/logger');
 
 const run = require('./utils/generator-runner').run;
-
 const gameloop = require('./poker-engine/game-loop');
+
+const createPlayer = require('./poker-engine/domain-utils/player-factory');
+
 const tournamentStatus = require('./poker-engine/domain/tournament-status');
 
-// TODO next step
-// const createPlayer = require('./poker-engine/domain-utils/player-factory');
 
 
 
 const setup_ = Symbol('setup-tournament-method');
-
 const tournaments_ = Symbol('tournament-collection');
 
 const gamestate = Object.create(EventEmitter.prototype, {
@@ -32,9 +29,17 @@ const gamestate = Object.create(EventEmitter.prototype, {
    * @name setup
    * @desc configure a tournament settings, and let the game begins
    *
-   * @param {string} tournamentId
-   * @param {Array} players
-   * @param {Number} gameId
+   * @param {string} tournamentId:
+   *  unique identifier for the current tournament
+   * @param {Array} players:
+   *  list of the player who play the current tournament;
+   *  each player is an object with at least the following properties:
+   *  - player.id
+   *  - player.name
+   *  - player.serviceUrl
+   * @param {Number} gameId:
+   *  specify from which game the tournament should start;
+   *  it's different from 1 when the tournament is recovered after a crash.
    *
    * @returns void
    */
@@ -56,8 +61,12 @@ const gamestate = Object.create(EventEmitter.prototype, {
       gs.tournamentStatus = tournamentStatus.play
 
       // TODO next step
-      // gs.players = players.map(createPlayer);
-      gs.players = [];
+      gs.players = players.map(createPlayer).filter(x => x != null);
+
+      if (gs.players.length < 2){
+        logger.info('Tournament %s cannot start cause not enough players.', tournamentId, { tag: gs.handUniqueId });
+        return this.emit('tournament-aborted', { tournamentId: tournamentId });
+      }
 
       this[tournaments_].set(tournamentId, gs);
 
@@ -87,9 +96,17 @@ const gamestate = Object.create(EventEmitter.prototype, {
    * @name start
    * @desc it makes a new tournament start, or resume a paused tournament
    *
-   * @param {string} tournamentId
-   * @param {Array} players
-   * @param {Number} gameId
+   * @param {string} tournamentId:
+   *  unique identifier for the current tournament
+   * @param {Array} players:
+   *  list of the player who play the current tournament;
+   *  each player is an object with at least the following properties:
+   *  - player.id
+   *  - player.name
+   *  - player.serviceUrl
+   * @param {Number} gameId:
+   *  specify from which game the tournament should start;
+   *  it's different from 1 when the tournament is recovered after a crash.
    *
    * @returns void
    */
@@ -136,7 +153,8 @@ const gamestate = Object.create(EventEmitter.prototype, {
    * @name pause
    * @desc pause an active tournament
    *
-   * @param {string} tournamentId
+   * @param {string} tournamentId:
+   *  unique identifier for the current tournament
    *
    * @returns void
    */
@@ -162,7 +180,8 @@ const gamestate = Object.create(EventEmitter.prototype, {
    * @name quit
    * @desc terminate an active tournament
    *
-   * @param {string} tournamentId
+   * @param {string} tournamentId:
+   *  unique identifier for the current tournament
    *
    * @returns void
    */

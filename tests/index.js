@@ -13,7 +13,7 @@ const genRunner = require('../utils/generator-runner');
 const runStub = sinon.stub(genRunner, 'run').returns(Promise.resolve());
 
 
-const getSymbol = require('./utils/get-symbol');
+const getSymbol = require('./test-utils/get-symbol');
 
 
 //
@@ -58,9 +58,31 @@ tape('controller has the methods needed to control the game flow', function(t){
 
 
 
+tape('setup: should notify "tournament-aborted" in case not enough players', function(t){
+
+  const players = [
+    { name: 'arale', id: 'a1', serviceUrl: 'http://x1-heroku-app.com/' }
+  ];
+
+  const setup_ = getSymbol(sut, 'setup-tournament-method');
+  const tournaments_ = getSymbol(sut, 'tournament-collection');
+
+  sut.once('tournament-aborted', function(data){
+    t.ok(!sut[tournaments_].has('n-123'), 'tournament data never created');
+    t.end();
+  });
+
+  sut[setup_]('n-123', players, 1);
+});
+
 tape('setup: should initialize the gamestate, and start the game loop', function(t){
 
-  const players = [{ name: 'arale' }, { name: 'bender' }, { name: 'marvin' }];
+  const players = [
+    { name: 'arale', id: 'a1', serviceUrl: 'http://x1-heroku-app.com/' },
+    { name: 'bender', id: 'b2', serviceUrl: 'http://y2-heroku-app.com/' },
+    { name: 'marvin', id: 'c3', serviceUrl: 'http://z3-heroku-app.com/' },
+    { id: 'w4', serviceUrl: 'http://ww-heroku-app.com/' }
+  ];
 
   const setup_ = getSymbol(sut, 'setup-tournament-method');
   const tournaments_ = getSymbol(sut, 'tournament-collection');
@@ -81,8 +103,7 @@ tape('setup: should initialize the gamestate, and start the game loop', function
   t.equal(gamestate.handProgressiveId, 1);
   t.ok(gamestate.handUniqueId.endsWith('a-123_1-1'));
   t.equal(gamestate.tournamentStatus, 'play');
-
-  // TODO test players
+  t.equal(gamestate.players.length, 3);
 
   t.ok(runStub.calledOnce);
   t.ok(runStub.calledWith(gameloop, gamestate));
