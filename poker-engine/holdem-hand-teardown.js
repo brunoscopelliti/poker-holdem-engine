@@ -10,9 +10,9 @@ const status = require('./domain/player-status');
 const run = require('../utils/generator-runner');
 const save = require('../storage/storage').save;
 
-const showdown = require('./holdem/showdown');
-const assignPot = require('./holdem/assign-pot');
-const updatePlayersStatus = require('./holdem/update-players-status');
+const showdown = require('./domain-utils/showdown');
+const assignPot = require('./domain-utils/assign-pot');
+const updatePlayersStatus = require('./domain-utils/update-players-status');
 
 
 

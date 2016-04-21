@@ -10,7 +10,7 @@ const run = require('../utils/generator-runner');
 
 const status = require('./domain/player-status');
 const session = require('./domain/game-session');
-const takeBets = require('./holdem/collect-player-bets');
+const takeBets = require('./domain-utils/collect-player-bets');
 
 
 function isBetRoundFinished(gs){

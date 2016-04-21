@@ -9,11 +9,11 @@ const config = require('../config');
 
 const run = require('../utils/generator-runner');
 
-const computeSB = require('./holdem/get-smallblind-amount');
-const assignDB = require('./holdem/assign-dealer-button');
-const payBlinds = require('./holdem/pay-blinds');
-const shuffleCards = require('./holdem/shuffle-cards');
-const assignCards = require('./holdem/assign-player-cards');
+const computeSB = require('./domain-utils/get-smallblind-amount');
+const assignDB = require('./domain-utils/assign-dealer-button');
+const payBlinds = require('./domain-utils/pay-blinds');
+const shuffleCards = require('./domain-utils/shuffle-cards');
+const assignCards = require('./domain-utils/assign-player-cards');
 
 
 

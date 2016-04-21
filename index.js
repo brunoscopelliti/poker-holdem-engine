@@ -16,7 +16,7 @@ const gameloop = require('./poker-engine/game-loop');
 const tournamentStatus = require('./poker-engine/domain/tournament-status');
 
 // TODO next step
-// const createPlayer = require('./poker-engine/holdem/player-factory');
+// const createPlayer = require('./poker-engine/domain-utils/player-factory');
 
 
 
