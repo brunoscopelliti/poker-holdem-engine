@@ -23,7 +23,9 @@ const save = require('../../storage/storage').save;
 // const roundProgressive = Symbol.for('hand-progressive');
 
 
-const actions = {};
+const actions = {
+  bet() {}
+};
 
 
 /**
@@ -41,7 +43,7 @@ function isValidPlayer(player){
 }
 
 
-exports = module.exports = function factory(obj, i){
+exports = module.exports = function factory(obj){
 
   if (!isValidPlayer(obj)){
     logger.warn('Registered an attempt to sign an invalid player', obj);
