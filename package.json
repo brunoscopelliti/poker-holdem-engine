@@ -38,6 +38,8 @@
     "request": "2.71.0"
   },
   "devDependencies": {
+    "body-parser": "1.15.0",
+    "express": "4.13.4",
     "grunt": "1.0.1",
     "grunt-browserify": "5.0.0",
     "grunt-contrib-connect": "1.0.1",
