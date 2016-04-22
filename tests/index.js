@@ -58,7 +58,7 @@ tape('controller has the methods needed to control the game flow', function(t){
 
 
 
-tape('setup: should notify "tournament-aborted" in case not enough players', function(t){
+tape('setup: should notify "tournament:aborted" in case not enough players', function(t){
 
   const players = [
     { name: 'arale', id: 'a1', serviceUrl: 'http://x1-heroku-app.com/' }
@@ -67,7 +67,7 @@ tape('setup: should notify "tournament-aborted" in case not enough players', fun
   const setup_ = getSymbol(sut, 'setup-tournament-method');
   const tournaments_ = getSymbol(sut, 'tournament-collection');
 
-  sut.once('tournament-aborted', function(data){
+  sut.once('tournament:aborted', function(data){
     t.ok(!sut[tournaments_].has('n-123'), 'tournament data never created');
     t.end();
   });
@@ -87,7 +87,7 @@ tape('setup: should initialize the gamestate, and start the game loop', function
   const setup_ = getSymbol(sut, 'setup-tournament-method');
   const tournaments_ = getSymbol(sut, 'tournament-collection');
 
-  sut.once('tournament-finished', function(data){
+  sut.once('tournament:completed', function(data){
     t.ok(!sut[tournaments_].has('a-123'), 'tournament data is deleted');
     t.equal(data.tournamentId, 'a-123');
     t.end();

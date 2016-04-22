@@ -65,7 +65,7 @@ const gamestate = Object.create(EventEmitter.prototype, {
 
       if (gs.players.length < 2){
         logger.info('Tournament %s cannot start cause not enough players.', tournamentId, { tag: gs.handUniqueId });
-        return this.emit('tournament-aborted', { tournamentId: tournamentId });
+        return this.emit('tournament:aborted', { tournamentId: tournamentId });
       }
 
       this[tournaments_].set(tournamentId, gs);
@@ -78,7 +78,7 @@ const gamestate = Object.create(EventEmitter.prototype, {
         .then(function() {
           logger.info('Tournament %s is just finished.', tournamentId, { tag: gs.handUniqueId });
           this[tournaments_].delete(tournamentId);
-          return this.emit('tournament-finished', { tournamentId: tournamentId });
+          return this.emit('tournament:completed', { tournamentId: tournamentId });
         }.bind(this))
         .catch(function(err) {
           // an error occurred during the gameloop generator execution;

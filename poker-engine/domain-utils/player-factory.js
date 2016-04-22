@@ -43,6 +43,19 @@ function isValidPlayer(player){
 }
 
 
+
+/**
+ * @function
+ * @name factory
+ * @desc create a new "player" object
+ *
+ * @param {object} obj
+ *  - player.id
+ *  - player.name
+ *  - player.serviceUrl
+ *
+ * @returns {object|null} the player object created
+ */
 exports = module.exports = function factory(obj){
 
   if (!isValidPlayer(obj)){
