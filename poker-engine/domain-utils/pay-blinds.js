@@ -1,7 +1,7 @@
 
 'use strict';
 
-const getDB = require('../lib/get-dealerbutton-index');
+const getDB = require('../lib/get-dealer-button-index');
 const getNextActive = require('../lib/get-next-active-player-index');
 
 const safeSum = require('../lib/safe-math').safeSum;

@@ -15,7 +15,7 @@ const takeBets = require('./domain-utils/collect-player-bets');
 
 function isBetRoundFinished(gs){
 
-  let allin = Symbol.for('allin');
+  let allin = Symbol.for('is-all-in');
   let activePlayers = gs.players.filter(p => p.status === status.active);
 
   if (activePlayers.length == 1){
@@ -30,8 +30,8 @@ function isBetRoundFinished(gs){
 function* handLoop(gs){
 
   const active = status.active;
-  const hasBB = Symbol.for('hasBB');
-  const hasDB = Symbol.for('hasDB');
+  const hasBB = Symbol.for('has-big-blind');
+  const hasDB = Symbol.for('has-dealer-button');
 
   const tag = { id: gs.handId, type: 'session' };
   const cardTag = { id: gs.handId, type: 'cards' };

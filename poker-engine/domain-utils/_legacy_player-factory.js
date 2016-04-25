@@ -73,7 +73,7 @@ const actions = {
         return mysterious;
       }
       delete mysterious.cards;
-      delete mysterious.bestCards;
+      delete mysterious.bestCombination;
       return mysterious;
     });
 
@@ -191,9 +191,9 @@ const actions = {
   showdown: function showdown(commonCards){
     let combs = getCombinations(this.cards.concat(commonCards), 5);
     let bestHand = sortByRank(combs)[0];
-    this.bestCards = combs[bestHand.index];
-    // gamestory.info('%s (%d)\'s best combination is: %s', this.name, this.id, JSON.stringify(this.bestCards));
-    return this.bestCards;
+    this.bestCombination = combs[bestHand.index];
+    // gamestory.info('%s (%d)\'s best combination is: %s', this.name, this.id, JSON.stringify(this.bestCombination));
+    return this.bestCombination;
   },
 
 

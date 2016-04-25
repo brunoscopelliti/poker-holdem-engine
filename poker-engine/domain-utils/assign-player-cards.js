@@ -6,7 +6,7 @@ const winston = require('../../storage/logger');
 
 const status = require('../domain/player-status');
 
-const getDB = require('../lib/get-dealerbutton-index');
+const getDB = require('../lib/get-dealer-button-index');
 const eachFrom = require('../lib/loop-from');
 
 exports = module.exports = function assignCards(gs, deck) {

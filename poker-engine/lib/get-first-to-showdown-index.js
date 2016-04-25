@@ -1,9 +1,9 @@
 
 'use strict';
 
-const getDB = require('../lib/get-dealerbutton-index');
+const getDB = require('../lib/get-dealer-button-index');
 
-let badge = Symbol.for('show-first');
+let badge = Symbol.for('last-raiser');
 
 exports = module.exports = function getFirstShowdownIndex(players){
 

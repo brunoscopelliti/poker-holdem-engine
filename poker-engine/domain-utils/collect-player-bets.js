@@ -5,7 +5,7 @@ const winston = require('../../storage/logger');
 // const errors = winston.loggers.get('errors');
 
 const session = require('../domain/game-session');
-const status = require('../domain/player-status');
+const playersStatus = require('../domain/player-status');
 const eachFrom = require('../lib/loop-from');
 
 
@@ -25,7 +25,7 @@ exports = module.exports = function takeBet(gs, fromIndex) {
     // ask him a new bet does not make sense
 
 
-    if (player.status == status.active && !player[Symbol.for('is-all-in')]){
+    if (player.status == playersStatus.active && !player[Symbol.for('is-all-in')]){
 
       //
       // * player.chipsBet < gs.callAmount
@@ -37,7 +37,7 @@ exports = module.exports = function takeBet(gs, fromIndex) {
       // however for the raise to have sense there should be at least another active player (not in allin)
       // other than the current player
 
-      if (player.chipsBet < gs.callAmount || gs.players.filter(x => x.id != player.id && x.status == status.active && !x[isAllin]).length > 0){
+      if (player.chipsBet < gs.callAmount || gs.players.filter(x => x.id != player.id && x.status == playersStatus.active && !x[isAllin]).length > 0){
         return player.talk(gs)
           .then(function(betAmount) {
 
