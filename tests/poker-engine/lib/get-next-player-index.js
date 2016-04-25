@@ -21,6 +21,6 @@ tcase([
   { args: [ 4 ], result: 1 },
   { args: [ 5 ], result: 2 }
 ], function(playerIndex) {
-  const players = [{ name: 'arale' }, { name: 'bender' }, { name: 'marvin' }, { name: 'wall-e' }]
+  const players = [{ name: 'arale' }, { name: 'bender' }, { name: 'marvin' }, { name: 'wall-e' }];
   return sut(players, playerIndex);
 });
