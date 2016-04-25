@@ -18,7 +18,7 @@ const save = require('../../storage/storage').save;
 
 
 
-// const hasDB = Symbol.for('hasDB');
+// const hasDB = Symbol.for('has-dealer-button');
 // const gameProgressive = Symbol.for('game-progressive');
 // const roundProgressive = Symbol.for('hand-progressive');
 

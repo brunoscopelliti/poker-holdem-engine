@@ -27,6 +27,7 @@ exports = module.exports = function updateStatus(gs, rankedIndexes){
     }
   });
 
+  // TODO this should be done during the setup
   return void gs.players
     .filter(player => player.status == status.folded)
     .forEach(player => player.status = status.active);

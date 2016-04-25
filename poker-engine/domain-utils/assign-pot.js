@@ -10,7 +10,7 @@ const save = require('../../storage/storage').save;
 const safeSum = require('../lib/safe-math').safeSum;
 const safeDiff = require('../lib/safe-math').safeDiff;
 
-const isAllin = Symbol.for('allin');
+const isAllin = Symbol.for('is-all-in');
 
 function assignToWinner(gs, winnerId, amount){
   amount = typeof amount == 'undefined' ? gs.pot : amount;

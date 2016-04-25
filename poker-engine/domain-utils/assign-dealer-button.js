@@ -6,7 +6,7 @@ const getDB = require('../lib/get-dealerbutton-index');
 
 exports = module.exports = function assignDB(gs){
 
-  let hasDB = Symbol.for('hasDB');
+  let hasDB = Symbol.for('has-dealer-button');
   let currDB = getDB(gs.players);
 
   if (currDB >= 0){

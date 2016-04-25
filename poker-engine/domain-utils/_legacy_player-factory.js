@@ -18,7 +18,7 @@ const safeDiff = require('../lib/safe-math').safeDiff;
 
 const herokuService = Symbol('heroku-service');
 
-const hasDB = Symbol.for('hasDB');
+const hasDB = Symbol.for('has-dealer-button');
 const gameProgressive = Symbol.for('game-progressive');
 const roundProgressive = Symbol.for('hand-progressive');
 
@@ -141,7 +141,7 @@ const actions = {
 
     if (this.isAllin(amount)){
       // gamestory.info('%s (%d) is allin', this.name, this.id, { id: gs.handId, type: 'status' });
-      this[Symbol.for('allin')] = true;
+      this[Symbol.for('is-all-in')] = true;
     }
     else {
 

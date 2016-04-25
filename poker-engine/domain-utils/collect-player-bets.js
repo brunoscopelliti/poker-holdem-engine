@@ -11,7 +11,7 @@ const eachFrom = require('../lib/loop-from');
 
 exports = module.exports = function takeBet(gs, fromIndex) {
 
-  let isAllin = Symbol.for('allin');
+  let isAllin = Symbol.for('is-all-in');
 
   return eachFrom(gs.players, fromIndex, function(player) {
 
@@ -20,12 +20,12 @@ exports = module.exports = function takeBet(gs, fromIndex) {
     // only the active players have the right to bet.
 
     //
-    // * !player[Symbol.for('allin')]
+    // * !player[Symbol.for('is-all-in')]
     // if the current player is already in allin,
     // ask him a new bet does not make sense
 
 
-    if (player.status == status.active && !player[Symbol.for('allin')]){
+    if (player.status == status.active && !player[Symbol.for('is-all-in')]){
 
       //
       // * player.chipsBet < gs.callAmount
@@ -33,7 +33,7 @@ exports = module.exports = function takeBet(gs, fromIndex) {
       // should always have a chance to call.
 
       //
-      // * gs.players.filter(x => x.id != player.id && x.status == status.active && !x[Symbol.for('allin')]).length > 0
+      // * gs.players.filter(x => x.id != player.id && x.status == status.active && !x[Symbol.for('is-all-in')]).length > 0
       // however for the raise to have sense there should be at least another active player (not in allin)
       // other than the current player
 
@@ -51,15 +51,15 @@ exports = module.exports = function takeBet(gs, fromIndex) {
             // the dealer button
 
             if (gs.session === session.river && betAmount > gs.callAmount){
-              let badge = Symbol.for('show-first');
+              let badge = Symbol.for('last-raiser');
               gs.players.forEach(player => delete player[badge]);
               player[badge] = true;
             }
 
             return player.bet(gs, betAmount);
 
-          }).
-          catch(function(err) {
+          })
+          .catch(function(err) {
             // in case of error just fold/check!
             // errors.error('%s failed to bet. Details: %s', player.name, JSON.stringify(err));
             return player.bet(gs, 0);

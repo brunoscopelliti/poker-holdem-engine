@@ -17,7 +17,7 @@ function pay(gs, playerId, amount) {
   }
 
   if (amount === player.chips){
-    let allin = Symbol.for('allin');
+    let allin = Symbol.for('is-all-in');
     player [allin] = true;
   }
 
@@ -34,7 +34,7 @@ function pay(gs, playerId, amount) {
 
 exports = module.exports = function payBlinds(gs){
 
-  let hasBB = Symbol.for('hasBB');
+  let hasBB = Symbol.for('has-big-blind');
 
   let dbIndex = getDB(gs.players);
 

@@ -60,7 +60,6 @@ const gamestate = Object.create(EventEmitter.prototype, {
 
       gs.tournamentStatus = tournamentStatus.play
 
-      // TODO next step
       gs.players = players.map(createPlayer).filter(x => x != null);
 
       if (gs.players.length < 2){
