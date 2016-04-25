@@ -1,7 +1,7 @@
 
 'use strict';
 
-let hasDB = Symbol.for('has-dealer-button');
+const hasDB = Symbol.for('has-dealer-button');
 
 exports = module.exports = function getDBIndex(players){
 

@@ -10,7 +10,7 @@ const sut = require('../../../poker-engine/domain-utils/reset-gamestate');
 
 
 
-tape('reset gamestate', t => t.end());
+tape('reset-gamestate', t => t.end());
 
 tape('setup initial conditions for a new hand', function(t) {
 
