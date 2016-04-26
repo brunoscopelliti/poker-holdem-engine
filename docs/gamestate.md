@@ -44,3 +44,68 @@ gamestate
 * `players`
 
   It's an Array of object each one containing the data relative to a player.
+
+  Each player has the following properties: `id`, `name`, `serviceUrl`, `version`, `status`, `chips`, `chipsBet`, and `cards`.
+
+  + `id`
+    A unique id of the player
+
+  + `name`
+    The name of the player
+
+  + `serviceUrl`
+    Url of the api endpoint on which the player web service responds.
+
+  + `version`
+    Player's deployed version
+
+  + `status`
+    Player's status. One of `active`, `folded`, or `out`
+
+  + `chips`
+    Amount of chips owned by the player
+
+  + `chipsBet`
+    Total amount of chips the player has bet in the current hand
+
+  + `cards`
+    List of the cards assigned to the player in the current hand
+
+  + `Symbol('has-big-blind')`
+    True when the player has bet the big blind
+
+  + `Symbol('is-all-in')`
+    True when the player has gone all-in in the current hand
+
+  + `Symbol('last-raiser')`
+    True when the player was the last to bet a raise at the `river`
+
+
+* `initialDealerButtonIndex`
+
+  It's the index of the first position in a game of the Dealer Button.
+
+  This information is used in order to compute the blind amount.
+
+
+* `dealerButtonRound`
+
+  Track how many times the dealer button has passed from its initial position in the current game.
+
+  This information is used in order to compute the blind amount.
+
+* `pot`
+
+  It's the amount of chips bet by all the players in the current hand.
+
+
+* `callAmount`
+
+  It's the amount of chips which the current player must bet in order to remain in the game.
+
+  It depends by how much he bet previously; so it can change for each player.
+
+
+* `commonCards`
+
+  List of the community cards, with which players can form their best combination.

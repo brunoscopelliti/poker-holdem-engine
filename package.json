@@ -47,6 +47,6 @@
     "grunt-eslint": "18.0.0",
     "sinon": "1.17.3",
     "tape": "4.5.1",
-    "tape-case": "1.1.0"
+    "tape-case": "1.2.0"
   }
 }

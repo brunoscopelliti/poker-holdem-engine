@@ -1,7 +1,7 @@
 
 'use strict';
 
-// const playersStatus = require('../domain/player-status');
+// const playerStatus = require('../domain/player-status');
 
 
 const getNextActive = require('../lib/get-next-active-player-index');
