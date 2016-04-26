@@ -1,21 +1,53 @@
 
 'use strict';
 
-const getNextActive = require('../lib/get-next-active-player-index');
-const getDB = require('../lib/get-dealerbutton-index');
+const playerStatus = require('../domain/player-status');
 
-exports = module.exports = function assignDB(gs){
+const getDealerButtonIndex = require('../lib/get-dealer-button-index');
+const getNextPlayer = require('../lib/get-next-player-index');
 
-  let hasDB = Symbol.for('has-dealer-button');
-  let currDB = getDB(gs.players);
 
-  if (currDB >= 0){
-    gs.players[currDB][hasDB] = false;
+
+/**
+ * @function
+ * @name assignDealerButton
+ * @desc assign the dealer button to the correct player
+ *
+ * @param {Object} gs:
+ *  the gamestate object
+ * @param {Number} playerIndex
+ *
+ * @returns void
+ */
+exports = module.exports = function assignDealerButton(gs){
+
+  const hasDB = Symbol.for('has-dealer-button');
+
+  if (gs.handProgressiveId == 1){
+
+    gs.dealerButtonRound = 0;
+
+    const dbIndex = gs.initialDealerButtonIndex = (gs.gameProgressiveId - 1) % gs.players.length;
+
+
+    return gs.players[dbIndex][hasDB] = true;
   }
 
-  let newDB = getNextActive(gs.players, currDB);
 
-  gs.players[newDB][hasDB] = true;
-  return newDB;
+  let dealerButtonIndex = getDealerButtonIndex(gs.players);
+
+  if (dealerButtonIndex >= 0){
+    delete gs.players[dealerButtonIndex][hasDB];
+  }
+
+
+  do {
+    dealerButtonIndex = getNextPlayer(gs.players, dealerButtonIndex);
+    if (dealerButtonIndex === gs.initialDealerButtonIndex) {
+      gs.dealerButtonRound++;
+    }
+  } while(gs.players[dealerButtonIndex].status != playerStatus.active);
+
+  gs.players[dealerButtonIndex][hasDB] = true;
 
 };
