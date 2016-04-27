@@ -110,16 +110,7 @@ const gamestate = Object.create(EventEmitter.prototype, {
    * @returns void
    */
   start: {
-    value: function(tournamentId, players, gameId){
-
-      // TODO
-      // when node.js will support "ES2015 default parameters"
-      // change the signature to: start(tournamentId, players, gameId = 1)
-
-      gameId = typeof gameId == 'undefined' ? 1 : gameId;
-
-
-
+    value: function(tournamentId, players, gameId = 1){
 
       // start has a different meaning on the basis of the fact
       // that the tournament is starting for the first time, or
