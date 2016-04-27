@@ -17,6 +17,10 @@ Poker rules
 * [Optional] Every player (even those who've already payed the blinds) pay an **ante** in order to play the game.
   This is usually required after an high number of played hands.
 
+  * **ante**'s amount is always 10% of *BB*.
+
+  * if enabled, **ante** should be started being payed when 10% of *BB* is gte than 10% of the initial buy-in.
+
 * Every player receive two private cards.
 
 

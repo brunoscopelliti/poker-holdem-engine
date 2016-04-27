@@ -25,6 +25,14 @@ const config = {
   // expressed in terms of "DB turns of the table"
   BLINDS_PERIOD: 1,
 
+  // antes are a set amount put in the pot by every player in the game
+  // prior to cards being dealt.
+  // ante amount is always 10% of bigblind;
+  // if enabled, antes should be started being payed
+  // when 10% of bigblind amount is greater equal than
+  // 10% of the initial buy-in.
+  ENABLE_ANTE: true,
+
   // points the players receive on the basis of their placement in a game;
   // the value of a placement changes in function of the number of players
   AWARDS: [
