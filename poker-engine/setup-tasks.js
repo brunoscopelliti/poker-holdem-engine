@@ -3,9 +3,7 @@
 
 const config = require('../config');
 
-// const winston = require('winston');
-// const gamestory = winston.loggers.get('gamestory');
-// const errors = winston.loggers.get('errors');
+const logger = require('../storage/logger');
 
 
 const computeSB = require('./domain-utils/get-smallblind-amount');
