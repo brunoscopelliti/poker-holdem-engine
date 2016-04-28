@@ -16,10 +16,10 @@ const config = {
   MAX_GAMES: Infinity,
 
   // the amount of initial chips for each player
-  BUYIN: 1000,
+  BUYIN: 500,
 
   // the progression of small blinds
-  SMALL_BLINDS: [25, 50, 75, 100, 150, 200, 250, 500, 750, 1000, 1500, 2000, 2500, 5000, 7500, 10000],
+  SMALL_BLINDS: [5, 10, 25, 50, 75, 100, 150, 200, 250, 300, 500, 750, 1000, 1500, 2000],
 
   // duration of a small blind value,
   // expressed in terms of "DB turns of the table"
@@ -62,19 +62,12 @@ if (process.env.NODE_ENV === 'production'){
 }
 else if (process.env.NODE_ENV === 'test'){
 
-  // the progression of small blinds
-  // as the unit tests expect it to be
-  const unitBlinds = [10, 20, 25, 50, 100, 125, 200, 250, 500, 750, 1000, 1500, 2000];
-  const unitBlindsPeriod = 0;
-
-  // the amount of initial chips for each player
-  // as the unit tests expect it to be
-  const unitBuyin = 5000;
-
-  config.BLINDS_PERIOD = unitBlindsPeriod;
-  config.SMALL_BLINDS = unitBlinds;
-  config.BUYIN = unitBuyin;
+  // Configuration as the unit tests expect it to be
+  // Do not change!
+  config.BUYIN = 500;
+  config.SMALL_BLINDS = [10, 20, 25, 50, 100, 125, 200, 250, 500, 750, 1000];
+  config.BLINDS_PERIOD = 1;
 
 }
 
-exports = module.exports = Object.freeze(config);
+exports = module.exports = config;
