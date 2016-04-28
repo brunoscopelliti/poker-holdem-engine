@@ -29,7 +29,6 @@ exports = module.exports = function assignDealerButton(gs){
 
     const dbIndex = gs.initialDealerButtonIndex = (gs.gameProgressiveId - 1) % gs.players.length;
 
-
     return gs.players[dbIndex][hasDB] = true;
   }
 

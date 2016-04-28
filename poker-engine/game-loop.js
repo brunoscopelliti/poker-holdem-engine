@@ -61,7 +61,7 @@ exports = module.exports = function* dealer(gs){
     //   gs.players.forEach(player => { player.status = playerStatus.active; player.chips = config.BUYIN; });
     //   gs.rank = [];
     //
-    //   if (gs.status == gameStatus.latest){
+    //   if (gs.status == gameStatus.latest){ // or gameID == config.MAX_GAMES-1
     //     // the game that has just finished was declared to be the latest
     //     // of the tournament.
     //     gs.status = gameStatus.stop;

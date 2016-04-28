@@ -92,7 +92,19 @@ gamestate
 
   Track how many times the dealer button has passed from its initial position in the current game.
 
+  The count starts from 0.
+
   This information is used in order to compute the blind amount.
+
+
+  * `sb`
+
+    It's the amount of the small blind.
+
+    It's value depends by the `config.BLINDS_PERIOD` setting, and the value of `dealerButtonRound` gamestate property.
+
+    Big blind is always twice the small blind.
+
 
 * `pot`
 
