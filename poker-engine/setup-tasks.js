@@ -6,12 +6,13 @@ const config = require('../config');
 const logger = require('../storage/logger');
 
 
-const computeSB = require('./domain-utils/get-smallblind-amount');
-const assignDB = require('./domain-utils/assign-dealer-button');
-const payBlinds = require('./domain-utils/pay-blinds');
-const shuffleCards = require('./domain-utils/shuffle-cards');
-const assignCards = require('./domain-utils/assign-player-cards');
+const resetGamestate = require('./domain-utils/reset-gamestate');
+const assignDealerButton = require('./domain-utils/assign-dealer-button');
+const computeSmallBlind = require('./domain-utils/compute-small-blind');
 
+// const payBlinds = require('./domain-utils/pay-blinds');
+// const shuffleCards = require('./domain-utils/shuffle-cards');
+// const assignCards = require('./domain-utils/assign-player-cards');
 
 
 function* setupOps(gs){
