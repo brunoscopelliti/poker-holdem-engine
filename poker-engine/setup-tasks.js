@@ -7,7 +7,6 @@ const config = require('../config');
 // const gamestory = winston.loggers.get('gamestory');
 // const errors = winston.loggers.get('errors');
 
-const run = require('../utils/generator-runner');
 
 const computeSB = require('./domain-utils/get-smallblind-amount');
 const assignDB = require('./domain-utils/assign-dealer-button');
@@ -94,13 +93,13 @@ function* setupOps(gs){
 }
 
 
-exports = module.exports = function setup(gs){
-
-  // prepare a poker hand, so that it can be played...
-  return run(setupOps, gs).catch(function(err) {
-    let tag = { id: gs.handId };
-    // errors.error('An error occurred during the execution of the setup. Stack: %s.', err.stack, tag);
-    // errors.error('Game state: %s.', JSON.stringify(gs), tag);
-  });
-
-};
+// exports = module.exports = function setup(gs){
+//
+//   // prepare a poker hand, so that it can be played...
+//   return run(setupOps, gs).catch(function(err) {
+//     let tag = { id: gs.handId };
+//     // errors.error('An error occurred during the execution of the setup. Stack: %s.', err.stack, tag);
+//     // errors.error('Game state: %s.', JSON.stringify(gs), tag);
+//   });
+//
+// };
