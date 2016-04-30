@@ -62,6 +62,12 @@ const gamestate = Object.create(EventEmitter.prototype, {
 
       gs.players = players.map(createPlayer).filter(x => x != null);
 
+      Object.defineProperty(gs, 'activePlayers', {
+        get() {
+         return this.players.filter(x=>x.status=='active')
+        }
+      });
+
       if (gs.players.length < 2){
         logger.info('Tournament %s cannot start cause not enough players.', tournamentId, { tag: gs.handUniqueId });
         return this.emit('tournament:aborted', { tournamentId: tournamentId });
