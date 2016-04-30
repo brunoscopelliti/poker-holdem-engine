@@ -36,7 +36,8 @@ exports = module.exports = function* dealer(gs){
 
   while (gs.status != gameStatus.stop){
 
-    const activePlayers = gs.players.filter(player => player.status == playerStatus.active);
+
+    // const activePlayers = gs.players.filter(player => player.status == playerStatus.active);
 
     // before a new game hand starts,
     // check the number of the active players.
@@ -46,10 +47,10 @@ exports = module.exports = function* dealer(gs){
 
     // TODO this section was far too complex than how it could be...
 
-    // if (activePlayers.length === 1){
+    // if (gs.activePlayers.length === 1){
     //
     //   // compute the points earned by each player
-    //   let playerCount = gs.rank.unshift(activePlayers[0].name);
+    //   let playerCount = gs.rank.unshift(gs.activePlayers[0].name);
     //
     //   let awards = config.AWARDS[playerCount-2];
     //   let playerPoints = gs.rank.map((r,i) => ({ name: r, pts: awards[i] }));

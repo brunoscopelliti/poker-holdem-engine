@@ -3,7 +3,19 @@
 
 const config = require('../../config');
 
-exports = module.exports = function getSmallblindAmount(gs){
+
+
+/**
+ * @function
+ * @name setSBAmount
+ * @desc set the "sb" property on the gamestate object.
+ *
+ * @param {Object} gs:
+ *  the gamestate object
+ *
+ * @returns {void}
+ */
+exports = module.exports = function setSBAmount(gs){
 
   // the amount of the small blind depends upon how many times
   // the dealer button has passed from its initial position.

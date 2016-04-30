@@ -126,6 +126,7 @@ tape('start: when tournament is not found should setup a new tournament', functi
   t.ok(setupStub.calledOnce);
   t.ok(setupStub.calledWith('x-123', players, 1));
 
+
   setupStub.restore();
 
   t.end();

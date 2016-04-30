@@ -33,6 +33,10 @@ const actions = {
   // to get the bet amount
   talk: function talk(gs){
 
+    // TODO
+    // add initial-buyin
+    // add min-raise-amount
+
     //
     // the state of the game, filtered with the only information
     // available to the current player

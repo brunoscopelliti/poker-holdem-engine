@@ -60,6 +60,9 @@ function* handLoop(gs){
       // check if there are active players
       // who still have to call, or fold
       while (!isBetRoundFinished(gs)){
+
+        // https://bot-poker.herokuapp.com/tournament/571905c192d57e0300e822cc/watch/112/11
+
         let bbIndex = gs.players.findIndex(player => player[hasBB]);
         yield takeBets(gs, bbIndex);
         gs.spinCount++;

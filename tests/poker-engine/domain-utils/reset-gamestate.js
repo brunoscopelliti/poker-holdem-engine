@@ -1,8 +1,8 @@
 
 'use strict';
 
-const sinon = require('sinon');
 const tape = require('tape');
+const sinon = require('sinon');
 
 const playerStatus = require('../../../poker-engine/domain/player-status');
 
