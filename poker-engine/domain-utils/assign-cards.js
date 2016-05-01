@@ -7,7 +7,6 @@ const shuffle = require('knuth-shuffle').knuthShuffle;
 
 const playerStatus = require('../domain/player-status');
 
-const getDealerButtonIndex = require('../lib/get-dealer-button-index');
 const loopFrom = require('../lib/loop-from');
 
 const deck_ = Symbol('deck');
@@ -28,7 +27,7 @@ exports = module.exports = function assignCards(gs) {
 
   const deck = gs[deck_] = shuffle(pokerCards.slice(0));
 
-  const dealerButtonIndex = getDealerButtonIndex(gs.players);
+  const dealerButtonIndex = gs.dbIndex;
 
   function assignCard(player){
     if (player.status == playerStatus.active){

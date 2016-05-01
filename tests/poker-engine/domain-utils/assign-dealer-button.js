@@ -37,6 +37,12 @@ tcase([
     }]
   };
 
+  Object.defineProperty(gs, 'dbIndex', {
+    get() {
+      return this.players.findIndex(player => player[hasDB]);
+    }
+  });
+
   gs.gameProgressiveId = gameId;
 
 
@@ -73,6 +79,12 @@ tcase([
       status: playerStatus.active
     }]
   };
+
+  Object.defineProperty(gamestate, 'dbIndex', {
+    get() {
+      return this.players.findIndex(player => player[hasDB]);
+    }
+  });
 
   tcase([
     { description: 'handId=1, real loop', args: [ gamestate ] },
@@ -124,6 +136,12 @@ tcase([
       status: playerStatus.active
     }]
   };
+
+  Object.defineProperty(gamestate, 'dbIndex', {
+    get() {
+      return this.players.findIndex(player => player[hasDB]);
+    }
+  });
 
   const expectedDealerButtonId = [1,3,1,3,1,3];
 

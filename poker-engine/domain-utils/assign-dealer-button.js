@@ -3,7 +3,6 @@
 
 const playerStatus = require('../domain/player-status');
 
-const getDealerButtonIndex = require('../lib/get-dealer-button-index');
 const getNextPlayer = require('../lib/get-next-player-index');
 
 
@@ -33,7 +32,7 @@ exports = module.exports = function assignDealerButton(gs){
   }
 
 
-  let dealerButtonIndex = getDealerButtonIndex(gs.players);
+  let dealerButtonIndex = gs.dbIndex;
 
   if (dealerButtonIndex >= 0){
     delete gs.players[dealerButtonIndex][hasDB];

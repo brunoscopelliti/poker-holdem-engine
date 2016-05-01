@@ -1,7 +1,6 @@
 
 'use strict';
 
-const getDealerButtonIndex = require('../lib/get-dealer-button-index');
 const getNextActivePlayerIndex = require('../lib/get-next-active-player-index');
 
 
@@ -20,7 +19,7 @@ exports = module.exports = function payBlinds(gs){
 
   const hasBB = Symbol.for('has-big-blind');
 
-  const dealerButtonIndex = getDealerButtonIndex(gs.players);
+  const dealerButtonIndex = gs.dbIndex;
 
   // index of the player
   // who has to pay the small blind

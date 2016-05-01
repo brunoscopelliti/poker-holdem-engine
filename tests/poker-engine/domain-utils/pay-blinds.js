@@ -27,6 +27,7 @@ tape('players next the dealer button pay blinds', function(t) {
 
   const gamestate = {
     sb: 20,
+    dbIndex: 1,
     players: [arale, bender, marvin, walle]
   };
 
@@ -61,6 +62,7 @@ tape('players next the dealer button pay blinds (check only active players)', fu
 
   const gamestate = {
     sb: 25,
+    dbIndex: 1,
     players: [arale, bender, marvin, walle]
   };
 
