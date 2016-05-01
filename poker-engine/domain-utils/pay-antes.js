@@ -33,7 +33,7 @@ exports = module.exports = function payAntes(gs){
     return;
   }
 
-
+  gs.ante = anteAmount;
   gs.activePlayers.forEach(player => player.pay(gs, anteAmount));
 
 };

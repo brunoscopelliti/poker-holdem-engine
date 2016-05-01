@@ -97,13 +97,20 @@ gamestate
   This information is used in order to compute the blind amount.
 
 
-  * `sb`
+* `sb`
 
-    It's the amount of the small blind.
+  It's the amount of the small blind.
 
-    It's value depends by the `config.BLINDS_PERIOD` setting, and the value of `dealerButtonRound` gamestate property.
+  It's value depends by the `config.BLINDS_PERIOD` setting, and the value of `dealerButtonRound` gamestate property.
 
-    Big blind is always twice the small blind.
+  Big blind is always twice the small blind.
+
+
+* `ante`
+
+  It's the amount of "ante" quote.
+
+  It's populated only when the ante should be effectively paid by the players.
 
 
 * `pot`

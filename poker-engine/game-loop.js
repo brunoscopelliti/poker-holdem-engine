@@ -97,6 +97,8 @@ exports = module.exports = function* dealer(gs){
       // setup the hand:
       // restore the initial condition for a new hand, pot,
       // blinds, ante, cards ...
+
+      // TODO this do not need to be yielded, do not need to be a generator
       yield *setupTasks(gs);
 
       yield save(gs, { type: 'setup', handId: gs.handId, pot: gs.pot, sb: gs.sb, players: gs.players.map(p => Object.assign({}, p)) });
