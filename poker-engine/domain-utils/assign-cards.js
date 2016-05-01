@@ -27,7 +27,7 @@ exports = module.exports = function assignCards(gs) {
 
   const deck = gs[deck_] = shuffle(pokerCards.slice(0));
 
-  const dealerButtonIndex = gs.dbIndex;
+  const dealerButtonIndex = gs.dealerButtonIndex;
 
   function assignCard(player){
     if (player.status == playerStatus.active){

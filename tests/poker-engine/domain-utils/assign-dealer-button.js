@@ -37,7 +37,7 @@ tcase([
     }]
   };
 
-  Object.defineProperty(gs, 'dbIndex', {
+  Object.defineProperty(gs, 'dealerButtonIndex', {
     get() {
       return this.players.findIndex(player => player[hasDB]);
     }
@@ -80,7 +80,7 @@ tcase([
     }]
   };
 
-  Object.defineProperty(gamestate, 'dbIndex', {
+  Object.defineProperty(gamestate, 'dealerButtonIndex', {
     get() {
       return this.players.findIndex(player => player[hasDB]);
     }
@@ -137,7 +137,7 @@ tcase([
     }]
   };
 
-  Object.defineProperty(gamestate, 'dbIndex', {
+  Object.defineProperty(gamestate, 'dealerButtonIndex', {
     get() {
       return this.players.findIndex(player => player[hasDB]);
     }

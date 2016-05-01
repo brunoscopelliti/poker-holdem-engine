@@ -81,6 +81,17 @@ gamestate
     True when the player was the last to bet a raise at the `river`
 
 
+* `activePlayers`
+
+  It's a shortcut to get only the active players from the `players` array.
+
+
+* `dealerButtonIndex`
+
+  It's a getter for the index of the player who has the dealer button,
+  that is Symbol('has-dealer-button') equals true.
+
+
 * `initialDealerButtonIndex`
 
   It's the index of the first position in a game of the Dealer Button.

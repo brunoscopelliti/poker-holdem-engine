@@ -27,7 +27,7 @@ tape('assign two cards to each active player', function(t) {
   arale[hasDB] = true;
 
   const gamestate = {
-    dbIndex: 0,
+    dealerButtonIndex: 0,
     players: [arale, bender, marvin, walle]
   };
 

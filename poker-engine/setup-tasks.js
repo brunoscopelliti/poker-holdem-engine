@@ -14,7 +14,7 @@ const payAntes = require('./domain-utils/pay-antes');
 const payBlinds = require('./domain-utils/pay-blinds');
 const assignCards = require('./domain-utils/assign-cards');
 
-exports = module.exports = function* setup(gs){
+exports = module.exports = function setup(gs){
 
   resetGamestate(gs);
 
@@ -26,7 +26,7 @@ exports = module.exports = function* setup(gs){
   // (only an active player can receive the button)
   assignDealerButton(gs);
 
-  logger.log('debug', 'Dealer Button has been assigned (%d).', gs.dbIndex, { tag: gs.handUniqueId });
+  logger.log('debug', 'Dealer Button has been assigned (%d).', gs.dealerButtonIndex, { tag: gs.handUniqueId });
 
 
 

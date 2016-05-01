@@ -32,7 +32,7 @@ exports = module.exports = function assignDealerButton(gs){
   }
 
 
-  let dealerButtonIndex = gs.dbIndex;
+  let dealerButtonIndex = gs.dealerButtonIndex;
 
   if (dealerButtonIndex >= 0){
     delete gs.players[dealerButtonIndex][hasDB];

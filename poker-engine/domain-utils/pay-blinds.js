@@ -19,7 +19,7 @@ exports = module.exports = function payBlinds(gs){
 
   const hasBB = Symbol.for('has-big-blind');
 
-  const dealerButtonIndex = gs.dbIndex;
+  const dealerButtonIndex = gs.dealerButtonIndex;
 
   // index of the player
   // who has to pay the small blind

@@ -11,6 +11,7 @@ const logger = require('./storage/logger');
 const run = require('./utils/generator-runner').run;
 const gameloop = require('./poker-engine/game-loop');
 
+const playerStatus = require('./poker-engine/domain/player-status');
 const createPlayer = require('./poker-engine/domain-utils/player-factory');
 
 const tournamentStatus = require('./poker-engine/domain/tournament-status');
@@ -62,11 +63,19 @@ const gamestate = Object.create(EventEmitter.prototype, {
 
       gs.players = players.map(createPlayer).filter(x => x != null);
 
-      Object.defineProperty(gs, 'activePlayers', {
-        get() {
-         return this.players.filter(x=>x.status=='active')
+      Object.defineProperties(gs, {
+        'activePlayers': {
+          get() {
+            return this.players.filter(x => x.status == playerStatus.active);
+          }
+        },
+        'dealerButtonIndex': {
+          get() {
+            return this.players.findIndex(player => player[Symbol.for('has-dealer-button')]);
+          }
         }
       });
+
 
       if (gs.players.length < 2){
         logger.info('Tournament %s cannot start cause not enough players.', tournamentId, { tag: gs.handUniqueId });

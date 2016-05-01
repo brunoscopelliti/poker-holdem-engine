@@ -13,8 +13,8 @@ const playerStatus = require('./domain/player-status');
 
 const setupTasks = require('./setup-tasks');
 
-const play = require('./holdem-bet-loop');
-const handTeardown = require('./holdem-hand-teardown');
+//const play = require('./holdem-bet-loop');
+//const handTeardown = require('./holdem-hand-teardown');
 
 
 
@@ -27,15 +27,14 @@ exports = module.exports = function* dealer(gs){
   function waitResume() {
     return new Promise(function(res, rej) {
       const time = setInterval(function() {
-        if (gs.status == gameStatus.play){
+        if (gs.tournamentStatus == gameStatus.play){
           res(clearInterval(time));
         }
       }, 5000);
     });
   }
 
-  while (gs.status != gameStatus.stop){
-
+  while (gs.tournamentStatus != gameStatus.stop){
 
     // const activePlayers = gs.players.filter(player => player.status == playerStatus.active);
 
@@ -62,10 +61,10 @@ exports = module.exports = function* dealer(gs){
     //   gs.players.forEach(player => { player.status = playerStatus.active; player.chips = config.BUYIN; });
     //   gs.rank = [];
     //
-    //   if (gs.status == gameStatus.latest){ // or gameID == config.MAX_GAMES-1
+    //   if (gs.tournamentStatus == gameStatus.latest){ // or gameID == config.MAX_GAMES-1
     //     // the game that has just finished was declared to be the latest
     //     // of the tournament.
-    //     gs.status = gameStatus.stop;
+    //     gs.tournamentStatus = gameStatus.stop;
     //     continue;
     //   }
     //
@@ -80,40 +79,38 @@ exports = module.exports = function* dealer(gs){
 
 
 
-
     //
     // break here until the tournament is resumed
-    if (gs.status == gameStatus.pause){
+    if (gs.tournamentStatus == gameStatus.pause){
       logger.info('Pause on hand %d/%d', gs.gameProgressiveId, gs.handProgressiveId, { tag: gs.handUniqueId });
       yield waitResume();
     }
 
 
-    if (gs.status == gameStatus.play || gs.status == gameStatus.latest){
+    if (gs.tournamentStatus == gameStatus.play || gs.tournamentStatus == gameStatus.latest){
+
 
       yield sleep();
-
 
       // setup the hand:
       // restore the initial condition for a new hand, pot,
       // blinds, ante, cards ...
 
-      // TODO this do not need to be yielded, do not need to be a generator
-      yield *setupTasks(gs);
+      setupTasks(gs);
 
-      yield save(gs, { type: 'setup', handId: gs.handId, pot: gs.pot, sb: gs.sb, players: gs.players.map(p => Object.assign({}, p)) });
+      yield save(gs, { type: 'setup', handId: gs.handId, pot: gs.pot, sb: gs.sb, ante: gs.ante || 0, players: gs.players.map(p => Object.assign({}, p)) });
 
       //
       // play the game
       // each player will be asked to make a bet,
       // until only one player remains active, or
       // the hand arrive to the "river" session
-      yield play(gs);
+      // yield play(gs);
 
       //
       // declare the winner of the hand, and
       // updates accordingly the gamestate
-      yield handTeardown(gs);
+      // yield handTeardown(gs);
 
     }
 
