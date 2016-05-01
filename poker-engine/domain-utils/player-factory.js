@@ -30,6 +30,8 @@ const actions = {
 
   [bet_](gs, amount) {
 
+    // TODO should be tested
+
     if (amount > this.chips){
       amount = this.chips;
     }

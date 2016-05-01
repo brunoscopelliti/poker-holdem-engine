@@ -67,6 +67,7 @@ else if (process.env.NODE_ENV === 'test'){
   config.BUYIN = 500;
   config.SMALL_BLINDS = [10, 20, 25, 50, 100, 125, 200, 250, 500, 750, 1000];
   config.BLINDS_PERIOD = 1;
+  config.ENABLE_ANTE = true;
 
 }
 
