@@ -3,7 +3,9 @@
 
 const playerStatus = require('../domain/player-status');
 
-const getNextPlayer = require('./get-next-player-index');
+const getNextPlayerIndex = require('./get-next-player-index');
+
+
 
 /**
  * @function
@@ -21,7 +23,7 @@ exports = module.exports = function getNextActivePlayerIndex(players, currentPla
   let nextIndex;
 
   do {
-    nextIndex = getNextPlayer(players, currentPlayerIndex);
+    nextIndex = getNextPlayerIndex(players, currentPlayerIndex);
     currentPlayerIndex = nextIndex;
   } while(players[nextIndex].status != playerStatus.active);
 
