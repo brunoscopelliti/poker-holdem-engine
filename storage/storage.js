@@ -1,25 +1,46 @@
 
 'use strict';
 
-//
-// @param data {Object}
-// @param data.type: Indicates the type of update; For example "setup" contains the info to bootstrap a new hand, "bet" simply the info about a specific bet.
-exports.save = function save(gs, data) {
+const assign = require('merge-descriptors');
 
-  if (Array.isArray(data.players)){
-    let hasDB = Symbol.for('hasDB');
-    let allin = Symbol.for('allin');
-    data.players.forEach(player => { player.hasDB = player[hasDB]; player.isAllin = player[allin]; });
+const engine = require('../index');
+
+
+
+/**
+ * @function
+ * @name save
+ * @desc
+ *  notify the "gamestate:updated" message,
+ *  so that the gamestate can be eventually persisted on db
+ *
+ * @param {Object} updates: gamestate's properties which have changed;
+ *  - updates.type: define the type of update; e.g. "setup" contains the info to bootstrap a new hand, "bet" simply the info about a specific bet.
+ *
+ * @returns {Promise}
+ *  The promise is fulfilled when the watcher of "gamestate:updated" completes
+ */
+exports.save = function save(updates) {
+
+  // TODO tests
+
+  if (Array.isArray(updates.players)){
+    const hasDB = Symbol.for('has-dealer-button');
+    const isAllin = Symbol.for('is-all-in');
+    updates.players = updates.players.map(function(p, i) {
+      const player = assign({}, p);
+      player.hasDB = p[hasDB];
+      player.isAllin = p[isAllin];
+      return player;
+    });
   }
 
+
   //
-  // ready to save an update on mongoDB
+  // the promise is pending until
+  // a watchers save the gamestate updates, and resolve
   return new Promise(function(resolve) {
-    // be patient until the update is completed
-    gs.emit('gamestate:updated', Object.assign({}, data));
-    gs.once('storage:completed', function() {
-      resolve();
-    });
+    return engine.emit('gamestate:updated', Object.assign({}, updates), resolve);
   });
 
 }

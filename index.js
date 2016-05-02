@@ -6,16 +6,6 @@ const config = require('./config');
 const events = require('events');
 const EventEmitter = events.EventEmitter;
 
-const logger = require('./storage/logger');
-
-const run = require('./utils/generator-runner').run;
-const gameloop = require('./poker-engine/game-loop');
-
-const playerStatus = require('./poker-engine/domain/player-status');
-const createPlayer = require('./poker-engine/domain-utils/player-factory');
-
-const tournamentStatus = require('./poker-engine/domain/tournament-status');
-
 
 
 
@@ -212,3 +202,16 @@ const gamestate = Object.create(EventEmitter.prototype, {
 gamestate[tournaments_] = new Map();
 
 exports = module.exports = gamestate;
+
+
+
+
+const logger = require('./storage/logger');
+
+const run = require('./utils/generator-runner').run;
+const gameloop = require('./poker-engine/game-loop');
+
+const playerStatus = require('./poker-engine/domain/player-status');
+const createPlayer = require('./poker-engine/domain-utils/player-factory');
+
+const tournamentStatus = require('./poker-engine/domain/tournament-status');

@@ -89,6 +89,7 @@ exports = module.exports = function* dealer(gs){
 
     if (gs.tournamentStatus == gameStatus.play || gs.tournamentStatus == gameStatus.latest){
 
+      // TODO first tournaments have a default sleep time
 
       yield sleep();
 
@@ -98,7 +99,7 @@ exports = module.exports = function* dealer(gs){
 
       setupTasks(gs);
 
-      yield save(gs, { type: 'setup', handId: gs.handId, pot: gs.pot, sb: gs.sb, ante: gs.ante || 0, players: gs.players.map(p => Object.assign({}, p)) });
+      yield save({ type: 'setup', handId: gs.handId, pot: gs.pot, sb: gs.sb, ante: gs.ante || 0, players: gs.players });
 
       //
       // play the game
