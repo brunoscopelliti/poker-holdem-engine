@@ -19,6 +19,7 @@ exports = module.exports = function resetGamestate(gs){
 
   gs.pot = gs.callAmount = 0;
 
+  gs.sidepots = [];
   gs.commonCards = [];
 
 

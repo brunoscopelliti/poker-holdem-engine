@@ -8,7 +8,7 @@ const playerStatus = require('../domain/player-status');
 
 const logger = require('../../storage/logger');
 
-
+const splitPot = require('./split-pot');
 
 // const request = require('request');
 
@@ -36,9 +36,10 @@ const actions = {
       amount = this.chips;
     }
 
+    const isAllin_ = Symbol.for('is-all-in');
 
     if (amount == this.chips) {
-      this[Symbol.for('is-all-in')] = true;
+      this[isAllin_] = true;
     }
     else {
 
@@ -75,7 +76,13 @@ const actions = {
     // for the player, and on the gamestate
     this.chipsBet += amount;
     this.chips -= amount;
+
     gs.pot += amount;
+
+    if (this[isAllin_] || gs.sidepots.length > 0 || gs.players.find(x => x[isAllin_]) != null){
+      splitPot(gs);
+    }
+
     gs.callAmount = Math.max(this.chipsBet, gs.callAmount);
 
     // gamestory.info('Game state after %s (%d)\'s bet: %s', this.name, this.id, JSON.stringify({ pot:gs.pot, callAmount: gs.callAmount, player: { name: this.name, chips: this.chips, chipsBet: this.chipsBet } }), { id: gs.handId, type: 'bet' });

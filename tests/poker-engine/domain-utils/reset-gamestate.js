@@ -16,6 +16,13 @@ tape('setup initial conditions for a new hand', function(t) {
 
   const gamestate = {
     pot: 300,
+    sidepots: [{
+      quote: 50,
+      amount: 150
+    }, {
+      quote: 75,
+      amount: 150
+    }],
     callAmount: 50,
     commonCards: [{
       rank: 'K',
@@ -71,6 +78,7 @@ tape('setup initial conditions for a new hand', function(t) {
   t.strictEqual(gamestate.pot, 0);
   t.strictEqual(gamestate.callAmount, 0);
   t.strictEqual(gamestate.commonCards.length, 0);
+  t.strictEqual(gamestate.sidepots.length, 0);
 
   const arale = gamestate.players.find(x => x.name == 'arale');
 

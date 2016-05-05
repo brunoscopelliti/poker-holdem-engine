@@ -129,6 +129,19 @@ gamestate
   It's the amount of chips bet by all the players in the current hand.
 
 
+* `sidepots`
+
+    ```js
+    [{
+      quote: 50,
+      amount: 200
+    },
+    {
+      quote: 100,
+      amount: 300
+    }]
+    ```
+
 * `callAmount`
 
   It's the amount of chips which the current player must bet in order to remain in the game.
