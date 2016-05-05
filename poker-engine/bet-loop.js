@@ -154,14 +154,3 @@ function* handLoop(gs){
   return gs;
 
 }
-
-
-exports = module.exports = function play(gs){
-
-  return run(handLoop, gs).catch(function(err) {
-    let tag = { id: gs.handId };
-    // errors.error('An error occurred during the execution of the loop. Stack:', err.stack, tag);
-    // errors.error('Game state: %s.', JSON.stringify(gs), tag);
-  });
-
-};
