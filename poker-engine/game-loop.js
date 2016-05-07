@@ -13,7 +13,7 @@ const playerStatus = require('./domain/player-status');
 
 const setupTasks = require('./setup-tasks');
 
-//const play = require('./holdem-bet-loop');
+const play = require('./bet-loop');
 //const handTeardown = require('./holdem-hand-teardown');
 
 
@@ -99,14 +99,14 @@ exports = module.exports = function* dealer(gs){
 
       setupTasks(gs);
 
-      yield save({ type: 'setup', handId: gs.handId, pot: gs.pot, sb: gs.sb, ante: gs.ante || 0, players: gs.players });
+      yield save({ type: 'setup', handId: gs.handUniqueId, pot: gs.pot, sb: gs.sb, ante: gs.ante || 0, players: gs.players });
 
       //
       // play the game
       // each player will be asked to make a bet,
       // until only one player remains active, or
       // the hand arrive to the "river" session
-      // yield play(gs);
+      yield* play(gs);
 
       //
       // declare the winner of the hand, and

@@ -1,156 +1,194 @@
 
 'use strict';
 
-// const winston = require('winston');
-// const gamestory = winston.loggers.get('gamestory');
-// const errors = winston.loggers.get('errors');
+const config = require('../config');
 
+const logger = require('../storage/logger');
 const save = require('../storage/storage').save;
-const run = require('../utils/generator-runner');
-
-const status = require('./domain/player-status');
-const session = require('./domain/game-session');
-// const takeBets = require('./domain-utils/collect-player-bets');
 
 
-function isBetRoundFinished(gs){
+const gameSession = require('./domain/game-session');
+const playerStatus = require('./domain/player-status');
 
-  let allin = Symbol.for('is-all-in');
-  let activePlayers = gs.players.filter(p => p.status === status.active);
+
+const asyncFrom = require('./lib/loop-from-async');
+
+
+
+const deck_ = Symbol.for('cards-deck');
+const allin_ = Symbol.for('is-all-in');
+const hasBB_ = Symbol.for('has-big-blind');
+const hasDB_ = Symbol.for('has-dealer-button');
+
+
+
+
+
+exports = module.exports = function* betLoop(gs){
+
+  logger.info('Starting hand %d/%d betting session', gs.gameProgressiveId, gs.handProgressiveId, { tag: gs.handUniqueId });
+
+
+
+  // the betting loop continues until
+  // all the community cards are shown
+  // and there are more than an active player
+  while (gs.commonCards.length <= 5 && gs.activePlayers.length > 1){
+
+    // track the current hand session
+    gs.session = getGameSession(gs.commonCards.length);
+
+
+    logger.log('debug', 'Hand %d/%d, %s', gs.gameProgressiveId, gs.handProgressiveId, gs.session, { tag: gs.handUniqueId });
+    logger.log('debug', getPlayerStatusLogMessage(gs.players), { tag: gs.handUniqueId });
+
+
+
+    // count the number of time that players had already have the possibility
+    // to bet in the current session.
+    gs.spinCount = 0;
+
+    const starterButton = gs.session == gameSession.pre ? hasBB_ : hasDB_;
+    const startIndex = gs.players.findIndex(player => player[starterButton]);
+
+    do {
+      yield* asyncFrom(gs.players, startIndex, player => player.talk());
+      gs.spinCount++;
+    } while(!isBetRoundFinished(gs.activePlayers, gs.callAmount));
+
+
+
+    // when execution reach this line,
+    // all players have defined their bet for the current session.
+
+    const activePlayers = gs.activePlayers;
+
+    if (activePlayers.length == 1){
+
+      // only one active player.
+      // the betting loop is completed
+
+      const winner = activePlayers[0];
+
+      return void logger.info('Hand %d/%d, after the %s session, the only active player is %s',
+        gs.gameProgressiveId, gs.handProgressiveId, gs.session, winner.name, { tag: gs.handUniqueId });
+
+    }
+    else if (gs.commonCards.length < 5){
+
+      do { gs.commonCards.push(gs[deck_].shift()); } while(gs.commonCards.length < 3);
+
+
+      // update hand session
+      gs.session = getGameSession(gs.commonCards.length);
+
+
+      logger.log('debug', 'Hand %d/%d, common cards (%s) are %s',
+        gs.gameProgressiveId, gs.handProgressiveId, gs.session, getCommonCardsLogMessage(gs.commonCards), { tag: gs.handUniqueId });
+
+      yield save({ type: 'cards', handId: gs.handUniqueId, session: gs.session,
+        commonCards: gs.session == gameSession.flop ? gs.commonCards : gs.commonCards.slice(-1) });
+
+    }
+    else {
+
+      logger.log('debug', 'Hand %d/%d, %s', gs.gameProgressiveId, gs.handProgressiveId, gs.session, { tag: gs.handUniqueId });
+      logger.log('debug', getPlayerStatusLogMessage(gs.players), { tag: gs.handUniqueId });
+
+      return void logger.info('Hand %d/%d, betting session is finished.',
+        gs.gameProgressiveId, gs.handProgressiveId, { tag: gs.handUniqueId });
+    }
+
+
+  }
+
+};
+
+
+
+
+
+/**
+ * @private
+ * @function
+ * @name getGameSession
+ * @desc
+ *  return the current game session
+ *
+ * @param {Number} commonCards
+ *  number of common cards
+ *
+ * @returns {GameSession}
+ */
+function getGameSession(commonCards){
+  switch(commonCards){
+    case 0:
+      return gameSession.pre;
+    case 3:
+      return gameSession.flop;
+    case 4:
+      return gameSession.turn;
+    case 5:
+      return gameSession.river;
+  }
+}
+
+
+
+/**
+ * @private
+ * @function
+ * @name isBetRoundFinished
+ * @desc
+ *  return true when the current bet round is finished,
+ *  that is all the players have bet the required minimum amount
+ *  to stay active, or folded;
+ *  false otherwise
+ *
+ * @param {Array} activePlayers
+ *  list of the players who are active
+ *
+ * @param {Number} callAmount
+ *  the amount each player should have bet in order to stay active
+ *
+ * @returns {Boolean} true when the bet round is finished
+ */
+function isBetRoundFinished(activePlayers, callAmount) {
 
   if (activePlayers.length == 1){
     return true;
   }
 
-  return activePlayers.filter(p => p.chipsBet < gs.callAmount && !p[allin]).length == 0;
-
+  // search for active players who are not all in,
+  // and still have bet less than the minimum amount to stay active
+  return activePlayers.find(player => !player[allin_] && player.chipsBet < callAmount) != null;
 }
 
 
-function* handLoop(gs){
 
-  const active = status.active;
-  const hasBB = Symbol.for('has-big-blind');
-  const hasDB = Symbol.for('has-dealer-button');
 
-  const tag = { id: gs.handId, type: 'session' };
-  const cardTag = { id: gs.handId, type: 'cards' };
 
-  let activePlayers = gs.players.filter(p => p.status === active);
 
-  //
-  // the hand continues until
-  // all the community cards are shown
-  // and there are more than an active player
-  while (gs.commonCards.length <= 5 && activePlayers.length > 1){
 
-    //
-    // preflop session
-    if (gs.commonCards.length == 0){
 
-      gs.session = session.pre;
 
-      // gamestory.info('The %s betting session is starting.', gs.session, tag);
 
-      // count the number of time
-      // that players had already have the possibility to bet in the current session.
-      // it is reset every time a new session (flop, turn, or river) begins.
-      gs.spinCount = 0;
 
-      // check if there are active players
-      // who still have to call, or fold
-      while (!isBetRoundFinished(gs)){
 
-        // https://bot-poker.herokuapp.com/tournament/571905c192d57e0300e822cc/watch/112/11
 
-        let bbIndex = gs.players.findIndex(player => player[hasBB]);
-        yield takeBets(gs, bbIndex);
-        gs.spinCount++;
-      }
+function getPlayerStatusLogMessage(players){
+  return players.reduce(function(msg, player) {
+    msg += player.status == playerStatus.out ?
+      `${player.name} is out` : `${player.name} has bet ${player.chipsBet} (${player.status}).`;
+    return msg;
+  }, '');
+}
 
-      //
-      // all the players have defined their bet;
-      // if only one is still active, he will be the winner of the hand,
-      // otherwise game goes on with the flop session.
 
-      activePlayers = gs.players.filter(p => p.status === active);
-
-      if (activePlayers.length > 1){
-
-        // gamestory.info('There are still %d active players after the %s betting session.', activePlayers.length, gs.session, tag);
-
-        //
-        // since there are still more than one "active" player
-        // we have to continue with the flop session.
-        // add three cards on the table
-        gs.commonCards.push(gs.deck.shift(), gs.deck.shift(), gs.deck.shift());
-
-        // gamestory.info('Flop cards are: %s', JSON.stringify(gs.commonCards), cardTag);
-
-        gs.session = session.flop;
-        yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: gs.commonCards });
-      }
-      else {
-        //
-        // ... otherwise, we stop the loop immediately
-        // returning the control on the runner
-        // gamestory.info('Only one player after the %s betting session.', gs.session, tag);
-        return gs;
-      }
-
-    }
-    else {
-
-      gs.session = gs.commonCards.length == 3 ? session.flop : (gs.commonCards.length == 4 ? session.turn : session.river);
-
-      // gamestory.info('The %s betting session is starting.', gs.session, tag);
-
-      gs.spinCount = 0;
-
-      do {
-        let dbIndex = gs.players.findIndex(player => player[hasDB]);
-        yield takeBets(gs, dbIndex);
-        gs.spinCount++;
-      } while(!isBetRoundFinished(gs));
-
-      //
-      // all the players have defined their bet;
-      // if only one is still active, he will be the winner of the hand,
-      // otherwise game goes on with the turn/river session.
-
-      activePlayers = gs.players.filter(p => p.status === status.active);
-
-      if (activePlayers.length > 1 && gs.commonCards.length < 5) {
-
-        // gamestory.info('There are still %d active players after the %s betting session.', activePlayers.length, gs.session, tag);
-
-        //
-        // until there are more than one "active" player, and the game
-        // has not reached the river session, we coninue to run the loop.
-        // add another card on the table
-        const newCard = gs.deck.shift();
-        gs.commonCards.push(newCard);
-
-        gs.session = gs.commonCards.length == 4 ? session.turn : session.river;
-
-        // gamestory.info('%s card is: %s', gs.session, JSON.stringify(newCard), cardTag);
-
-        yield save(gs, { type: 'cards', handId: gs.handId, session: gs.session, commonCards: [newCard] });
-      }
-      else {
-        //
-        // ... otherwise, we stop the loop immediately
-        // returning the control on the runner
-        if (activePlayers.length == 1){
-          // gamestory.info('Only one player after the %s betting session.', gs.session, tag);
-        }
-        return gs;
-      }
-
-    }
-
-  }
-
-  return gs;
-
+function getCommonCardsLogMessage(cards){
+  return cards
+    .reduce(function(all, card){
+      all += `${card.rank}${card.type}, `;
+      return all;
+    }, '').trim().slice(0,-1);
 }

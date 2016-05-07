@@ -9,7 +9,7 @@ const playerStatus = require('../domain/player-status');
 
 const loopFrom = require('../lib/loop-from');
 
-const deck_ = Symbol('deck');
+const deck_ = Symbol.for('cards-deck');
 
 
 
