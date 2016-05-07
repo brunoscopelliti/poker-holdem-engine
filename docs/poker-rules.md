@@ -1,6 +1,9 @@
 Poker rules
 ===
 
+http://www.texasholdem-poker.com/holdem_rules
+
+
 * Assign Dealer Button (**DB**).
   Every time a poker hand ends the *DB* is passed to the active player next to the one who currently have had the *DB*.
 

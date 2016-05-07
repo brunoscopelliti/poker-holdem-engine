@@ -14,6 +14,19 @@ const payAntes = require('./domain-utils/pay-antes');
 const payBlinds = require('./domain-utils/pay-blinds');
 const assignCards = require('./domain-utils/assign-cards');
 
+
+
+/**
+ * @function
+ * @name setup
+ * @desc
+ *  prepare the game state for a new poker hand.
+ *
+ * @param {Object} gs:
+ *  the gamestate object
+ *
+ * @returns {void}
+ */
 exports = module.exports = function setup(gs){
 
   resetGamestate(gs);
@@ -58,12 +71,30 @@ exports = module.exports = function setup(gs){
   // assign two private cards to each active player
   assignCards(gs);
 
-  const logMessage = gs.players.reduce(function(msg, player) {
+  logger.log('debug', getAssignedCardsLogMessage(gs.players), { tag: gs.handUniqueId });
+
+}
+
+
+
+
+
+/**
+ * @private
+ * @function
+ * @name getAssignedCardsLogMessage
+ * @desc
+ *  return a log of the assigned cards
+ *
+ * @param {Array} players
+ *  list of the players
+ *
+ * @returns {String}
+ */
+function getAssignedCardsLogMessage(players){
+  return players.reduce(function(msg, player) {
     msg += player.status == playerStatus.active ?
       `${player.name} has ${player.cards.reduce(function(all, card){ all += `${card.rank}${card.type}, `; return all; }, '').trim().slice(0,-1)}. ` : `${player.name} is out. `;
     return msg;
-  }, '');
-
-  logger.log('debug', logMessage.trim(), { tag: gs.handUniqueId });
-
+  }, '').trim();
 }

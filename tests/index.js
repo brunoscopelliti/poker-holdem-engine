@@ -20,6 +20,7 @@ const getSymbol = require('./test-utils/get-symbol');
 // browserify, and winston do not play well together...
 // setup the winston object as if it was really here.
 const winston = require('winston');
+winston.addColors = function() {};
 winston.transports = { Console: function() {} };
 winston.Logger = function() {
   const noop = sinon.spy();

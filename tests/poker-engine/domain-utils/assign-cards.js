@@ -4,8 +4,6 @@
 const tape = require('tape');
 const sinon = require('sinon');
 
-const getSymbol = require('../../test-utils/get-symbol');
-
 const playerStatus = require('../../../poker-engine/domain/player-status');
 
 const sut = require('../../../poker-engine/domain-utils/assign-cards');
@@ -41,7 +39,7 @@ tape('assign two cards to each active player', function(t) {
 
   t.equal(marvin.cards.length, 0);
 
-  const deck_ = getSymbol(gamestate, 'deck');
+  const deck_ = Symbol.for('cards-deck');
   t.equal(gamestate[deck_].length, 46);
 
   t.end();

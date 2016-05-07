@@ -105,7 +105,7 @@ const actions = {
    * @param {Number}
    *  the amount of chips the player has to pay
    *
-   * @returns {Promise} the promise is resolved when bet data is stored
+   * @returns {Promise} a promise resolved when bet data is stored
    */
   bet(gs, betAmount) {
 
