@@ -14,7 +14,6 @@ const playerStatus = require('./domain/player-status');
 const asyncFrom = require('./lib/loop-from-async');
 
 
-
 const deck_ = Symbol.for('cards-deck');
 const allin_ = Symbol.for('is-all-in');
 const hasBB_ = Symbol.for('has-big-blind');
@@ -22,8 +21,18 @@ const hasDB_ = Symbol.for('has-dealer-button');
 
 
 
-
-
+/**
+ * @function
+ * @name betLoop
+ * @desc
+ *  It's the generator that controls the betting loop.
+ *  It's completed after the "river", or when all the players but one have folded
+ *
+ * @param {Object} gs:
+ *  the gamestate object
+ *
+ * @returns {void}
+ */
 exports = module.exports = function* betLoop(gs){
 
   logger.info('Starting hand %d/%d betting session', gs.gameProgressiveId, gs.handProgressiveId, { tag: gs.handUniqueId });
@@ -34,6 +43,9 @@ exports = module.exports = function* betLoop(gs){
   // all the community cards are shown
   // and there are more than an active player
   while (gs.commonCards.length <= 5 && gs.activePlayers.length > 1){
+
+
+
 
     // track the current hand session
     gs.session = getGameSession(gs.commonCards.length);
@@ -52,7 +64,7 @@ exports = module.exports = function* betLoop(gs){
     const startIndex = gs.players.findIndex(player => player[starterButton]);
 
     do {
-      yield* asyncFrom(gs.players, startIndex, player => player.talk());
+      yield* asyncFrom(gs.players, startIndex, player => player.talk(gs));
       gs.spinCount++;
     } while(!isBetRoundFinished(gs.activePlayers, gs.callAmount));
 
@@ -135,6 +147,7 @@ function getGameSession(commonCards){
 
 
 
+
 /**
  * @private
  * @function
@@ -161,21 +174,24 @@ function isBetRoundFinished(activePlayers, callAmount) {
 
   // search for active players who are not all in,
   // and still have bet less than the minimum amount to stay active
-  return activePlayers.find(player => !player[allin_] && player.chipsBet < callAmount) != null;
+  return activePlayers.find(player => !player[allin_] && player.chipsBet < callAmount) == null;
 }
 
 
 
 
-
-
-
-
-
-
-
-
-
+/**
+ * @private
+ * @function
+ * @name getPlayerStatusLogMessage
+ * @desc
+ *  return a log of the player' status, and bet
+ *
+ * @param {Array} players
+ *  list of the players
+ *
+ * @returns {String}
+ */
 function getPlayerStatusLogMessage(players){
   return players.reduce(function(msg, player) {
     msg += player.status == playerStatus.out ?
@@ -185,6 +201,20 @@ function getPlayerStatusLogMessage(players){
 }
 
 
+
+
+/**
+ * @private
+ * @function
+ * @name getCommonCardsLogMessage
+ * @desc
+ *  return a log of the community cards
+ *
+ * @param {Array} cards
+ *  list of the cards
+ *
+ * @returns {String}
+ */
 function getCommonCardsLogMessage(cards){
   return cards
     .reduce(function(all, card){
