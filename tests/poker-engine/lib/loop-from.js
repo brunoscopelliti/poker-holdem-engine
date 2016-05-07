@@ -10,7 +10,7 @@ const sut = require('../../../poker-engine/lib/loop-from');
 
 tape('loop-from', t => t.end());
 
-tape('loop on players starting from specified index', function(t){
+tape('loop on a list starting from specified index', function(t){
 
   const spy = sinon.spy();
 

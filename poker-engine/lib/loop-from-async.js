@@ -9,11 +9,13 @@ const done = Symbol('done');
 
 /**
  * @function
- * @name loopFrom
+ * @name asyncFrom
  * @desc
  *  Loop over the list passed as first parameter, and
  *  executes the given function.
  *  The loop starts from the element next to "startIndex".
+ *
+ *  The generator execution breaks after each collback execution.
  *
  * @param {Array} players:
  *  list of the player who play the current tournament;
@@ -22,14 +24,14 @@ const done = Symbol('done');
  *
  * @returns {void}
  */
-exports = module.exports = function loopFrom(players, startIndex, fn) {
+exports = module.exports = function* asyncFrom(players, startIndex, fn){
 
   let player;
   let nextIndex = getNextPlayerIndex(players, startIndex);
 
   while (player = players[nextIndex], !player[done]){
 
-    fn(player, nextIndex);
+    yield fn(player, nextIndex);
 
     player[done] = true;
     nextIndex = getNextPlayerIndex(players, nextIndex);

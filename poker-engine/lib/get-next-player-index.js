@@ -11,6 +11,7 @@
  * @param {Array} players:
  *  list of the player who play the current tournament;
  * @param {Number} playerIndex
+ *  index of the player, of who we want to know who is next
  *
  * @returns {Number} index of the next player
  */
