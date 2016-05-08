@@ -35,7 +35,7 @@
     "poker-combinations": "1.1.0",
     "poker-deck": "1.0.0",
     "poker-rank": "1.1.0",
-    "request": "2.71.0",
+    "request": "2.72.0",
     "winston": "2.2.0"
   },
   "devDependencies": {

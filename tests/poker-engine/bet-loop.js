@@ -22,7 +22,14 @@ const deck_ = Symbol.for('cards-deck');
 function noop() {}
 
 function createPlayer(name, talk){
-  return { name: name, chipsBet: 0, talk: talk };
+  return {
+    name: name,
+    chipsBet: 0,
+    talk: function(gs){
+      return new Promise((res) => { talk.call(this, gs); res(); });
+    },
+    payBet: noop
+  };
 }
 
 

@@ -1,6 +1,9 @@
 
 'use strict';
 
+const request = require('request');
+
+
 const config = require('../../config');
 
 const playerStatus = require('../domain/player-status');
@@ -10,7 +13,8 @@ const logger = require('../../storage/logger');
 
 const splitPot = require('./split-pot');
 
-// const request = require('request');
+
+
 
 // const sortByRank = require('poker-rank');
 // const getCombinations = require('poker-combinations');
@@ -24,60 +28,25 @@ const save = require('../../storage/storage').save;
 // const hasDB = Symbol.for('has-dealer-button');
 
 
-const bet_ = Symbol('internal-bet-method');
+const update_ = Symbol('internal-update-method');
 
 const actions = {
 
-  [bet_](gs, amount) {
+  [update_](gs, betAmount) {
 
-    // TODO should be tested
-
-    if (amount > this.chips){
-      amount = this.chips;
-    }
+    // TODO bruno: test
 
     const isAllin_ = Symbol.for('is-all-in');
 
-    if (amount == this.chips) {
-      this[isAllin_] = true;
-    }
-    else {
-
-      // the total amount of chips which the player
-      // has bet in the current hand
-      const chipsBet = this.chipsBet + amount
-
-      if (chipsBet < gs.callAmount){
-
-        // // player is betting less than the required amount;
-        // // since he is not betting all the chips he owns
-        // // we treat this as a "fold" declaration
-        // // gamestory.info('%s (%d) folded', this.name, this.id, { id: gs.handId, type: 'status' });
-        // return this.fold(gs);
-
-      }
-      else if (chipsBet > gs.callAmount) {
-        // // player is betting a raise;
-        // // since the player is not going allin,
-        // // we accept only raise of an amount that is multiple of the small blind.
-        // const raiseAmount = safeDiff(chipsBet, gs.callAmount);
-        // if (raiseAmount % gs.sb != 0){
-        //   // in case the raise amount is not a multiple of the small blind
-        //   // the raise, is treated as a simple call.
-        //   amount = safeDiff(amount, raiseAmount);
-        // }
-      }
-
-    }
-
+    this[isAllin_] = betAmount == this.chips;
 
 
     // update chip values
     // for the player, and on the gamestate
-    this.chipsBet += amount;
-    this.chips -= amount;
+    this.chipsBet += betAmount;
+    this.chips -= betAmount;
 
-    gs.pot += amount;
+    gs.pot += betAmount;
 
     if (this[isAllin_] || gs.sidepots.length > 0 || gs.players.find(x => x[isAllin_]) != null){
       splitPot(gs);
@@ -85,19 +54,12 @@ const actions = {
 
     gs.callAmount = Math.max(this.chipsBet, gs.callAmount);
 
-    // gamestory.info('Game state after %s (%d)\'s bet: %s', this.name, this.id, JSON.stringify({ pot:gs.pot, callAmount: gs.callAmount, player: { name: this.name, chips: this.chips, chipsBet: this.chipsBet } }), { id: gs.handId, type: 'bet' });
-
-    // return save(gs, { type: 'bet', handId: gs.handId, session: gs.session, playerId: this.id, amount: amount });
-
-
-
-
   },
 
 
   /**
    * @function
-   * @name bet
+   * @name payBet
    * @desc TODO
    *
    * @param {Object} gs:
@@ -107,22 +69,83 @@ const actions = {
    *
    * @returns {Promise} a promise resolved when bet data is stored
    */
-  bet(gs, betAmount) {
+  payBet(gs, betAmount) {
 
-    // since bet is called with the amount returned by
-    // the player's web service,
-    // it's important to sanitize the amount
+    // TODO bruno: test
 
-    const amount = sanitizeAmount(betAmount);
+    // normalize betAmount to the maximum value the player can pay
+    betAmount = Math.min(this.chips, betAmount);
 
 
-    // when the amount is safe ... TODO
+    const playerCallAmount = Math.max(gs.callAmount - this.chipsBet, 0);
 
-    this[bet_](gs, amount);
 
-    // TODO
-    // save data & return a promise!
+    if (betAmount < playerCallAmount && betAmount < this.chips){
+      // when a player bets less than the minimum required amount,
+      // and he is not betting all his chips, he's folding.
+      return this.fold(gs);
+    }
 
+
+    if (betAmount > playerCallAmount) {
+
+      // player is betting a raise.
+      // there're some necessary extra checks we've to do before consider the raise valid
+
+      // 1) check current player player is not the last raiser,
+      //    and assure "You can't raise yourself!" motto is respected.
+
+      if (this.id === gs.lastRaiserId){
+        betAmount = playerCallAmount;
+      }
+      else{
+
+        // 2) check minumum raise amount,
+        //    and eventually update the data about the last raise.
+
+        const minRaise = playerCallAmount + (gs.lastRaiseAmount || 2 * gs.sb);
+
+        if(betAmount < minRaise){
+
+          // when the raise does not meet the minimum raise amount,
+          // it's allowed only when the player is betting all his chips;
+          // however even in this case, it doesn't reopen the bet f
+          // for the players who have already bet in this hand,
+          // that is, last raise data are not updated.
+
+          if (betAmount < this.chips){
+            betAmount = playerCallAmount;
+          }
+        }
+        else{
+
+          // when the raise amount is valid update
+          // lastRaiseAmount, lastRaiserId gamestate properties
+
+          gs.lastRaiseAmount = betAmount - playerCallAmount;
+          gs.lastRaiserId = this.id;
+        }
+      }
+    }
+
+
+    logger.log('silly', '%s (%d) has bet %d.', this.name, this.id, betAmount, { tag: gs.handUniqueId });
+
+    this[update_](gs, betAmount);
+
+    return save({ type: 'bet', handId: gs.handUniqueId, session: gs.session, playerId: this.id, amount: betAmount });
+  },
+
+
+
+  fold(gs) {
+
+    // TODO bruno: test
+
+    this.status = playerStatus.folded;
+
+    logger.log('debug', '%s (%d) has folded.', this.name, this.id, { tag: gs.handUniqueId });
+    return save({ type: 'status', handId: gs.handUniqueId, session: gs.session, playerId: this.id, status: playerStatus.folded });
   },
 
 
@@ -141,7 +164,42 @@ const actions = {
    * @returns {void}
    */
   pay(gs, amount) {
-    this[bet_](gs, amount);
+
+    // TODO bruno: test
+
+    this[update_](gs, amount);
+  },
+
+
+
+
+
+  talk(gs){
+
+    // TODO bruno: test
+
+    const uri = this.serviceUrl;
+
+    const state = Object.create(null);
+
+
+    // TODO fill state
+
+
+
+    const requestSettings = { body: state, json: true, followAllRedirects: true, maxRedirects: 1, timeout: 5000 };
+
+    return new Promise((resolve, reject) => {
+      request.post(this.serviceUrl, requestSettings, (err, response, playerBetAmount) => {
+        if (err){
+          // TODO in this case it's better to resolve anyway the promise
+          return void reject(err);
+        }
+        logger.log('silly', '%s (%d) has bet %d (raw)', this.name, this.id, playerBetAmount, { tag: gs.handUniqueId });
+        resolve(sanitizeAmount(playerBetAmount));
+      });
+    });
+
   }
 
 };
@@ -204,11 +262,6 @@ exports = module.exports = function factory(obj){
 
   ['id', 'name', 'serviceUrl']
     .forEach(prop => Object.defineProperty(player, prop, { value: obj[prop] }))
-
-  // meta information about the service
-  // that responds at "serviceUrl"
-  // TODO: it should be updated at the beginning of each new game
-  player.version = 'Poker folder star!';
 
   // status of the player
   player.status = playerStatus.active;

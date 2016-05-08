@@ -56,9 +56,6 @@ gamestate
   + `serviceUrl`
     Url of the api endpoint on which the player web service responds.
 
-  + `version`
-    Player's deployed version
-
   + `status`
     Player's status. One of `active`, `folded`, or `out`
 
