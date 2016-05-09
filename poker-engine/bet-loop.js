@@ -35,7 +35,7 @@ const hasDB_ = Symbol.for('has-dealer-button');
  */
 exports = module.exports = function* betLoop(gs){
 
-  logger.info('Starting hand %d/%d betting session', gs.gameProgressiveId, gs.handProgressiveId, { tag: gs.handUniqueId });
+  logger.info('Hand %d/%d, starting betting session', gs.gameProgressiveId, gs.handProgressiveId, { tag: gs.handUniqueId });
 
 
 
@@ -72,11 +72,7 @@ exports = module.exports = function* betLoop(gs){
     // when a betting round ends
     // raise data should be cleared
     gs.lastRaiseAmount = 0;
-    if (gs.session != gameSession.river){
-      // after the river, we need to persist this info in order to know
-      // who is the first player who has to showdown.
-      gs.lastRaiserId = null
-    }
+    gs.lastRaiserId = null
 
 
 

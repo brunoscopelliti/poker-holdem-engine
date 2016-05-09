@@ -29,6 +29,10 @@ const assignCards = require('./domain-utils/assign-cards');
  */
 exports = module.exports = function setup(gs){
 
+  logger.info('Hand %d/%d, starting setup ops', gs.gameProgressiveId, gs.handProgressiveId, { tag: gs.handUniqueId });
+
+
+
   resetGamestate(gs);
 
   logger.log('debug', 'Gamestate has been restored to hand initial condition.', { tag: gs.handUniqueId });

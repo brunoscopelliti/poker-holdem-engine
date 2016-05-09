@@ -10,11 +10,10 @@ const gameStatus = require('./domain/tournament-status');
 const playerStatus = require('./domain/player-status');
 
 
-
-const setupTasks = require('./setup-tasks');
+const runSetupTasks = require('./setup-tasks');
+const runTeardownTasks = require('./teardown-tasks');
 
 const play = require('./bet-loop');
-//const handTeardown = require('./holdem-hand-teardown');
 
 
 
@@ -97,21 +96,23 @@ exports = module.exports = function* dealer(gs){
       // restore the initial condition for a new hand, pot,
       // blinds, ante, cards ...
 
-      setupTasks(gs);
+      runSetupTasks(gs);
 
       yield save({ type: 'setup', handId: gs.handUniqueId, pot: gs.pot, sb: gs.sb, ante: gs.ante || 0, players: gs.players });
 
-      //
+
       // play the game
       // each player will be asked to make a bet,
       // until only one player remains active, or
       // the hand arrive to the "river" session
+
       yield* play(gs);
 
-      //
-      // declare the winner of the hand, and
-      // updates accordingly the gamestate
-      // yield handTeardown(gs);
+
+      // find the winner of the hand, eliminated players, ...
+      // and updates accordingly the gamestate
+
+      yield* runTeardownTasks(gs);
 
     }
 
