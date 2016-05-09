@@ -22,7 +22,7 @@ const engine = require('../index');
  */
 exports.save = function save(updates) {
 
-  // TODO tests
+  // TODO bruno: tests
 
   if (Array.isArray(updates.players)){
     const hasDB = Symbol.for('has-dealer-button');

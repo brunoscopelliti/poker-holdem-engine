@@ -66,7 +66,7 @@ exports = module.exports = function splitPot(gs){
   sidepots.push({ quote: maxBet, amount: bets.reduce((all, curr) => all+curr, 0) })
 
 
-  // TODO remove
+  // TODO bruno: remove
   if (process.env.NODE_ENV == 'demo'){
     if (sidepots.reduce(function(all, curr) { all += curr.amount; return all; }, 0) != gs.pot){
       throw new Error('Sidepot/pot mismatch')

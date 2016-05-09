@@ -26,16 +26,26 @@ const save = require('../../storage/storage').save;
 
 
 
-// const hasDB = Symbol.for('has-dealer-button');
-
 
 const update_ = Symbol('internal-update-method');
 
 const actions = {
 
+  /**
+   * @function
+   * @name Symbol('internal-update-method')
+   * @desc
+   *  Update the gamestate, and the player chips
+   *  of his last bet.
+   *
+   * @param {Object} gs:
+   *  the gamestate object
+   * @param {Number}
+   *  the amount of chips the player has bet
+   *
+   * @returns {void}
+   */
   [update_](gs, betAmount) {
-
-    // TODO bruno: test
 
     const isAllin_ = Symbol.for('is-all-in');
 
@@ -192,8 +202,6 @@ const actions = {
    * @returns {Promise} a promise resolved when the bot service response arrives
    */
   talk(gs){
-
-    // TODO bruno: test
 
     const state = Object.create(null);
 

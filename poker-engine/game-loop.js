@@ -44,7 +44,7 @@ exports = module.exports = function* dealer(gs){
     // we reward the winner of the current game,
     // and then start a fresh new game.
 
-    // TODO this section was far too complex than how it could be...
+    // TODO bruno: this section was far too complex than how it could be...
 
     // if (gs.activePlayers.length === 1){
     //
@@ -89,7 +89,7 @@ exports = module.exports = function* dealer(gs){
 
     if (gs.tournamentStatus == gameStatus.play || gs.tournamentStatus == gameStatus.latest){
 
-      // TODO first tournaments have a default sleep time
+      // TODO bruno: first tournaments have a default sleep time
 
       yield sleep();
 
