@@ -46,9 +46,9 @@ exports = module.exports = function* betLoop(gs){
 
 
 
-
     // track the current hand session
     gs.session = getGameSession(gs.commonCards.length);
+
 
 
     logger.log('debug', 'Hand %d/%d, %s', gs.gameProgressiveId, gs.handProgressiveId, gs.session, { tag: gs.handUniqueId });
@@ -64,9 +64,21 @@ exports = module.exports = function* betLoop(gs){
     const startIndex = gs.players.findIndex(player => player[starterButton]);
 
     do {
-      yield* asyncFrom(gs.players, startIndex, player => player.talk(gs));
+      yield* asyncFrom(gs.players, startIndex, player => player.talk(gs).then(player.payBet.bind(player, gs)));
       gs.spinCount++;
     } while(!isBetRoundFinished(gs.activePlayers, gs.callAmount));
+
+
+    // when a betting round ends
+    // raise data should be cleared
+    gs.lastRaiseAmount = 0;
+    if (gs.session != gameSession.river){
+      // after the river, we need to persist this info in order to know
+      // who is the first player who has to showdown.
+      gs.lastRaiserId = null
+    }
+
+
 
 
 
@@ -104,7 +116,7 @@ exports = module.exports = function* betLoop(gs){
     }
     else {
 
-      logger.log('debug', 'Hand %d/%d, %s', gs.gameProgressiveId, gs.handProgressiveId, gs.session, { tag: gs.handUniqueId });
+      logger.log('debug', 'Hand %d/%d, after the %s session', gs.gameProgressiveId, gs.handProgressiveId, gs.session, { tag: gs.handUniqueId });
       logger.log('debug', getPlayerStatusLogMessage(gs.players), { tag: gs.handUniqueId });
 
       return void logger.info('Hand %d/%d, betting session is finished.',
@@ -195,9 +207,9 @@ function isBetRoundFinished(activePlayers, callAmount) {
 function getPlayerStatusLogMessage(players){
   return players.reduce(function(msg, player) {
     msg += player.status == playerStatus.out ?
-      `${player.name} is out` : `${player.name} has bet ${player.chipsBet} (${player.status}).`;
+      `${player.name} is out. ` : `${player.name} has bet ${player.chipsBet} (${player.status}). `;
     return msg;
-  }, '');
+  }, '').trim().slice(0,-1);
 }
 
 

@@ -11,8 +11,13 @@ const saveStub = require('../../storage/storage').save;
 
 
 const sut = require('../../poker-engine/bet-loop');
+
 const engine = require('../../index');
 
+function onGamestateUpdated(data, res) {
+  res();
+}
+engine.on('gamestate:updated', onGamestateUpdated);
 
 const allin_ = Symbol.for('is-all-in');
 const hasBB_ = Symbol.for('has-big-blind');
@@ -49,49 +54,6 @@ tape('when there is only one active player the bet session is finished', functio
 
 
 
-tape('check community cards distribution', function(t){
-
-  const talkSpy = sinon.spy();
-  const cardUpdateSpy = sinon.spy();
-
-  function talk(gs){
-    talkSpy(gs);
-    this.chipsBet += gs.callAmount;
-  }
-
-  const players = ['arale', 'bender', 'marvin', 'wall-e'].map(player => createPlayer(player, talk));
-
-  players[1][hasDB_] = true;
-  players[3][hasBB_] = true;
-
-  const gamestate = {
-    [deck_]: [1,2,3,4,5,6].concat(new Array(46).fill('x')),
-    players: players,
-    activePlayers: players,
-    commonCards: [],
-    callAmount: 50
-  };
-
-  engine.on('gamestate:updated', function(data, res){
-    cardUpdateSpy(data.type, data.session, data.commonCards.slice(0));
-    res();
-  });
-
-
-  run(sut, gamestate)
-    .then(function() {
-      t.equal(talkSpy.callCount, 16);
-      t.equal(cardUpdateSpy.callCount, 3);
-      t.ok(cardUpdateSpy.getCall(0).calledWith('cards', 'flop', [1,2,3]));
-      t.ok(cardUpdateSpy.getCall(1).calledWith('cards', 'turn', [4]));
-      t.ok(cardUpdateSpy.getCall(2).calledWith('cards', 'river', [5]));
-      t.end();
-    });
-
-});
-
-
-
 tape('preflop - check betting session starts from player next to big blind', function(t){
 
   const talkSpy = sinon.spy();
@@ -115,9 +77,6 @@ tape('preflop - check betting session starts from player next to big blind', fun
     commonCards: [],
     callAmount: 0
   };
-
-  engine.on('gamestate:updated', (data, res) => res());
-
 
   run(sut, gamestate)
     .catch(function() {
@@ -148,8 +107,6 @@ tape('postflop - check betting session starts from player next to dealer button'
     commonCards: [1,2,3],
     callAmount: 0
   };
-
-  engine.on('gamestate:updated', (data, res) => res());
 
   run(sut, gamestate)
     .then(function() {
@@ -187,8 +144,6 @@ tape('preflop betting session closes in a single round', function(t){
     commonCards: [],
     callAmount: 50
   };
-
-  engine.on('gamestate:updated', (data, res) => res());
 
   run(sut, gamestate)
     .catch(function() {
@@ -229,8 +184,6 @@ tape('preflop betting session in single round cause player is allin', function(t
     callAmount: 50
   };
 
-  engine.on('gamestate:updated', (data, res) => res());
-
   run(sut, gamestate)
     .catch(function() {
       t.equal(talkSpy.callCount, 4);
@@ -269,12 +222,57 @@ tape('preflop betting session on multiple round', function(t){
     callAmount: 50
   };
 
-  engine.on('gamestate:updated', (data, res) => res());
-
   run(sut, gamestate)
     .catch(function() {
       t.equal(talkSpy.callCount, 8);
       t.deepEqual(talkSpy.args.map(x => x[0]), [0, 0, 0, 0, 1, 1, 1, 1]);
+      t.end();
+    });
+
+});
+
+
+
+tape('check community cards distribution', function(t){
+
+  const talkSpy = sinon.spy();
+  const cardUpdateSpy = sinon.spy();
+
+  function talk(gs){
+    talkSpy(gs);
+    this.chipsBet += gs.callAmount;
+  }
+
+  const players = ['arale', 'bender', 'marvin', 'wall-e'].map(player => createPlayer(player, talk));
+
+  players[1][hasDB_] = true;
+  players[3][hasBB_] = true;
+
+  const gamestate = {
+    [deck_]: [1,2,3,4,5,6].concat(new Array(46).fill('x')),
+    players: players,
+    activePlayers: players,
+    commonCards: [],
+    callAmount: 50
+  };
+
+  engine.removeListener('gamestate:updated', onGamestateUpdated);
+  engine.on('gamestate:updated', onGamestateUpdatedCustom);
+
+  function onGamestateUpdatedCustom(data, res){
+    cardUpdateSpy(data.type, data.session, data.commonCards.slice(0));
+    res();
+  }
+
+  run(sut, gamestate)
+    .then(function() {
+      t.equal(talkSpy.callCount, 16);
+      t.equal(cardUpdateSpy.callCount, 3);
+      t.ok(cardUpdateSpy.getCall(0).calledWith('cards', 'flop', [1,2,3]));
+      t.ok(cardUpdateSpy.getCall(1).calledWith('cards', 'turn', [4]));
+      t.ok(cardUpdateSpy.getCall(2).calledWith('cards', 'river', [5]));
+
+      engine.removeListener('gamestate:updated', onGamestateUpdatedCustom);
       t.end();
     });
 
