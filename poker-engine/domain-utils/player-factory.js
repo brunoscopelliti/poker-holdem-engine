@@ -1,6 +1,7 @@
 
 'use strict';
 
+const assign = require('merge-descriptors');
 const request = require('request');
 
 
@@ -74,8 +75,6 @@ const actions = {
    */
   payBet(gs, betAmount) {
 
-    // TODO bruno: test
-
     // normalize betAmount to the maximum value the player can pay
     betAmount = Math.min(this.chips, betAmount);
 
@@ -132,7 +131,7 @@ const actions = {
     }
 
 
-    logger.log('silly', '%s (%d) has bet %d.', this.name, this.id, betAmount, { tag: gs.handUniqueId });
+    logger.log('debug', '%s (%d) has bet %d.', this.name, this.id, betAmount, { tag: gs.handUniqueId });
 
     this[update_](gs, betAmount);
 
@@ -153,9 +152,6 @@ const actions = {
    * @returns {Promise} a promise resolved when updated status is stored
    */
   fold(gs) {
-
-    // TODO bruno: test
-
     this.status = playerStatus.folded;
 
     logger.log('debug', '%s (%d) has folded.', this.name, this.id, { tag: gs.handUniqueId });
@@ -178,38 +174,102 @@ const actions = {
    * @returns {void}
    */
   pay(gs, amount) {
-
-    // TODO bruno: test
-
     this[update_](gs, amount);
   },
 
 
-
-
-
+  /**
+   * @function
+   * @name talk
+   * @desc
+   *  Prepare the gamestate model with the only information
+   *  each player should know, then send an http request to the service
+   *  to get the bet amount
+   *
+   * @param {Object} gs:
+   *  the gamestate object
+   *
+   * @returns {Promise} a promise resolved when the bot service response arrives
+   */
   talk(gs){
 
     // TODO bruno: test
 
-    const uri = this.serviceUrl;
-
     const state = Object.create(null);
 
+    // unique id of the current tournament
+    state.tournamentId = gs.tournamentId;
 
-    // TODO fill state
+    // initial amount of chips available to each player
+    state.buyin = config.BUYIN;
 
+    // game number of the current tournament
+    state.game = gs.gameProgressiveId;
+
+    // hand number of the current game
+    state.hand = gs.handProgressiveId;
+
+    // count the number of time
+    // that players had already have the possibility to bet in the current session
+    state.spinCount = gs.spinCount;
+
+    // value of the small blinds
+    // ... big blind is always twice
+    state.sb = gs.sb;
+
+    // value of the pot, and eventually sidepot.
+    // are updated after each bet
+    state.pot = gs.pot;
+    state.sidepots = gs.sidepots;
+
+    // list of the community cards on the table
+    // ... everyone is able to access this same list
+    state.commonCards = gs.commonCards;
+
+    // index of the player with the dealer button
+    state.db = gs.dealerButtonIndex;
+
+    // amount of chips the current player must bet in order to remain in the game;
+    // it depends by how much he bet previously
+    state.callAmount = Math.max(gs.callAmount - this.chipsBet, 0);
+
+    // minimum amount the player has to bet
+    // in case he want to raise the call amount for the other players
+    state.minimumRaiseAmount = state.callAmount + (gs.lastRaiseAmount || 2 * gs.sb);
+
+    // the list of the players...
+    // make sure that the current players can see only his cards
+    state.players = gs.players.map(function(player) {
+
+      // clean player data
+      let mysterious = assign({}, player);
+
+      Object.getOwnPropertySymbols(mysterious)
+        .forEach(symb => delete mysterious[symb]);
+
+      if (this.id === player.id){
+        return mysterious;
+      }
+
+      delete mysterious.cards;
+      delete mysterious.bestCombination;
+      return mysterious;
+
+    }, this);
+
+    // index of the player 'this' in the players array
+    state.me = gs.players.findIndex(player => player.id == this.id);
 
 
     const requestSettings = { body: state, json: true, followAllRedirects: true, maxRedirects: 1, timeout: 5000 };
 
     return new Promise((resolve, reject) => {
-      request.post(this.serviceUrl, requestSettings, (err, response, playerBetAmount) => {
+      request.post(`${this.serviceUrl}bet`, requestSettings, (err, response, playerBetAmount) => {
         if (err){
-          // TODO in this case it's better to resolve anyway the promise
-          return void reject(err);
+          logger.warn('Bet request to %s failed, cause %s', this.serviceUrl, err.message, { tag: gs.handUniqueId });
+          return void resolve(0);
         }
-        logger.log('silly', '%s (%d) has bet %d (raw)', this.name, this.id, playerBetAmount, { tag: gs.handUniqueId });
+        logger.log('silly', '%s (%d) has bet %s (raw)', this.name, this.id, playerBetAmount, { tag: gs.handUniqueId });
         resolve(sanitizeAmount(playerBetAmount));
       });
     });
