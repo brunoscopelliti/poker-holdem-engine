@@ -14,6 +14,7 @@ const config = require('../../../config');
 const playerStatus = require('../../../poker-engine/domain/player-status');
 
 const getSymbol = require('../../test-utils/get-symbol');
+const isAllin_ = Symbol.for('is-all-in');
 
 const sut = require('../../../poker-engine/domain-utils/player-factory');
 
@@ -42,10 +43,69 @@ tape('create new player', function(t) {
   t.strictEqual(player.chipsBet, 0, 'player hasnt bet anything yet')
   t.ok(Array.isArray(player.cards), 'player cards');
 
+  t.equal(typeof player.fold, 'function', 'player can fold');
   t.equal(typeof player.payBet, 'function', 'player can bet');
   t.equal(typeof player.pay, 'function', 'player can pay');
+  t.equal(typeof player.talk, 'function', 'player can talk');
 
   t.end();
+});
+
+
+
+
+tape('player update gamestate (internal)', t => t.end());
+
+tape('internal gamestate update', function(t) {
+
+  const arale = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
+
+  const bender = sut({ name: 'bender', id: 'b2', serviceUrl: 'http:bender.com' });
+
+  const marvin = sut({ name: 'marvin', id: 'm3', serviceUrl: 'http:marvin.com' });
+  marvin.chips = 50;
+
+  const gamestate = { pot: 150, sidepots: [], callAmount: 100, players: [arale, bender, marvin] };
+
+  const update_ = getSymbol(Object.getPrototypeOf(arale), 'internal-update-method');
+
+  arale[update_](gamestate, 100);
+
+  t.equal(arale[isAllin_], false);
+  t.equal(arale.chipsBet, 100);
+  t.equal(arale.chips, 400);
+  t.equal(gamestate.pot, 250);
+  t.equal(gamestate.callAmount, 100);
+  t.equal(gamestate.sidepots.length, 0);
+
+
+
+  bender[update_](gamestate, 300);
+
+  t.equal(bender[isAllin_], false);
+  t.equal(bender.chipsBet, 300);
+  t.equal(bender.chips, 200);
+  t.equal(gamestate.pot, 550);
+  t.equal(gamestate.callAmount, 300);
+  t.equal(gamestate.sidepots.length, 0);
+
+
+
+  marvin[update_](gamestate, 50);
+
+  t.equal(marvin[isAllin_], true);
+  t.equal(marvin.chipsBet, 50);
+  t.equal(marvin.chips, 0);
+  t.equal(gamestate.pot, 600);
+  t.equal(gamestate.callAmount, 50);
+  t.equal(gamestate.sidepots.length, 2);
+  t.equal(gamestate.sidepots[0].quote, 50);
+  t.equal(gamestate.sidepots[0].amount, 150);
+  t.equal(gamestate.sidepots[1].quote, 300);
+  t.equal(gamestate.sidepots[1].amount, 300);
+
+  t.end();
+
 });
 
 
