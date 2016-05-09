@@ -105,6 +105,21 @@ gamestate
   This information is used in order to compute the blind amount.
 
 
+* `lastRaiserId`
+
+  The id of the player who has raised last.
+
+  It should be reset after each session, but not after the river.
+
+* `lastRaiseAmount`
+
+  The amount of the raise.
+
+  It's computed by applying `lastRaiseAmount = playerBetAmount - playerCallAmount`.
+
+  It should be reset after each session.
+
+
 * `sb`
 
   It's the amount of the small blind.

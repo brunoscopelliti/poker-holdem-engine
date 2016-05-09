@@ -60,7 +60,10 @@ const actions = {
   /**
    * @function
    * @name payBet
-   * @desc TODO
+   * @desc
+   *  Validate, and eventually normalize the bet amount
+   *  in order to assure that poker hold'em rules are respected,
+   *  then updates the gamestate.
    *
    * @param {Object} gs:
    *  the gamestate object
@@ -137,7 +140,18 @@ const actions = {
   },
 
 
-
+  /**
+   * @function
+   * @name fold
+   * @desc
+   *  Update the player status.
+   *  A folded player can't bet further in the current hand.
+   *
+   * @param {Object} gs:
+   *  the gamestate object
+   *
+   * @returns {Promise} a promise resolved when updated status is stored
+   */
   fold(gs) {
 
     // TODO bruno: test
