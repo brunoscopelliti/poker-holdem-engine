@@ -5,6 +5,8 @@ const playerStatus = require('../domain/player-status');
 
 const getNextPlayer = require('../lib/get-next-player-index');
 
+const hasDB_ = Symbol.for('has-dealer-button');
+
 
 
 /**
@@ -20,22 +22,20 @@ const getNextPlayer = require('../lib/get-next-player-index');
  */
 exports = module.exports = function assignDealerButton(gs){
 
-  const hasDB = Symbol.for('has-dealer-button');
-
   if (gs.handProgressiveId == 1){
 
     gs.dealerButtonRound = 0;
 
     const dbIndex = gs.initialDealerButtonIndex = (gs.gameProgressiveId - 1) % gs.players.length;
 
-    return gs.players[dbIndex][hasDB] = true;
+    return gs.players[dbIndex][hasDB_] = true;
   }
 
 
   let dealerButtonIndex = gs.dealerButtonIndex;
 
   if (dealerButtonIndex >= 0){
-    delete gs.players[dealerButtonIndex][hasDB];
+    delete gs.players[dealerButtonIndex][hasDB_];
   }
 
 
@@ -46,6 +46,6 @@ exports = module.exports = function assignDealerButton(gs){
     }
   } while(gs.players[dealerButtonIndex].status != playerStatus.active);
 
-  gs.players[dealerButtonIndex][hasDB] = true;
+  gs.players[dealerButtonIndex][hasDB_] = true;
 
 };

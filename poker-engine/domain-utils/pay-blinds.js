@@ -3,6 +3,8 @@
 
 const getNextActivePlayerIndex = require('../lib/get-next-active-player-index');
 
+const hasBB_ = Symbol.for('has-big-blind');
+
 
 
 /**
@@ -16,8 +18,6 @@ const getNextActivePlayerIndex = require('../lib/get-next-active-player-index');
  * @returns {void}
  */
 exports = module.exports = function payBlinds(gs){
-
-  const hasBB = Symbol.for('has-big-blind');
 
   const dealerButtonIndex = gs.dealerButtonIndex;
 
@@ -33,6 +33,6 @@ exports = module.exports = function payBlinds(gs){
   const bigBlindIndex = getNextActivePlayerIndex(gs.players, smallBlindIndex);
 
   gs.players[bigBlindIndex].pay(gs, 2*gs.sb);
-  gs.players[bigBlindIndex][hasBB] = true;
+  gs.players[bigBlindIndex][hasBB_] = true;
 
 };

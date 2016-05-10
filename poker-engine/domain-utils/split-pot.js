@@ -1,31 +1,5 @@
 
-
 'use strict';
-
-
-function createSidepots(players) {
-
-  const isAllin_ = Symbol.for('is-all-in');
-
-  const sidepots = [];
-
-  players.forEach(function(player, i, players) {
-
-    if (!player[isAllin_] || sidepots.find(x => x.quote == player.chipsBet) != null){
-      return;
-    }
-
-    // a sidepot should be created only
-    // when the player is all-in, and there's at least another player who has bet more than him
-    if (players.find(x => x.chipsBet > player.chipsBet) != null){
-      sidepots.push({ quote: player.chipsBet, amount: 0 });
-    }
-
-  });
-
-  return sidepots.sort((a,b) => a.quote - b.quote);
-
-}
 
 
 
@@ -72,5 +46,31 @@ exports = module.exports = function splitPot(gs){
       throw new Error('Sidepot/pot mismatch')
     }
   }
+
+}
+
+
+
+function createSidepots(players) {
+
+  const allin_ = Symbol.for('is-all-in');
+
+  const sidepots = [];
+
+  players.forEach(function(player, i, players) {
+
+    if (!player[allin_] || sidepots.find(x => x.quote == player.chipsBet) != null){
+      return;
+    }
+
+    // a sidepot should be created only
+    // when the player is all-in, and there's at least another player who has bet more than him
+    if (players.find(x => x.chipsBet > player.chipsBet) != null){
+      sidepots.push({ quote: player.chipsBet, amount: 0 });
+    }
+
+  });
+
+  return sidepots.sort((a,b) => a.quote - b.quote);
 
 }

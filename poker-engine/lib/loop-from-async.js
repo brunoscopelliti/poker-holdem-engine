@@ -3,7 +3,7 @@
 
 const getNextPlayerIndex = require('./get-next-player-index');
 
-const done = Symbol('done');
+const done_ = Symbol('done');
 
 
 
@@ -29,15 +29,15 @@ exports = module.exports = function* asyncFrom(players, startIndex, fn){
   let player;
   let nextIndex = getNextPlayerIndex(players, startIndex);
 
-  while (player = players[nextIndex], !player[done]){
+  while (player = players[nextIndex], !player[done_]){
 
     yield fn(player, nextIndex);
 
-    player[done] = true;
+    player[done_] = true;
     nextIndex = getNextPlayerIndex(players, nextIndex);
 
   }
 
-  players.forEach(player => delete(player[done]));
+  players.forEach(player => delete(player[done_]));
 
 }

@@ -141,7 +141,7 @@ const actions = {
     }
 
 
-    logger.log('debug', '%s (%d) has bet %d.', this.name, this.id, betAmount, { tag: gs.handUniqueId });
+    logger.log('debug', '%s (%s) has bet %d.', this.name, this.id, betAmount, { tag: gs.handUniqueId });
 
     this[update_](gs, betAmount);
 
@@ -277,7 +277,7 @@ const actions = {
           logger.warn('Bet request to %s failed, cause %s', this.serviceUrl, err.message, { tag: gs.handUniqueId });
           return void resolve(0);
         }
-        logger.log('silly', '%s (%d) has bet %s (raw)', this.name, this.id, playerBetAmount, { tag: gs.handUniqueId });
+        logger.log('silly', '%s (%s) has bet %s (raw)', this.name, this.id, playerBetAmount, { tag: gs.handUniqueId });
         resolve(sanitizeAmount(playerBetAmount));
       });
     });

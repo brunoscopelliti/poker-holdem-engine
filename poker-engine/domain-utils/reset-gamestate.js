@@ -23,13 +23,12 @@ exports = module.exports = function resetGamestate(gs){
   gs.commonCards = [];
 
 
-  const isAllin = Symbol.for('is-all-in');
-  const hasBB = Symbol.for('has-big-blind');
-  const badge = Symbol.for('last-raiser');
+  const allin_ = Symbol.for('is-all-in');
+  const hasBB_ = Symbol.for('has-big-blind');
 
   gs.players.forEach(function(player){
 
-    [hasBB, isAllin, badge].forEach(function(symb) { delete player[symb]; });
+    [hasBB_, allin_].forEach(function(symb) { delete player[symb]; });
 
     // players who have folded in the previous hand
     // should be re-activated

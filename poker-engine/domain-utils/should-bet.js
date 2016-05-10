@@ -3,6 +3,8 @@
 
 const playerStatus = require('../domain/player-status');
 
+const allin_ = Symbol.for('is-all-in');
+
 
 
 /**
@@ -24,8 +26,6 @@ const playerStatus = require('../domain/player-status');
  * @returns {Promise}
  */
 exports = module.exports = function shouldBet(gs, player, talkFn){
-
-  const allin_ = Symbol.for('is-all-in');
 
   // * player.status == status.active
   //    only the active players have the right to bet.

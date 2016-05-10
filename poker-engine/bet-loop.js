@@ -16,12 +16,6 @@ const shouldBet = require('./domain-utils/should-bet');
 const asyncFrom = require('./lib/loop-from-async');
 
 
-const deck_ = Symbol.for('cards-deck');
-const allin_ = Symbol.for('is-all-in');
-const hasBB_ = Symbol.for('has-big-blind');
-const hasDB_ = Symbol.for('has-dealer-button');
-
-
 
 /**
  * @function
@@ -38,6 +32,11 @@ const hasDB_ = Symbol.for('has-dealer-button');
 exports = module.exports = function* betLoop(gs){
 
   logger.info('Hand %d/%d, starting betting session', gs.gameProgressiveId, gs.handProgressiveId, { tag: gs.handUniqueId });
+
+
+  const deck_ = Symbol.for('cards-deck');
+  const hasBB_ = Symbol.for('has-big-blind');
+  const hasDB_ = Symbol.for('has-dealer-button');
 
 
 
@@ -181,6 +180,8 @@ function isBetRoundFinished(activePlayers, callAmount) {
   if (activePlayers.length == 1){
     return true;
   }
+
+  const allin_ = Symbol.for('is-all-in');
 
   // search for active players who are not all in,
   // and still have bet less than the minimum amount to stay active
