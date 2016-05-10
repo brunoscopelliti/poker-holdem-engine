@@ -97,7 +97,7 @@ tape('internal gamestate update', function(t) {
   t.equal(marvin.chipsBet, 50);
   t.equal(marvin.chips, 0);
   t.equal(gamestate.pot, 600);
-  t.equal(gamestate.callAmount, 50);
+  t.equal(gamestate.callAmount, 300);
   t.equal(gamestate.sidepots.length, 2);
   t.equal(gamestate.sidepots[0].quote, 50);
   t.equal(gamestate.sidepots[0].amount, 150);
@@ -463,7 +463,7 @@ tape('before the promise is resolved, the amount is sanitized (negative number)'
   postStub.yields(null, {}, '-50');
   arale.talk({ players: [] })
     .then(function(betAmount){
-      t.equal(betAmount, 50);
+      t.equal(betAmount, 0);
       t.end();
     });
 
