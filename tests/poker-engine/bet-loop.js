@@ -28,6 +28,8 @@ function noop() {}
 
 function createPlayer(name, talk){
   return {
+    status: 'active',
+    id: name+'ID',
     name: name,
     chipsBet: 0,
     talk: function(gs){
@@ -186,7 +188,7 @@ tape('preflop betting session in single round cause player is allin', function(t
 
   run(sut, gamestate)
     .catch(function() {
-      t.equal(talkSpy.callCount, 4);
+      t.equal(talkSpy.callCount, 3);
       t.ok(talkSpy.alwaysCalledWith(0));
       t.end();
     });
