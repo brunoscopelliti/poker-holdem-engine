@@ -520,6 +520,7 @@ tape('return data about the strongest combination', function(t) {
   const expectedStrongestCombination = [{ rank: 'A', type: 'S' }, { rank: 'A', type: 'D' }, { rank: 'K', type: 'D' }, { rank: 'A', type: 'C' }, { rank: 'A', type: 'H' }];
 
   t.deepEqual(poker, expectedStrongestCombination);
+  t.deepEqual(arale.bestCombination, expectedStrongestCombination);
 
   t.end();
 });

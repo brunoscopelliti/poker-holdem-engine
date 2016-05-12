@@ -40,6 +40,7 @@ exports = module.exports = function resetGamestate(gs){
 
     player.cards = [];
     player.bestCombination = [];
+    player.bestCombinationData = null;
 
   });
 

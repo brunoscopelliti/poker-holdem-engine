@@ -64,7 +64,12 @@ tape('setup initial conditions for a new hand', function(t) {
       }, {
         rank: 'A',
         type: 'S'
-      }]
+      }],
+      bestCombinationData: {
+        strength: 64,
+        rank: 'A',
+        kickers: ['2']
+      }
     }, {
       name: 'marvin',
       status: playerStatus.active,
@@ -91,6 +96,7 @@ tape('setup initial conditions for a new hand', function(t) {
   t.strictEqual(bender.status, playerStatus.active);
   t.strictEqual(bender.cards.length, 0);
   t.strictEqual(bender.bestCombination.length, 0);
+  t.strictEqual(bender.bestCombinationData, null);
 
 
   const marvin = gamestate.players.find(x => x.name == 'marvin');
