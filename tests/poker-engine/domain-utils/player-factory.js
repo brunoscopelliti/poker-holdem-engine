@@ -507,7 +507,7 @@ tape('return data about the strongest combination', function(t) {
   arale.cards = [
     { rank: 'A', type: 'S' },
     { rank: 'A', type: 'D' },
-  ]
+  ];
 
   const poker = arale.showdown([
     { rank: '9', type: 'D' },
@@ -515,12 +515,11 @@ tape('return data about the strongest combination', function(t) {
     { rank: 'K', type: 'D' },
     { rank: 'A', type: 'C' },
     { rank: 'A', type: 'H' }
-  ])
+  ]);
 
-  t.equal(poker.strength, 64);
-  t.equal(poker.rank, 'A');
-  t.equal(poker.kickers.length, 1);
-  t.equal(poker.kickers[0], 'K');
+  const expectedStrongestCombination = [{ rank: 'A', type: 'S' }, { rank: 'A', type: 'D' }, { rank: 'K', type: 'D' }, { rank: 'A', type: 'C' }, { rank: 'A', type: 'H' }];
+
+  t.deepEqual(poker, expectedStrongestCombination);
 
   t.end();
 });

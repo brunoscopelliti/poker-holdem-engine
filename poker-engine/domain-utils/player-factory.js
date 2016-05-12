@@ -296,7 +296,7 @@ const actions = {
     const strongestCombinationCards = allCombinations[strongestCombination.index];
     logger.log('debug', '%s (%s) best combination is %s', this.name, this.id, strongestCombinationCards.toString().replace(/,/g, ', ').trim());
 
-    return strongestCombination;
+    return strongestCombinationCards;
   }
 
 };
