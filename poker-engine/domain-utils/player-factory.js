@@ -1,28 +1,21 @@
 
 'use strict';
 
-const assign = require('merge-descriptors');
-const request = require('request');
-
-
 const config = require('../../config');
+
+const logger = require('../../storage/logger');
+const save = require('../../storage/storage').save;
+
+const request = require('request');
+const sortByRank = require('poker-rank');
+const assign = require('merge-descriptors');
+const getCombinations = require('poker-combinations');
+
 
 const playerStatus = require('../domain/player-status');
 
-
-const logger = require('../../storage/logger');
-
 const splitPot = require('./split-pot');
 
-
-
-
-// const sortByRank = require('poker-rank');
-// const getCombinations = require('poker-combinations');
-
-
-
-const save = require('../../storage/storage').save;
 
 
 
@@ -282,6 +275,28 @@ const actions = {
       });
     });
 
+  },
+
+
+  /**
+   * @function
+   * @name showdown
+   * @desc
+   *  Compute the player best combination
+   *
+   * @param {Array} commonCards:
+   *  the list of cards displayed on the table
+   *
+   * @returns {Array} The strongest cards combination
+   */
+  showdown(commonCards){
+    const allCombinations = getCombinations(this.cards.concat(commonCards), 5);
+    const strongestCombination = sortByRank(allCombinations)[0];
+
+    const strongestCombinationCards = allCombinations[strongestCombination.index];
+    logger.log('debug', '%s (%s) best combination is %s', this.name, this.id, strongestCombinationCards.toString().replace(/,/g, ', ').trim());
+
+    return strongestCombination;
   }
 
 };

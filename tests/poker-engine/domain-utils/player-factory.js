@@ -494,3 +494,33 @@ tape('before the promise is resolved, the amount is sanitized (valid amount)', f
     });
 
 });
+
+
+
+
+tape('player#showdown', t => t.end());
+
+tape('return data about the strongest combination', function(t) {
+
+  const arale = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
+
+  arale.cards = [
+    { rank: 'A', type: 'S' },
+    { rank: 'A', type: 'D' },
+  ]
+
+  const poker = arale.showdown([
+    { rank: '9', type: 'D' },
+    { rank: '5', type: 'D' },
+    { rank: 'K', type: 'D' },
+    { rank: 'A', type: 'C' },
+    { rank: 'A', type: 'H' }
+  ])
+
+  t.equal(poker.strength, 64);
+  t.equal(poker.rank, 'A');
+  t.equal(poker.kickers.length, 1);
+  t.equal(poker.kickers[0], 'K');
+
+  t.end();
+});
