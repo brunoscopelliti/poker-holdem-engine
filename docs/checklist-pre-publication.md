@@ -7,3 +7,5 @@
 * Update in the wiki the name of the `round` game state property. It is now called `hand`.
 
 * Update also the sample game state that is logged into the console.
+
+* Use ANTE

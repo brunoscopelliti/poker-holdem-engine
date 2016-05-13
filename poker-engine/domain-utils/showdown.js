@@ -11,7 +11,9 @@ const eachFrom = require('../lib/loop-from');
  * @function
  * @name showdown
  * @desc
- *  ...
+ *  Fill the gamestate handChart property.
+ *  handChart is an array containing data about the players,
+ *  sorted by the strength of their best combination.
  *
  * @param {Object} gs:
  *  the gamestate object

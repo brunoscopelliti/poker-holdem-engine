@@ -38,6 +38,7 @@ tape('only one winner', function(t){
 
   activePlayers[0].cards = [{ rank: '7', type: 'C' }, { rank: '3', type: 'D' }]; // fullhouse 7
   activePlayers[1].cards = [{ rank: 'Q', type: 'C' }, { rank: 'Q', type: 'D' }]; // fullhouse Q
+  activePlayers[1].chipsBet = 100;
   activePlayers[2].cards = [{ rank: '7', type: 'S' }, { rank: '9', type: 'D' }]; // three of a kind
   activePlayers[3].cards = [{ rank: '5', type: 'C' }, { rank: '5', type: 'D' }]; // double pair
 
@@ -56,6 +57,7 @@ tape('only one winner', function(t){
 
   t.ok(!gamestate.handChart.find(player => !!player.bestCombinationData.exequo));
   t.equal(gamestate.handChart[0].id, 'b2');
+  t.equal(gamestate.handChart[0].quote, 100);
   t.deepEqual(gamestate.handChart.map(player => player.id), ['b2','a1','m3','w4'], 'check ranks');
 
   t.end();

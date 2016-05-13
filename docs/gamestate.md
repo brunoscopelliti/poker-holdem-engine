@@ -68,14 +68,16 @@ gamestate
   + `cards`
     List of the cards assigned to the player in the current hand
 
+  + `bestCombination`
+  + `bestCombinationData`
+    It's added during the showdown.
+    It contains information about the strongest point of the player.
+
   + `Symbol('has-big-blind')`
     True when the player has bet the big blind
 
   + `Symbol('is-all-in')`
     True when the player has gone all-in in the current hand
-
-  + `Symbol('last-raiser')`
-    True when the player was the last to bet a raise at the `river`
 
 
 * `activePlayers`
@@ -164,3 +166,10 @@ gamestate
 * `commonCards`
 
   List of the community cards, with which players can form their best combination.
+
+
+
+* `handChart`
+
+  It's an array containing data about the players, sorted by the strength of their best combination.
+  It contains objects with the following properties: `name`, `id`, `quote`, `bestCombination`, `bestCombinationData`.
