@@ -44,4 +44,6 @@ exports = module.exports = function resetGamestate(gs){
 
   });
 
+  // TODO bruno: reset gs.handChart
+
 };
