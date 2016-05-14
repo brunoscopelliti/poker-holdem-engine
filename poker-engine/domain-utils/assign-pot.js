@@ -1,8 +1,7 @@
 
 'use strict';
 
-
-const getNextActivePlayerIndex = require('../lib/get-next-active-player-index');
+const loopFrom = require('../lib/loop-from');
 
 
 
@@ -46,8 +45,9 @@ exports = module.exports = function assignPot(gs) {
 
 
 
-  //  * there is only an active player;
-  //    all the others were out at the beggining of the hand, and/or have folded
+  //  shortcut
+  //  when there is only an active player,
+  //  he takes the full pot
 
   if (activePlayers.length == 1){
     return void assignChips(activePlayers[0].id);
@@ -76,16 +76,26 @@ exports = module.exports = function assignPot(gs) {
     const sidepotSplittedAmount = sidepot.amount / exequoContenders.length;
 
     exequoContenders.forEach(contender => assignChips(contender.id, Math.floor(sidepotSplittedAmount)));
+
+
+
+    // in the case of a split pot,
+    // the chip(s) will be split as evenly as possible,
+    // with any odd chip(s) left over given out to the winning player
+    // with the worst position (left of the button being the worst).
+
+    const excidingChips = sidepot.amount % exequoContenders.length;
+
+    if (excidingChips > 0){
+      let assigned = false;
+      loopFrom(gs.players, gs.dealerButtonIndex, function(player) {
+        if (!assigned && exequoContenders.find(contender => contender.id == player.id)){
+          assignChips(player.id, excidingChips);
+          assigned = true;
+        }
+      });
+    }
+
   });
-
-
-
-
-  // TODO bruno: gs.pot could be != 0
-  // the decimal parts should be assigned to the player with the worst position
-
-  // const worstPositionIndex = getNextActivePlayerIndex(gs.players, gs.dealerButtonIndex);
-  // assignChips(gs.players[worstPositionIndex].id);
-
 
 };
