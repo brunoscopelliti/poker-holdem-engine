@@ -294,7 +294,7 @@ const actions = {
     const strongestCombination = sortByRank(allCombinations)[0];
 
     const strongestCombinationCards = allCombinations[strongestCombination.index];
-    logger.log('debug', '%s (%s) best combination is %s', this.name, this.id, strongestCombinationCards.toString().replace(/,/g, ', ').trim());
+    logger.log('debug', '%s (%s) best combination is %s', this.name, this.id, getBestCombinationCardsLogMessage(strongestCombinationCards));
 
     return this.bestCombination = strongestCombinationCards;
   }
@@ -327,14 +327,34 @@ function isValidPlayer(player){
  * @returns {Number} amount (valid)
  */
 function sanitizeAmount(amount){
-
   if (typeof amount != 'number'){
     amount = Number.parseInt(amount, 10);
   }
-
   return amount > 0 ? amount : 0;
-
 }
+
+/**
+ * @private
+ * @function
+ * @name getBestCombinationCardsLogMessage
+ * @desc
+ *  return a log of the player best combination
+ *
+ * @param {Array} cards
+ *  list of the cards
+ *
+ * @returns {String}
+ */
+function getBestCombinationCardsLogMessage(cards){
+  return cards
+    .reduce(function(all, card){
+      all += `${card.rank}${card.type}, `;
+      return all;
+    }, '').trim().slice(0,-1);
+}
+
+
+
 
 /**
  * @function
