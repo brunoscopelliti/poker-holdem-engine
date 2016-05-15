@@ -74,13 +74,6 @@ tape('setup initial conditions for a new hand', function(t) {
       name: 'marvin',
       status: playerStatus.active,
       [Symbol.for('is-all-in')]: true
-    }],
-    handChart: [{
-      name: 'marvin',
-      bestCards: []
-    }, {
-      name: 'bender',
-      bestCards: []
     }]
   };
 
@@ -91,7 +84,6 @@ tape('setup initial conditions for a new hand', function(t) {
   t.strictEqual(gamestate.callAmount, 0);
   t.strictEqual(gamestate.commonCards.length, 0);
   t.strictEqual(gamestate.sidepots.length, 0);
-  t.strictEqual(gamestate.handChart, null);
 
   const arale = gamestate.players.find(x => x.name == 'arale');
 
