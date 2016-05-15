@@ -22,6 +22,8 @@ exports = module.exports = function resetGamestate(gs){
   gs.sidepots = [];
   gs.commonCards = [];
 
+  gs.handChart = null;
+
 
   const allin_ = Symbol.for('is-all-in');
   const hasBB_ = Symbol.for('has-big-blind');
@@ -43,7 +45,5 @@ exports = module.exports = function resetGamestate(gs){
     player.bestCombinationData = null;
 
   });
-
-  // TODO bruno: reset gs.handChart
 
 };
