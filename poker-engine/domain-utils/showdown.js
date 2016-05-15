@@ -40,7 +40,8 @@ exports = module.exports = function showdown(gs) {
       name: player.name,
       id: player.id,
       quote: player.chipsBet,
-      bestCombination: player.bestCombination,
+      cards: player.cards,
+      bestCards: player.bestCombination,
       bestCombinationData: bestCombinationData
     };
   });
