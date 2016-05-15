@@ -35,42 +35,49 @@ exports = module.exports = function* dealer(gs){
 
   while (gs.tournamentStatus != gameStatus.stop){
 
-    // const activePlayers = gs.players.filter(player => player.status == playerStatus.active);
+    const activePlayers = gs.activePlayers;
 
-    // before a new game hand starts,
-    // check the number of the active players.
-    // if there is only one active player
-    // we reward the winner of the current game,
-    // and then start a fresh new game.
 
-    // TODO bruno: this section was far too complex than how it could be...
+    // when before a new hand starts,
+    // there is only one active player
+    // the current game is finished.
 
-    // if (gs.activePlayers.length === 1){
-    //
-    //   // compute the points earned by each player
-    //   let playerCount = gs.rank.unshift(gs.activePlayers[0].name);
-    //
-    //   let awards = config.AWARDS[playerCount-2];
-    //   let playerPoints = gs.rank.map((r,i) => ({ name: r, pts: awards[i] }));
-    //
-    //   //gamestory.info('Result for game %d: %s', gs[gameProgressive], JSON.stringify(playerPoints), { id: gs.handId });
-    //   yield save(gs, { type: 'points', tournamentId: gs.tournamentId, gameId: gs[gameProgressive], rank: playerPoints });
-    //
-    //   // restore players' initial conditions
-    //   gs.players.forEach(player => { player.status = playerStatus.active; player.chips = config.BUYIN; });
-    //   gs.rank = [];
-    //
-    //   if (gs.tournamentStatus == gameStatus.latest){ // or gameID == config.MAX_GAMES-1
-    //     // the game that has just finished was declared to be the latest
-    //     // of the tournament.
-    //     gs.tournamentStatus = gameStatus.stop;
-    //     continue;
-    //   }
-    //
-    //   // start a new game
-    //   gs[handProgressive] = 1;
-    //   gs[gameProgressive]++;
-    // }
+    // each player takes points
+    // on the basis of their rank...
+    // then eventually a new game starts.
+
+
+
+    if (activePlayers.length === 1){
+
+      const playerCount = gs.gameChart.unshift(activePlayers[0].id);
+      const points = config.AWARDS[playerCount-2];
+
+      let playerPoints = gs.gameChart.map((r,i) => ({ name: r, pts: points[i] }));
+
+      //gamestory.info('Result for game %d: %s', gs[gameProgressive], JSON.stringify(playerPoints), { id: gs.handId });
+      yield save(gs, { type: 'points', tournamentId: gs.tournamentId, gameId: gs[gameProgressive], rank: playerPoints });
+
+
+
+      // restore players' initial conditions
+      gs.players.forEach(player => { player.status = playerStatus.active; player.chips = config.BUYIN; });
+      gs.gameChart = null;
+
+      if (gs.tournamentStatus == gameStatus.latest || gs.gameProgressiveId == config.MAX_GAMES){
+        gs.tournamentStatus = gameStatus.stop;
+        continue;
+      }
+
+      // start a new game
+      gs.handProgressiveId = 1;
+      gs.gameProgressiveId++;
+    }
+
+
+
+
+
 
     gs.handUniqueId = `${gs.pid}_${gs.tournamentId}_${gs.gameProgressiveId}-${gs.handProgressiveId}`;
 

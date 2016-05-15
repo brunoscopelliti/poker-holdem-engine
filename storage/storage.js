@@ -1,8 +1,6 @@
 
 'use strict';
 
-const assign = require('merge-descriptors');
-
 const engine = require('../index');
 
 
@@ -28,7 +26,9 @@ exports.save = function save(updates) {
     const hasDB = Symbol.for('has-dealer-button');
     const isAllin = Symbol.for('is-all-in');
     updates.players = updates.players.map(function(p, i) {
-      const player = assign({}, p);
+      const player = Object.assign({}, p);
+      player.id = p.id;
+      player.name = p.name;
       player.hasDB = p[hasDB];
       player.isAllin = p[isAllin];
       return player;

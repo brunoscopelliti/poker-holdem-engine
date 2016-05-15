@@ -34,7 +34,7 @@ exports = module.exports = function updatePlayerStatus(gs) {
 
   if(outPlayers.length == 1){
     outPlayers[0].status = playerStatus.out;
-    return void gs.gameChart.unshift(outPlayers[0].id);
+    return void gs.gameChart.unshift(outPlayers[0].name);
   }
 
   // reverse the chart
@@ -44,7 +44,7 @@ exports = module.exports = function updatePlayerStatus(gs) {
       const outPlayer = outPlayers.find(x => x.id == player.id);
       if (outPlayer){
         outPlayer.status = playerStatus.out;
-        gs.gameChart.unshift(outPlayer.id);
+        gs.gameChart.unshift(outPlayer.name);
       }
     });
 

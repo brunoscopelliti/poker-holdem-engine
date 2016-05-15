@@ -42,7 +42,7 @@ tape('no one is eliminated', function(t) {
 tape('one player is eliminated', function(t) {
 
   const gamestate = {
-    gameChart: ['wall-e-id'],
+    gameChart: ['wall-e'],
     activePlayers: [{
       name: 'arale',
       id: 'a1',
@@ -61,8 +61,8 @@ tape('one player is eliminated', function(t) {
   sut(gamestate);
 
   t.equal(gamestate.gameChart.length, 2);
-  t.equal(gamestate.gameChart[0], 'm3');
-  t.equal(gamestate.gameChart[1], 'wall-e-id');
+  t.equal(gamestate.gameChart[0], 'marvin');
+  t.equal(gamestate.gameChart[1], 'wall-e');
 
   t.equal(gamestate.activePlayers.find(x => x.status == 'out').name, 'marvin');
 
@@ -73,7 +73,7 @@ tape('one player is eliminated', function(t) {
 tape('two players eliminated in the same hand', function(t) {
 
   const gamestate = {
-    gameChart: ['wall-e-id'],
+    gameChart: ['wall-e'],
     handChart: [
       { id: 'a1' },
       { id: 'm3' },
@@ -97,9 +97,9 @@ tape('two players eliminated in the same hand', function(t) {
   sut(gamestate);
 
   t.equal(gamestate.gameChart.length, 3);
-  t.equal(gamestate.gameChart[0], 'm3');
-  t.equal(gamestate.gameChart[1], 'b2');
-  t.equal(gamestate.gameChart[2], 'wall-e-id');
+  t.equal(gamestate.gameChart[0], 'marvin');
+  t.equal(gamestate.gameChart[1], 'bender');
+  t.equal(gamestate.gameChart[2], 'wall-e');
 
   t.equal(gamestate.activePlayers.filter(x => x.status == 'out').length, 2);
 
