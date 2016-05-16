@@ -19,8 +19,8 @@ const play = require('./bet-loop');
 
 exports = module.exports = function* dealer(gs){
 
-  function sleep() {
-    return new Promise(res => setTimeout(res, config.HANDWAIT));
+  function sleep(time) {
+    return new Promise(res => setTimeout(res, time));
   }
 
   function waitResume() {
@@ -53,10 +53,11 @@ exports = module.exports = function* dealer(gs){
       const playerCount = gs.gameChart.unshift(activePlayers[0].id);
       const points = config.AWARDS[playerCount-2];
 
-      let playerPoints = gs.gameChart.map((r,i) => ({ name: r, pts: points[i] }));
+      const finalGameChart = gs.gameChart.map((playerName, i) => ({ name: playerName, pts: points[i] }));
 
-      //gamestory.info('Result for game %d: %s', gs[gameProgressive], JSON.stringify(playerPoints), { id: gs.handId });
-      yield save(gs, { type: 'points', tournamentId: gs.tournamentId, gameId: gs[gameProgressive], rank: playerPoints });
+      logger.info('Final ranks for game %d: %s', gs.gameProgressiveId, getRankingLogMessage(finalGameChart), { tag: gs.handUniqueId })
+
+      yield save({ type: 'points', tournamentId: gs.tournamentId, gameId: gs.gameProgressiveId, rank: finalGameChart });
 
 
 
@@ -67,6 +68,15 @@ exports = module.exports = function* dealer(gs){
       if (gs.tournamentStatus == gameStatus.latest || gs.gameProgressiveId == config.MAX_GAMES){
         gs.tournamentStatus = gameStatus.stop;
         continue;
+      }
+
+
+
+      // warm up
+      if (config.WARMUP){
+        if (gs.gameProgressiveId <= config.WARMUP.GAME){
+          yield sleep(config.WARMUP.WAIT);
+        }
       }
 
       // start a new game
@@ -95,9 +105,9 @@ exports = module.exports = function* dealer(gs){
 
     if (gs.tournamentStatus == gameStatus.play || gs.tournamentStatus == gameStatus.latest){
 
-      // TODO bruno: first tournaments have a default sleep time
-
-      yield sleep();
+      if (config.HANDWAIT){
+        yield sleep(config.HANDWAIT);
+      }
 
       // setup the hand:
       // restore the initial condition for a new hand, pot,
@@ -132,3 +142,24 @@ exports = module.exports = function* dealer(gs){
   }
 
 };
+
+
+
+
+/**
+ * @private
+ * @function
+ * @name getRankingLogMessage
+ * @desc
+ *  return a log of the final rankings
+ *
+ * @param {Array} players
+ *  sorted list of the players, and points
+ *
+ * @returns {String}
+ */
+function getRankingLogMessage(ranking){
+  return ranking.reduce(function(msg, player) {
+    return msg += `${player.name}: ${player.pts}`, msg;
+  }, '').trim().slice(0,-1);
+}

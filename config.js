@@ -5,11 +5,20 @@ const config = {
 
   // configure the logger level;
   // one between { error: 0, warn: 1, info: 2, verbose: 3, debug: 4, silly: 5 }
-  LOG_LEVEL: 'silly',
+  LOG_LEVEL: 'debug',
 
   // time (expressed in ms) to wait after an hand ends,
   // before a new one can start
-  HANDWAIT: 500,
+  HANDWAIT: 2500,
+
+  // define the warm up phase of the tournament.
+  // for the first WARMUP.GAME games of the tournament,
+  // when a game ends, the engine will wait WARMUP.WAIT ms
+  // before a new game starts.
+  WARMUP: {
+    GAME: 5,
+    WAIT: 5*60000
+  },
 
   // define the max number of different game after which a tournament
   // automatically finishes
