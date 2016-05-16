@@ -227,9 +227,7 @@ function getPlayerStatusLogMessage(players){
  * @returns {String}
  */
 function getCommonCardsLogMessage(cards){
-  return cards
-    .reduce(function(all, card){
-      all += `${card.rank}${card.type}, `;
-      return all;
-    }, '').trim().slice(0,-1);
+  return cards.reduce(function(msg, card){
+    return msg += `${card.rank}${card.type}, `, msg;
+  }, '').trim().slice(0,-1);
 }
