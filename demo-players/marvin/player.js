@@ -7,8 +7,16 @@ exports = module.exports = {
 
     'use strict';
 
-    console.log(`Currently playing tournament ${gamestate.tournamentId}`);
 
+    const marvin = gamestate.players[gamestate.me];
+    const halfBuyin = gamestate.buyin * .5
+
+    if (marvin.chips < halfBuyin){
+      console.log(`Ahhhhhhhhh ! I'm doomed...`);
+      return Infinity;
+    }
+
+    console.log(`I'm sadly calling for ${gamestate.callAmount}`);
     return gamestate.callAmount;
 
   }

@@ -11,12 +11,17 @@ exports = module.exports = {
     const p = gs.players;
     const me = p[gs.me];
 
-    if (me.chipsBet > 0){
+    if (me.cards.find(card => parseInt(card) !== parseInt(card))) {
+      console.log(`bidirindrip wip raise ${gs.callAmount}`);
+      return gs.minimumRaiseAmount * 2;
+    }
+    else if (me.chipsBet > 0){
+      console.log(`bid drip call ${gs.callAmount}`);
       return gs.callAmount;
     }
 
+    console.log(`bid drip 0`);
     return 0;
-
   }
 
 };

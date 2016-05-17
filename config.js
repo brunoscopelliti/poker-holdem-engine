@@ -9,7 +9,7 @@ const config = {
 
   // time (expressed in ms) to wait after an hand ends,
   // before a new one can start
-  HANDWAIT: 2500,
+  HANDWAIT: 1000,
 
   // define the warm up phase of the tournament.
   // for the first WARMUP.GAME games of the tournament,
@@ -17,7 +17,7 @@ const config = {
   // before a new game starts.
   WARMUP: {
     GAME: 5,
-    WAIT: 5*60000
+    WAIT: 10 * 1000
   },
 
   // define the max number of different game after which a tournament

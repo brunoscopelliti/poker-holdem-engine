@@ -7,7 +7,7 @@ exports = module.exports = {
 
     'use strict';
 
-    console.log(`Currently playing tournament ${gamestate.tournamentId}`);
+    console.log(`I'm calling for ${gamestate.callAmount}`);
 
     return gamestate.callAmount;
 

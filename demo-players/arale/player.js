@@ -7,7 +7,7 @@ exports = module.exports = {
 
     'use strict';
 
-    console.log(`Currently playing tournament ${gamestate.tournamentId}`);
+    console.log(`Hello my name is ${gamestate.players[gamestate.me].name}!`);
 
     return 0;
 
