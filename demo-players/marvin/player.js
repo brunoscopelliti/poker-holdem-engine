@@ -1,7 +1,7 @@
 
 exports = module.exports = {
 
-  VERSION: 'arale folder',
+  VERSION: 'i am depressed',
 
   bet: function (gamestate) {
 

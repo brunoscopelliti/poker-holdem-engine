@@ -1,8 +1,8 @@
 # poker-holdem-engine
 
-`poker-holdem-engine` provides an engine to play Texas Hold'em Poker in respect of the [official rules](https://it.wikipedia.org/wiki/Texas_hold_%27em), with the only exception that no constraints are imposed on the raise amount.
+`poker-holdem-engine` provides an engine to play Texas Hold'em Poker in respect of the [official rules](https://it.wikipedia.org/wiki/Texas_hold_%27em).
 
-Poker here is meant to be played by other programs, which should be listen for POST http request somewhere in the internet.
+Poker here is meant to be played by other programs, which should be listen for POST http request somewhere in the Internet, or on your localhost
 
 ## start a tournament
 
@@ -21,7 +21,7 @@ engine.emit('game:start', {
 });
 ```
 
-Players should be object with at least the `name`, and `url` properties specified.
+Players should be object with at least the `name`, `id`, and `url` properties specified.
 
 On the specified end point there should be an app, responding on the `POST /bet`, and `GET /version` routes.
 

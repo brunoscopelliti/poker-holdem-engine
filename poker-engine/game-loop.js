@@ -36,19 +36,18 @@ exports = module.exports = function* dealer(gs){
   while (gs.tournamentStatus != gameStatus.stop){
 
     const activePlayers = gs.activePlayers;
+    const foldedPlayers = gs.players.filter(player => player.status == playerStatus.folded);
 
 
     // when before a new hand starts,
     // there is only one active player
     // the current game is finished.
 
-    // each player takes points
-    // on the basis of their rank...
-    // then eventually a new game starts.
+    if (activePlayers.length + foldedPlayers.length === 1){
 
-
-
-    if (activePlayers.length === 1){
+      // each player takes points
+      // on the basis of their rank...
+      // then eventually a new game starts.
 
       const playerCount = gs.gameChart.unshift(activePlayers[0].id);
       const points = config.AWARDS[playerCount-2];
