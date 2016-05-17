@@ -49,7 +49,7 @@ exports = module.exports = function* dealer(gs){
       // on the basis of their rank...
       // then eventually a new game starts.
 
-      const playerCount = gs.gameChart.unshift(activePlayers[0].id);
+      const playerCount = gs.gameChart.unshift(activePlayers[0].name);
       const points = config.AWARDS[playerCount-2];
 
       const finalGameChart = gs.gameChart.map((playerName, i) => ({ name: playerName, pts: points[i] }));

@@ -157,7 +157,7 @@ const actions = {
   fold(gs) {
     this.status = playerStatus.folded;
 
-    logger.log('debug', '%s (%d) has folded.', this.name, this.id, { tag: gs.handUniqueId });
+    logger.log('debug', '%s (%s) has folded.', this.name, this.id, { tag: gs.handUniqueId });
     return save({ type: 'status', handId: gs.handUniqueId, session: gs.session, playerId: this.id, status: playerStatus.folded });
   },
 
