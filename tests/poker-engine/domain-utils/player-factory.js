@@ -482,6 +482,19 @@ tape('before the promise is resolved, the amount is sanitized (NaN)', function(t
 
 });
 
+tape('before the promise is resolved, the amount is sanitized (Infinity is treated as NaN)', function(t) {
+
+  const arale = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
+
+  postStub.yields(null, {}, 'Infinity');
+  arale.talk({ players: [] })
+    .then(function(betAmount){
+      t.equal(betAmount, 0);
+      t.end();
+    });
+
+});
+
 tape('before the promise is resolved, the amount is sanitized (valid amount)', function(t) {
 
   const arale = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });

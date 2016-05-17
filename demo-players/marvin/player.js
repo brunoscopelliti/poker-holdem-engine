@@ -13,7 +13,7 @@ exports = module.exports = {
 
     if (marvin.chips < halfBuyin){
       console.log(`Ahhhhhhhhh ! I'm doomed...`);
-      return Infinity;
+      return Number.MAX_SAFE_INTEGER;
     }
 
     console.log(`I'm sadly calling for ${gamestate.callAmount}`);

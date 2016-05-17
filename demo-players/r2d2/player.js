@@ -11,7 +11,7 @@ exports = module.exports = {
     const p = gs.players;
     const me = p[gs.me];
 
-    if (me.cards.find(card => parseInt(card) !== parseInt(card))) {
+    if (me.cards.find(card => parseInt(card.rank) !== parseInt(card.rank))) {
       console.log(`bidirindrip wip raise ${gs.callAmount}`);
       return gs.minimumRaiseAmount * 2;
     }
