@@ -33,5 +33,6 @@ This is the gamestate object shared with the http services which play the game.
 * `minimumRaiseAmount`
 
 * `players`
+  + `id`, `name`, `status`, `cards`, `chips`, `chipsBet`.
 
 * `me`

@@ -8,7 +8,6 @@ const save = require('../../storage/storage').save;
 
 const request = require('request');
 const sortByRank = require('poker-rank');
-const assign = require('merge-descriptors');
 const getCombinations = require('poker-combinations');
 
 
@@ -241,21 +240,14 @@ const actions = {
     // the list of the players...
     // make sure that the current players can see only his cards
     state.players = gs.players.map(function(player) {
-
-      // clean player data
-      let mysterious = assign({}, player);
-
-      Object.getOwnPropertySymbols(mysterious)
-        .forEach(symb => delete mysterious[symb]);
-
-      if (this.id === player.id){
-        return mysterious;
+      const cleanPlayer = {
+        id: player.id, name: player.name, status: player.status, chips: player.chips, chipsBet: player.chipsBet
+      };
+      if (this.id !== player.id){
+        return cleanPlayer;
       }
-
-      delete mysterious.cards;
-      delete mysterious.bestCombination;
-      return mysterious;
-
+      cleanPlayer.cards = player.cards;
+      return cleanPlayer;
     }, this);
 
     // index of the player 'this' in the players array
