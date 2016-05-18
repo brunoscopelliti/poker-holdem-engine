@@ -120,10 +120,35 @@ tape('player pay call internal bet method', function(t) {
 
   const updateStub = sinon.stub(player, getSymbol(Object.getPrototypeOf(player), 'internal-update-method'));
 
-  player.pay(gamestate, 50);
+  const duedAmount = 50;
+
+  t.ok(player.chips > duedAmount);
+
+  player.pay(gamestate, duedAmount);
 
   t.ok(updateStub.calledOnce);
-  t.ok(updateStub.calledWith(gamestate, 50));
+  t.ok(updateStub.calledWith(gamestate, duedAmount));
+
+  t.end();
+
+});
+
+tape('player never pay more than he owns', function(t) {
+
+  const gamestate = {};
+  const player = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
+  player.chips = 40;
+
+  const updateStub = sinon.stub(player, getSymbol(Object.getPrototypeOf(player), 'internal-update-method'));
+
+  const duedAmount = 50;
+
+  t.ok(player.chips < duedAmount);
+
+  player.pay(gamestate, duedAmount);
+
+  t.ok(updateStub.calledOnce);
+  t.ok(updateStub.calledWith(gamestate, player.chips));
 
   t.end();
 
@@ -156,7 +181,6 @@ tape('update player status to "folded"', function(t) {
 
 
 tape('player#payBet', t => t.end());
-
 
 tape('bet amount is less than player call amount', function(t) {
 

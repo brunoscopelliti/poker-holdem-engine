@@ -177,7 +177,7 @@ const actions = {
    * @returns {void}
    */
   pay(gs, amount) {
-    this[update_](gs, amount);
+    this[update_](gs, Math.min(this.chips, amount));
   },
 
 
