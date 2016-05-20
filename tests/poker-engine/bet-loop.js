@@ -131,7 +131,7 @@ tape('preflop betting session closes in a single round', function(t){
     if(gs.commonCards.length >= 3)
       throw new Error('I want to test only pre-flop');
 
-    talkSpy(gs);
+    talkSpy(gs.spinCount);
     this.chipsBet += gs.callAmount;
   }
 
@@ -152,7 +152,7 @@ tape('preflop betting session closes in a single round', function(t){
     .catch(function(err) {
       t.equal(err.message, 'I want to test only pre-flop');
       t.equal(talkSpy.callCount, 4);
-      talkSpy.args.forEach((args) => t.equal(args[0].spinCount, 0));
+      t.ok(talkSpy.alwaysCalledWith(0));
       t.end();
     });
 
@@ -230,21 +230,12 @@ tape('preflop betting session on multiple round', function(t){
   run(sut, gamestate)
     .catch(function(err) {
       t.equal(err.message, 'I want to test only pre-flop');
-      t.equal(talkSpy.callCount, 8);
-      t.deepEqual(talkSpy.args.map(x => x[0]), [0, 0, 0, 0, 1, 1, 1, 1]);
+      t.equal(talkSpy.callCount, 5);
+      t.deepEqual(talkSpy.args.map(x => x[0]), [0, 0, 0, 0, 1]);
       t.end();
     });
 
 });
-
-
-
-
-
-
-
-
-
 
 
 
@@ -618,13 +609,6 @@ tape('the bet loop shouldnt terminate', function(t){
     });
 
 });
-
-
-
-
-
-
-
 
 
 
