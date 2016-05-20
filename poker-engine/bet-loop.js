@@ -11,6 +11,7 @@ const gameSession = require('./domain/game-session');
 const playerStatus = require('./domain/player-status');
 
 const shouldBet = require('./domain-utils/should-bet');
+const shouldBreak = require('./domain-utils/should-break');
 
 
 const asyncFrom = require('./lib/loop-from-async');
@@ -65,8 +66,12 @@ exports = module.exports = function* betLoop(gs){
     const startIndex = gs.players.findIndex(player => player[starterButton]);
 
     do {
-      yield* asyncFrom(gs.players, startIndex, player => shouldBet(gs, player, player => player.talk(gs).then(player.payBet.bind(player, gs))));
+
+      yield* asyncFrom(gs.players, startIndex, shouldBreak.bind(null, gs),
+        player => shouldBet(gs, player, player => player.talk(gs).then(player.payBet.bind(player, gs))));
+
       gs.spinCount++;
+
     } while(!isBetRoundFinished(gs.activePlayers, gs.callAmount));
 
 

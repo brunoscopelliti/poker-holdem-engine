@@ -393,7 +393,6 @@ tape('the bet loop shouldnt terminate', function(t){
   function fireSpy(name, amount, playerSpy){
     betFlowSpy(name, amount);
     playerSpy(amount);
-    debugger;
   }
 
   function setChipsBet(gs, name, amount, isAllin){
