@@ -20,18 +20,30 @@ const done_ = Symbol('done');
  * @param {Array} players:
  *  list of the player who play the current tournament;
  * @param {Number} startIndex
- * @param {Function} fn
+ * @param {Function} shouldBreak
+ *  when returns true the loop break before the callback is executed
+ * @param {Function} callback
  *
  * @returns {void}
  */
-exports = module.exports = function* asyncFrom(players, startIndex, fn){
+exports = module.exports = function* asyncFrom(players, startIndex, shouldBreak, callback){
+
+  if (callback == null){
+    callback = shouldBreak;
+    shouldBreak = () => false;
+  }
+
 
   let player;
   let nextIndex = getNextPlayerIndex(players, startIndex);
 
   while (player = players[nextIndex], !player[done_]){
 
-    yield fn(player, nextIndex);
+    if (shouldBreak(player, nextIndex)){
+      break;
+    }
+
+    yield callback(player, nextIndex);
 
     player[done_] = true;
     nextIndex = getNextPlayerIndex(players, nextIndex);
