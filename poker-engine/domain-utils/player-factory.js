@@ -91,13 +91,29 @@ const actions = {
     }
 
 
+    // TODO bruno:
+    // lastRaiserId won't be used in the fuure.
+
+    // when a player makes a valid bet, set Symbol('x') on his instance.
+
+    // when a player makes a valid raise remove the Symbol('x') from all the other players,
+    // than set the Symbol('x') on the raiser.
+
+    // an allin bet that is not greater than minimum raise amount
+    // does not cause the cleaning of the Symbol('x') from the other players.
+
+    // only the player who have not the Symbol('x') are allowed to raise.
+
+
+
     if (betAmount > playerCallAmount) {
 
       // player is betting a raise.
       // there're some necessary extra checks we've to do before consider the raise valid
 
-      // 1) check current player player is not the last raiser,
+      // 1) check current player is not the last raiser,
       //    and assure "You can't raise yourself!" motto is respected.
+
 
       if (this.id === gs.lastRaiserId){
         betAmount = playerCallAmount;
@@ -113,7 +129,7 @@ const actions = {
 
           // when the raise does not meet the minimum raise amount,
           // it's allowed only when the player is betting all his chips;
-          // however even in this case, it doesn't reopen the bet f
+          // however even in this case, it doesn't reopen the bet
           // for the players who have already bet in this hand,
           // that is, last raise data are not updated.
 

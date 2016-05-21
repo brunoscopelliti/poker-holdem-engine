@@ -184,8 +184,7 @@ tape('player#payBet', t => t.end());
 
 tape('bet amount is less than player call amount', function(t) {
 
-  // when the player is betting less than the required call amount
-  // unless he is betting all his chips, the bet is treated as a fold.
+  t.comment('unless he is betting all his chips, the bet is treated as a fold.');
 
   const gamestate = { callAmount: 100 };
   const player = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
@@ -201,10 +200,9 @@ tape('bet amount is less than player call amount', function(t) {
 
 });
 
-tape('bet amount is less than player call amount, but the player is all-in', function(t) {
+tape('bet amount is less than player call amount', function(t) {
 
-  // when the player is betting all his chips,
-  // he has always the right to play the hand until the final showdown
+  t.comment('but since is an allin bet, the player does not fold.');
 
   const gamestate = { callAmount: 100 };
   const player = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
@@ -243,6 +241,7 @@ tape('bet amount is a call', function(t) {
   t.end()
 
 });
+
 
 tape('a player cant raise his own bet', function(t) {
 
