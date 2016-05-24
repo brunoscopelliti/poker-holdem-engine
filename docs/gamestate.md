@@ -79,6 +79,9 @@ gamestate
   + `Symbol('is-all-in')`
     True when the player has gone all-in in the current hand
 
+  + `Symbol('has-talked')`
+    A player who has talked, cannot raise anymore.
+    It should be reset after each betting session, and every time another player makes a valid raise.
 
 * `activePlayers`
 
@@ -105,13 +108,6 @@ gamestate
   The count starts from 0.
 
   This information is used in order to compute the blind amount.
-
-
-* `lastRaiserId`
-
-  The id of the player who has raised last.
-
-  It should be reset after each session, but not after the river.
 
 * `lastRaiseAmount`
 

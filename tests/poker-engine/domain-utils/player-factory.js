@@ -197,7 +197,7 @@ tape('bet amount is less than player call amount', function(t) {
   player.payBet(gamestate, 50);
 
   t.ok(foldStub.calledOnce);
-  t.end()
+  t.end();
 
 });
 
@@ -218,7 +218,7 @@ tape('bet amount is less than player call amount', function(t) {
   t.ok(!foldStub.called);
   t.ok(updateStub.calledOnce);
   t.ok(updateStub.calledWith(gamestate, 50));
-  t.end()
+  t.end();
 
 });
 
@@ -288,15 +288,13 @@ tape('bet amount is a raise, but less than min raise amount', function(t) {
   t.ok(updateStub.calledWith(gamestate, 80));
   t.equal(arale[hasTalked_], true);
   t.equal(gamestate.lastRaiseAmount, 20);
-  t.end()
+  t.end();
 
 });
 
 tape('bet amount is a raise, but less than min raise amount and the player is all-in', function(t) {
 
-  // when the player raise less than the minimum required raise amount,
-  // if he is all-in the bet amount is unchanged,
-  // however the lastRaiserId/lastRaiseAmount properties are not updated
+  t.comment('an allin bet that is not greater than the minimum raise amount doesnt reopen the pot.');
 
   const arale = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
   arale.chips = 90;
@@ -316,7 +314,7 @@ tape('bet amount is a raise, but less than min raise amount and the player is al
   t.equal(arale[hasTalked_], true);
   t.equal(bender[hasTalked_], true);
   t.equal(gamestate.lastRaiseAmount, 20);
-  t.end()
+  t.end();
 
 });
 
@@ -345,7 +343,7 @@ tape('bet amount is a proper raise', function(t) {
   t.equal(arale[hasTalked_], true);
   t.equal(bender[hasTalked_], undefined);
   t.equal(gamestate.lastRaiseAmount, 120);
-  t.end()
+  t.end();
 
 });
 
@@ -371,7 +369,7 @@ tape('bet amount is a proper raise, but too high', function(t) {
   t.equal(arale[hasTalked_], true);
   t.equal(bender[hasTalked_], undefined);
   t.equal(gamestate.lastRaiseAmount, 950);
-  t.end()
+  t.end();
 
 });
 
