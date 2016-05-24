@@ -4,6 +4,7 @@
 const playerStatus = require('../domain/player-status');
 
 const allin_ = Symbol.for('is-all-in');
+const hasTalked_ = Symbol.for('has-talked');
 
 
 
@@ -42,11 +43,11 @@ exports = module.exports = function shouldBet(gs, player, talkFn){
     //    a player who have bet less than the required amount
     //    should always have a chance to call.
 
-    // * player.id != gs.lastRaiserId && otherPlayers.find(x => x.status == status.active && !x[Symbol.for('is-all-in')])
-    //    a player can raise only when he is not the last player who have raised;
+    // * !player[hasTalked_] && otherPlayers.find(x => x.status == status.active && !x[Symbol.for('is-all-in')])
+    //    a player can raise only when he has not previously called the same amount;
     //    however raising has sense only when there is at least another active player (not in allin).
 
-    if (player.chipsBet < gs.callAmount || (player.id != gs.lastRaiserId && otherPlayers.find(x => x.status == playerStatus.active && !x[allin_]))){
+    if (player.chipsBet < gs.callAmount || (!player[hasTalked_] && otherPlayers.find(x => x.status == playerStatus.active && !x[allin_]))){
       return talkFn(player);
     }
   }

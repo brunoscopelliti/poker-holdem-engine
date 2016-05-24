@@ -18,7 +18,7 @@ tape('only active player can bet', function(t) {
   sut({}, { status: playerStatus.folded }, spy);
   sut({}, { status: playerStatus.out }, spy);
 
-  t.ok(!spy.called);
+  t.ok(spy.notCalled);
 
   t.end();
 });
@@ -29,7 +29,7 @@ tape('all-in player cant bet anymore', function(t) {
 
   sut({}, { status: playerStatus.active, [Symbol.for('is-all-in')]: true }, spy);
 
-  t.ok(!spy.called);
+  t.ok(spy.notCalled);
 
   t.end();
 });
@@ -46,13 +46,16 @@ tape('a player who has bet less than the callAmount, has always the right to cal
   t.end();
 });
 
-tape('a player who has bet the callAmount, cant bet more when he is the last raiser', function(t) {
+tape('a player, who has bet the callAmount, cant bet more', function(t) {
 
   const spy = sinon.spy();
 
-  sut({ callAmount: 50, lastRaiserId: 1, players:[] }, { id: 1, status: playerStatus.active, chipsBet: 50 }, spy);
+  const gamestate = { callAmount: 50, players:[] };
+  const player = { id: 1, status: playerStatus.active, chipsBet: 50, [Symbol.for('has-talked')]: true };
 
-  t.ok(!spy.called);
+  sut(gamestate, player, spy);
+
+  t.ok(spy.notCalled);
 
   t.end();
 });
@@ -61,18 +64,32 @@ tape('a player who has bet the callAmount, cant bet more when there arent other 
 
   const spy = sinon.spy();
 
-  sut({ callAmount: 50, lastRaiserId: 1, players: [{status: playerStatus.active, [Symbol.for('is-all-in')]: true}, {status: playerStatus.folded}, {status: playerStatus.out}] }, { id: 2, status: playerStatus.active, chipsBet: 50 }, spy);
+  const gamestate = {
+    callAmount: 50,
+    players:[
+      {status: playerStatus.active, [Symbol.for('is-all-in')]: true},
+      {status: playerStatus.folded},
+      {status: playerStatus.out}
+    ]
+  };
 
-  t.ok(!spy.called);
+  sut(gamestate, { id: 2, status: playerStatus.active, chipsBet: 50 }, spy);
+
+  t.ok(spy.notCalled);
 
   t.end();
 });
 
-tape('a player who has bet the callAmount, can eventually raise when he is not the last raiser, and there are others active players', function(t) {
+tape('a player, who has bet the callAmount, can re-raise if someone raised after him', function(t) {
 
   const spy = sinon.spy();
 
-  sut({ callAmount: 50, lastRaiserId: 1, players: [{status: playerStatus.active}] }, { id: 2, status: playerStatus.active, chipsBet: 50 }, spy);
+  const gamestate = {
+    callAmount: 50,
+    players: [{status: playerStatus.active}]
+  };
+
+  sut(gamestate, { id: 2, status: playerStatus.active, chipsBet: 50 }, spy);
 
   t.ok(spy.calledOnce);
   t.ok(spy.calledWith({ id: 2, status: playerStatus.active, chipsBet: 50 }));
