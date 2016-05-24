@@ -15,6 +15,7 @@ const playerStatus = require('../../../poker-engine/domain/player-status');
 
 const getSymbol = require('../../test-utils/get-symbol');
 const isAllin_ = Symbol.for('is-all-in');
+const hasTalked_ = Symbol.for('has-talked');
 
 const sut = require('../../../poker-engine/domain-utils/player-factory');
 
@@ -224,7 +225,7 @@ tape('bet amount is less than player call amount', function(t) {
 
 tape('bet amount is a call', function(t) {
 
-  const gamestate = { callAmount: 100, lastRaiserId: 'b2', lastRaiseAmount: 200 };
+  const gamestate = { callAmount: 100, lastRaiseAmount: 200 };
   const player = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
 
   player.chips = 1000;
@@ -236,54 +237,56 @@ tape('bet amount is a call', function(t) {
 
   t.ok(updateStub.calledOnce);
   t.ok(updateStub.calledWith(gamestate, 50));
-  t.equal(gamestate.lastRaiserId, 'b2');
+  t.equal(player[hasTalked_], true);
   t.equal(gamestate.lastRaiseAmount, 200);
-  t.end()
+  t.end();
 
 });
 
 
-tape('a player cant raise his own bet', function(t) {
+tape('a player cant raise an amount he has already called', function(t) {
 
-  // a player can't raise his own bet.
-  // in case a player is trying to bet more then the call amount,
-  // but he's also the last player who has raised,
-  // the bet amount is is lowered to meet the player call amount.
+  t.comment('the attempt to raise is treated as a simple call.');
 
-  const gamestate = { callAmount: 100, lastRaiserId: 'a1' };
-  const player = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
+  const arale = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
+  arale[hasTalked_] = true;
+  arale.chips = 1000;
+  arale.chipsBet = 80;
 
-  player.chips = 1000;
-  player.chipsBet = 80;
+  const bender = sut({ name: 'bender', id: 'b2', serviceUrl: 'http:bender.com' });
+  bender[hasTalked_] = true;
 
-  const updateStub = sinon.stub(player, getSymbol(Object.getPrototypeOf(player), 'internal-update-method'));
+  const gamestate = { callAmount: 100, players: [arale, bender] };
 
-  player.payBet(gamestate, 200);
+  const updateStub = sinon.stub(arale, getSymbol(Object.getPrototypeOf(arale), 'internal-update-method'));
+
+  arale.payBet(gamestate, 200);
 
   t.ok(updateStub.calledOnce);
   t.ok(updateStub.calledWith(gamestate, 20));
-  t.end()
+  t.equal(arale[hasTalked_], true);
+  t.equal(bender[hasTalked_], true);
+  t.end();
 
 });
 
 tape('bet amount is a raise, but less than min raise amount', function(t) {
 
-  // when the player raise less than the minimum required raise amount,
-  // the bet amount is lowered to meet the player call amount.
+  t.comment('the attempt to raise is treated as a simple call.');
 
-  const gamestate = { callAmount: 100, lastRaiserId: 'b2', lastRaiseAmount: 20 };
-  const player = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
+  const gamestate = { callAmount: 100, lastRaiseAmount: 20 };
 
-  player.chips = 1000;
-  player.chipsBet = 20;
+  const arale = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
+  arale.chips = 1000;
+  arale.chipsBet = 20;
 
-  const updateStub = sinon.stub(player, getSymbol(Object.getPrototypeOf(player), 'internal-update-method'));
+  const updateStub = sinon.stub(arale, getSymbol(Object.getPrototypeOf(arale), 'internal-update-method'));
 
-  player.payBet(gamestate, 90);
+  arale.payBet(gamestate, 90);
 
   t.ok(updateStub.calledOnce);
   t.ok(updateStub.calledWith(gamestate, 80));
-  t.equal(gamestate.lastRaiserId, 'b2');
+  t.equal(arale[hasTalked_], true);
   t.equal(gamestate.lastRaiseAmount, 20);
   t.end()
 
@@ -295,19 +298,23 @@ tape('bet amount is a raise, but less than min raise amount and the player is al
   // if he is all-in the bet amount is unchanged,
   // however the lastRaiserId/lastRaiseAmount properties are not updated
 
-  const gamestate = { callAmount: 100, lastRaiserId: 'b2', lastRaiseAmount: 20 };
-  const player = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
+  const arale = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
+  arale.chips = 90;
+  arale.chipsBet = 20;
 
-  player.chips = 90;
-  player.chipsBet = 20;
+  const bender = sut({ name: 'bender', id: 'b2', serviceUrl: 'http:bender.com' });
+  bender[hasTalked_] = true;
 
-  const updateStub = sinon.stub(player, getSymbol(Object.getPrototypeOf(player), 'internal-update-method'));
+  const updateStub = sinon.stub(arale, getSymbol(Object.getPrototypeOf(arale), 'internal-update-method'));
 
-  player.payBet(gamestate, 90);
+  const gamestate = { callAmount: 100, lastRaiseAmount: 20, players: [arale, bender] };
+
+  arale.payBet(gamestate, 90);
 
   t.ok(updateStub.calledOnce);
   t.ok(updateStub.calledWith(gamestate, 90));
-  t.equal(gamestate.lastRaiserId, 'b2');
+  t.equal(arale[hasTalked_], true);
+  t.equal(bender[hasTalked_], true);
   t.equal(gamestate.lastRaiseAmount, 20);
   t.end()
 
@@ -315,27 +322,28 @@ tape('bet amount is a raise, but less than min raise amount and the player is al
 
 tape('bet amount is a proper raise', function(t) {
 
-  // when a player performs a proper raise,
-  // the gamestate lastRaiserId, lastRaiseAmount properties are updated.
-
-  // lastRaiserId: is the id of the player who has performed the last valid raise.
+  t.comment('the players who have already talked, can eventually re-reaise');
 
   // lastRaiseAmount: is the amount of the raise;
   // it's computed by applying the formula: playerChipsBet + betAmount - callAmount
 
-  const gamestate = { callAmount: 100, lastRaiserId: 'b2', lastRaiseAmount: 20 };
-  const player = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
+  const arale = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
+  arale.chips = 1000;
+  arale.chipsBet = 20;
 
-  player.chips = 1000;
-  player.chipsBet = 20;
+  const bender = sut({ name: 'bender', id: 'b2', serviceUrl: 'http:bender.com' });
+  bender[hasTalked_] = true;
 
-  const updateStub = sinon.stub(player, getSymbol(Object.getPrototypeOf(player), 'internal-update-method'));
+  const gamestate = { callAmount: 100, lastRaiseAmount: 20, players: [arale, bender] };
 
-  player.payBet(gamestate, 200);
+  const updateStub = sinon.stub(arale, getSymbol(Object.getPrototypeOf(arale), 'internal-update-method'));
+
+  arale.payBet(gamestate, 200);
 
   t.ok(updateStub.calledOnce);
   t.ok(updateStub.calledWith(gamestate, 200));
-  t.equal(gamestate.lastRaiserId, 'a1');
+  t.equal(arale[hasTalked_], true);
+  t.equal(bender[hasTalked_], undefined);
   t.equal(gamestate.lastRaiseAmount, 120);
   t.end()
 
@@ -345,19 +353,23 @@ tape('bet amount is a proper raise, but too high', function(t) {
 
   // the bet amount is always normalized to maximum amount owned by the player
 
-  const gamestate = { callAmount: 100, lastRaiserId: 'b2', lastRaiseAmount: 20 };
-  const player = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
+  const arale = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
+  arale.chips = 1000;
+  arale.chipsBet = 50;
 
-  player.chips = 1000;
-  player.chipsBet = 50;
+  const bender = sut({ name: 'bender', id: 'b2', serviceUrl: 'http:bender.com' });
+  bender[hasTalked_] = true;
 
-  const updateStub = sinon.stub(player, getSymbol(Object.getPrototypeOf(player), 'internal-update-method'));
+  const gamestate = { callAmount: 100, lastRaiseAmount: 20, players: [arale, bender] };
 
-  player.payBet(gamestate, 2500);
+  const updateStub = sinon.stub(arale, getSymbol(Object.getPrototypeOf(arale), 'internal-update-method'));
+
+  arale.payBet(gamestate, 2500);
 
   t.ok(updateStub.calledOnce);
   t.ok(updateStub.calledWith(gamestate, 1000));
-  t.equal(gamestate.lastRaiserId, 'a1');
+  t.equal(arale[hasTalked_], true);
+  t.equal(bender[hasTalked_], undefined);
   t.equal(gamestate.lastRaiseAmount, 950);
   t.end()
 

@@ -90,32 +90,19 @@ const actions = {
       return this.fold(gs);
     }
 
-
-    // TODO bruno:
-    // lastRaiserId won't be used in the fuure.
-
-    // when a player makes a valid bet, set Symbol('x') on his instance.
-
-    // when a player makes a valid raise remove the Symbol('x') from all the other players,
-    // than set the Symbol('x') on the raiser.
-
-    // an allin bet that is not greater than minimum raise amount
-    // does not cause the cleaning of the Symbol('x') from the other players.
-
-    // only the player who have not the Symbol('x') are allowed to raise.
-
-
+    const hasTalked_ = Symbol.for('has-talked');
 
     if (betAmount > playerCallAmount) {
 
       // player is betting a raise.
       // there're some necessary extra checks we've to do before consider the raise valid
 
-      // 1) check current player is not the last raiser,
+      // 1) check current player is in the position to make a raise,
       //    and assure "You can't raise yourself!" motto is respected.
+      //    specifically a player who have called for a specific amount,
+      //    cant raise, unless the pot was reopened by someone else.
 
-
-      if (this.id === gs.lastRaiserId){
+      if (this[hasTalked_]){
         betAmount = playerCallAmount;
       }
       else{
@@ -140,10 +127,10 @@ const actions = {
         else{
 
           // when the raise amount is valid update
-          // lastRaiseAmount, lastRaiserId gamestate properties
+          // lastRaiseAmount gamestate property is updated.
 
           gs.lastRaiseAmount = betAmount - playerCallAmount;
-          gs.lastRaiserId = this.id;
+          gs.players.forEach(player => delete(player[hasTalked_]));
         }
       }
     }
@@ -151,6 +138,7 @@ const actions = {
 
     logger.log('debug', '%s (%s) has bet %d.', this.name, this.id, betAmount, { tag: gs.handUniqueId });
 
+    this[hasTalked_] = true;
     this[update_](gs, betAmount);
 
     return save({ type: 'bet', handId: gs.handUniqueId, session: gs.session, playerId: this.id, amount: betAmount });
