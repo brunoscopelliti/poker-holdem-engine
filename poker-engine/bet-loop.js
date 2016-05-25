@@ -38,6 +38,7 @@ exports = module.exports = function* betLoop(gs){
   const deck_ = Symbol.for('cards-deck');
   const hasBB_ = Symbol.for('has-big-blind');
   const hasDB_ = Symbol.for('has-dealer-button');
+  const hasTalked_ = Symbol.for('has-talked');
 
 
 
@@ -78,7 +79,10 @@ exports = module.exports = function* betLoop(gs){
     // when a betting round ends
     // raise data should be cleared
     gs.lastRaiseAmount = 0;
-    gs.lastRaiserId = null
+
+    // ... and the pot should be re-opened
+    // for the next iteration
+    gs.players.forEach(player => delete(player[hasTalked_]));
 
 
 
