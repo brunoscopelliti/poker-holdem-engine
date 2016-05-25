@@ -5,7 +5,6 @@ const tape = require('tape');
 const sinon = require('sinon');
 
 const request = require('request');
-const postStub = sinon.stub(request, 'post');
 
 const engine = require('../../../index');
 
@@ -380,6 +379,8 @@ tape('player#talk', t => t.end());
 
 tape('check json', function(t) {
 
+  const postStub = sinon.stub(request, 'post');
+
   const gamestate = {
     tournamentId: 'test-tournament',
     gameProgressiveId: 1,
@@ -472,11 +473,15 @@ tape('check json', function(t) {
       .forEach(prop => t.ok(player.hasOwnProperty(prop), 'check player visible property'));
   });
 
+  postStub.restore();
+
   t.end();
 
 });
 
 tape('when server request fail, default bet is 0', function(t) {
+
+  const postStub = sinon.stub(request, 'post');
 
   const arale = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
 
@@ -484,6 +489,8 @@ tape('when server request fail, default bet is 0', function(t) {
   arale.talk({ players: [] })
     .then(function(betAmount){
       t.equal(betAmount, 0);
+
+      postStub.restore();
       t.end();
     });
 
@@ -491,12 +498,15 @@ tape('when server request fail, default bet is 0', function(t) {
 
 tape('before the promise is resolved, the amount is sanitized (negative number)', function(t) {
 
+  const postStub = sinon.stub(request, 'post');
   const arale = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
 
   postStub.yields(null, {}, '-50');
   arale.talk({ players: [] })
     .then(function(betAmount){
       t.equal(betAmount, 0);
+
+      postStub.restore();
       t.end();
     });
 
@@ -504,12 +514,15 @@ tape('before the promise is resolved, the amount is sanitized (negative number)'
 
 tape('before the promise is resolved, the amount is sanitized (NaN)', function(t) {
 
+  const postStub = sinon.stub(request, 'post');
   const arale = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
 
   postStub.yields(null, {}, 'hello');
   arale.talk({ players: [] })
     .then(function(betAmount){
       t.equal(betAmount, 0);
+
+      postStub.restore();
       t.end();
     });
 
@@ -517,12 +530,15 @@ tape('before the promise is resolved, the amount is sanitized (NaN)', function(t
 
 tape('before the promise is resolved, the amount is sanitized (Infinity is treated as NaN)', function(t) {
 
+  const postStub = sinon.stub(request, 'post');
   const arale = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
 
   postStub.yields(null, {}, 'Infinity');
   arale.talk({ players: [] })
     .then(function(betAmount){
       t.equal(betAmount, 0);
+
+      postStub.restore();
       t.end();
     });
 
@@ -530,12 +546,15 @@ tape('before the promise is resolved, the amount is sanitized (Infinity is treat
 
 tape('before the promise is resolved, the amount is sanitized (valid amount)', function(t) {
 
+  const postStub = sinon.stub(request, 'post');
   const arale = sut({ name: 'arale', id: 'a1', serviceUrl: 'http:arale.com' });
 
   postStub.yields(null, {}, '100');
   arale.talk({ players: [] })
     .then(function(betAmount){
       t.equal(betAmount, 100);
+
+      postStub.restore();
       t.end();
     });
 
