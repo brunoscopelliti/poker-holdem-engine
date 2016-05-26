@@ -4,29 +4,37 @@
 const tape = require('tape');
 const sinon = require('sinon');
 
+const request = require('request');
+
+//const postStub = sinon.stub(request, 'post');
+//const saveStub = require('../../storage/storage').save;
+
+
 const run = require('../test-utils/generator-runner');
-
-const saveStub = require('../../storage/storage').save;
-
+const promisify = require('../test-utils/promisify');
 
 const playerStatus = require('../../poker-engine/domain/player-status');
+const createPlayer = require('../../poker-engine/domain-utils/player-factory');
+
 const sut = require('../../poker-engine/bet-loop');
 
 const engine = require('../../index');
 
+engine.on('gamestate:updated', onGamestateUpdated);
+
 function onGamestateUpdated(data, res) {
   res();
 }
-engine.on('gamestate:updated', onGamestateUpdated);
+
 
 const allin_ = Symbol.for('is-all-in');
 const hasBB_ = Symbol.for('has-big-blind');
 const hasDB_ = Symbol.for('has-dealer-button');
+const hasTalked_ = Symbol.for('has-talked');
 const deck_ = Symbol.for('cards-deck');
 
 function noop() {}
-
-function createPlayer(name, talk){
+function createFakePlayer(name, talk){
   return {
     status: 'active',
     id: name+'ID',
@@ -49,7 +57,7 @@ tape('when there is only one active player the bet session is finished', functio
 
   const result = iter.next();
 
-  t.ok(result.done)
+  t.ok(result.done);
 
   t.end();
 });
@@ -58,6 +66,14 @@ tape('when there is only one active player the bet session is finished', functio
 
 tape('preflop - check betting session starts from player next to big blind', function(t){
 
+  const gamestate = {
+    [deck_]: [1,2,3,4,5,6].concat(new Array(46).fill('x')),
+    pot: 0,
+    sidepots: [],
+    commonCards: [],
+    callAmount: 0
+  };
+
   const talkSpy = sinon.spy();
 
   function talk(gs){
@@ -65,20 +81,24 @@ tape('preflop - check betting session starts from player next to big blind', fun
       throw new Error('I want to test only pre-flop');
 
     talkSpy(this.name);
+    return gs.callAmount;
   }
 
-  const players = ['arale', 'bender', 'marvin', 'wall-e'].map(player => createPlayer(player, talk));
+
+  const players = ['arale', 'bender', 'marvin', 'wall-e']
+    .map(function(name) {
+      const playerData = { name: name, id: `${name}ID`, serviceUrl: `https://${name}.com` };
+      const player = createPlayer(playerData);
+      player.talk = promisify(talk, player, gamestate);
+      return player;
+    });
 
   players[0][hasDB_] = true;
   players[2][hasBB_] = true;
 
-  const gamestate = {
-    [deck_]: [1,2,3,4,5,6].concat(new Array(46).fill('x')),
-    players: players,
-    activePlayers: players,
-    commonCards: [],
-    callAmount: 0
-  };
+
+  gamestate.players = players;
+  gamestate.activePlayers = players;
 
   run(sut, gamestate)
     .catch(function(err) {
@@ -92,24 +112,33 @@ tape('preflop - check betting session starts from player next to big blind', fun
 
 tape('postflop - check betting session starts from player next to dealer button', function(t){
 
+  const gamestate = {
+    [deck_]: [4,5,6].concat(new Array(49).fill('x')),
+    pot: 0,
+    sidepots: [],
+    commonCards: [1,2,3],
+    callAmount: 0
+  };
+
   const talkSpy = sinon.spy();
 
   function talk(gs){
     talkSpy(this.name);
   }
 
-  const players = ['arale', 'bender', 'marvin', 'wall-e'].map(player => createPlayer(player, talk));
+  const players = ['arale', 'bender', 'marvin', 'wall-e']
+    .map(function(name) {
+      const playerData = { name: name, id: `${name}ID`, serviceUrl: `https://${name}.com` };
+      const player = createPlayer(playerData);
+      player.talk = promisify(talk, player, gamestate);
+      return player;
+    });
 
   players[0][hasDB_] = true;
   players[2][hasBB_] = true;
 
-  const gamestate = {
-    [deck_]: [4,5,6].concat(new Array(49).fill('x')),
-    players: players,
-    activePlayers: players,
-    commonCards: [1,2,3],
-    callAmount: 0
-  };
+  gamestate.players = players;
+  gamestate.activePlayers = players;
 
   run(sut, gamestate)
     .then(function() {
@@ -125,6 +154,14 @@ tape('postflop - check betting session starts from player next to dealer button'
 
 tape('preflop betting session closes in a single round', function(t){
 
+  const gamestate = {
+    [deck_]: new Array(52).fill('x'),
+    pot: 0,
+    sidepots: [],
+    commonCards: [],
+    callAmount: 50
+  };
+
   const talkSpy = sinon.spy();
 
   function talk(gs){
@@ -132,21 +169,22 @@ tape('preflop betting session closes in a single round', function(t){
       throw new Error('I want to test only pre-flop');
 
     talkSpy(gs.spinCount);
-    this.chipsBet += gs.callAmount;
+    return gs.callAmount;
   }
 
-  const players = ['arale', 'bender', 'marvin', 'wall-e'].map(player => createPlayer(player, talk));
+  const players = ['arale', 'bender', 'marvin', 'wall-e']
+    .map(function(name) {
+      const playerData = { name: name, id: `${name}ID`, serviceUrl: `https://${name}.com` };
+      const player = createPlayer(playerData);
+      player.talk = promisify(talk, player, gamestate);
+      return player;
+    });
 
   players[1][hasDB_] = true;
   players[3][hasBB_] = true;
 
-  const gamestate = {
-    [deck_]: new Array(52).fill('x'),
-    players: players,
-    activePlayers: players,
-    commonCards: [],
-    callAmount: 50
-  };
+  gamestate.players = players;
+  gamestate.activePlayers = players;
 
   run(sut, gamestate)
     .catch(function(err) {
@@ -160,6 +198,14 @@ tape('preflop betting session closes in a single round', function(t){
 
 tape('preflop betting session in single round cause player is allin', function(t){
 
+  const gamestate = {
+    [deck_]: new Array(52).fill('x'),
+    pot: 0,
+    sidepots: [],
+    commonCards: [],
+    callAmount: 50
+  };
+
   const talkSpy = sinon.spy();
 
   function talk(gs){
@@ -169,24 +215,25 @@ tape('preflop betting session in single round cause player is allin', function(t
     talkSpy(gs.spinCount);
 
     if (this.name == 'bender' && gs.spinCount == 0)
-      gs.callAmount *= 2;
+      return gs.callAmount * 2;
 
-    this.chipsBet += gs.callAmount;
+    return gs.callAmount;
   }
 
-  const players = ['arale', 'bender', 'marvin', 'wall-e'].map(player => createPlayer(player, talk));
+  const players = ['arale', 'bender', 'marvin', 'wall-e']
+    .map(function(name) {
+      const playerData = { name: name, id: `${name}ID`, serviceUrl: `https://${name}.com` };
+      const player = createPlayer(playerData);
+      player.talk = promisify(talk, player, gamestate);
+      return player;
+    });
 
   players[0][allin_] = true;
   players[1][hasDB_] = true;
   players[3][hasBB_] = true;
 
-  const gamestate = {
-    [deck_]: new Array(52).fill('x'),
-    players: players,
-    activePlayers: players,
-    commonCards: [],
-    callAmount: 50
-  };
+  gamestate.players = players;
+  gamestate.activePlayers = players;
 
   run(sut, gamestate)
     .catch(function(err) {
@@ -200,6 +247,15 @@ tape('preflop betting session in single round cause player is allin', function(t
 
 tape('preflop betting session on multiple round', function(t){
 
+  const gamestate = {
+    [deck_]: new Array(52).fill('x'),
+    pot: 30,
+    sb: 10,
+    sidepots: [],
+    commonCards: [],
+    callAmount: 50
+  };
+
   const talkSpy = sinon.spy();
 
   function talk(gs){
@@ -209,23 +265,24 @@ tape('preflop betting session on multiple round', function(t){
     talkSpy(gs.spinCount);
 
     if (this.name == 'bender' && gs.spinCount == 0)
-      gs.callAmount *= 2;
+      return gs.callAmount * 2;
 
-    this.chipsBet += gs.callAmount;
+    return Math.max(gs.callAmount - this.chipsBet, 0);
   }
 
-  const players = ['arale', 'bender', 'marvin', 'wall-e'].map(player => createPlayer(player, talk));
+  const players = ['arale', 'bender', 'marvin', 'wall-e']
+    .map(function(name) {
+      const playerData = { name: name, id: `${name}ID`, serviceUrl: `https://${name}.com` };
+      const player = createPlayer(playerData);
+      player.talk = promisify(talk, player, gamestate);
+      return player;
+    });
 
   players[1][hasDB_] = true;
   players[3][hasBB_] = true;
 
-  const gamestate = {
-    [deck_]: new Array(52).fill('x'),
-    players: players,
-    activePlayers: players,
-    commonCards: [],
-    callAmount: 50
-  };
+  gamestate.players = players;
+  gamestate.activePlayers = players;
 
   run(sut, gamestate)
     .catch(function(err) {
@@ -306,14 +363,14 @@ tape('the bet loop should terminate', function(t){
   }
 
 
-  const arale = createPlayer('arale', araleTalkSpy);
+  const arale = createFakePlayer('arale', araleTalkSpy);
   arale.status = playerStatus.folded;
 
-  const bender = createPlayer('bender', benderTalk);
+  const bender = createFakePlayer('bender', benderTalk);
   bender[hasDB_] = true;
 
-  const marvin = createPlayer('marvin', marvinTalk);
-  const walle = createPlayer('walle', walleTalk);
+  const marvin = createFakePlayer('marvin', marvinTalk);
+  const walle = createFakePlayer('walle', walleTalk);
   walle[hasBB_] = true;
 
   const gamestate = {
@@ -440,12 +497,12 @@ tape('the bet loop shouldnt terminate', function(t){
     fireSpy('bender', betAmount, benderTalkSpy);
   }
 
-  const arale = createPlayer('arale', araleTalk);
-  const bender = createPlayer('bender', benderTalk);
+  const arale = createFakePlayer('arale', araleTalk);
+  const bender = createFakePlayer('bender', benderTalk);
   bender[hasDB_] = true;
 
-  const marvin = createPlayer('marvin', marvinTalk);
-  const walle = createPlayer('walle', walleTalk);
+  const marvin = createFakePlayer('marvin', marvinTalk);
+  const walle = createFakePlayer('walle', walleTalk);
   walle[hasBB_] = true;
 
   const gamestate = {
@@ -568,14 +625,14 @@ tape('the bet loop shouldnt terminate', function(t){
     fireSpy('bender', betAmount, benderTalkSpy);
   }
 
-  const arale = createPlayer('arale', araleTalkSpy);
+  const arale = createFakePlayer('arale', araleTalkSpy);
   arale.status = playerStatus.folded;
 
-  const bender = createPlayer('bender', benderTalk);
+  const bender = createFakePlayer('bender', benderTalk);
   bender[hasDB_] = true;
 
-  const marvin = createPlayer('marvin', marvinTalk);
-  const walle = createPlayer('walle', walleTalk);
+  const marvin = createFakePlayer('marvin', marvinTalk);
+  const walle = createFakePlayer('walle', walleTalk);
   walle[hasBB_] = true;
 
   const gamestate = {
@@ -622,7 +679,7 @@ tape('check community cards distribution', function(t){
     this.chipsBet += gs.callAmount;
   }
 
-  const players = ['arale', 'bender', 'marvin', 'wall-e'].map(player => createPlayer(player, talk));
+  const players = ['arale', 'bender', 'marvin', 'wall-e'].map(player => createFakePlayer(player, talk));
 
   players[1][hasDB_] = true;
   players[3][hasBB_] = true;
