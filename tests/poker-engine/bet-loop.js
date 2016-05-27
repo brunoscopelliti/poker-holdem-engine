@@ -641,36 +641,46 @@ tape('the bet loop shouldnt terminate', function(t){
 
 tape('check community cards distribution', function(t){
 
+  const gamestate = {
+    [deck_]: [1,2,3,4,5,6].concat(new Array(46).fill('x')),
+    commonCards: [],
+    sidepots: [],
+    pot: 0,
+    callAmount: 20
+  };
+
   const talkSpy = sinon.spy();
   const cardUpdateSpy = sinon.spy();
 
   function talk(gs){
     talkSpy(gs);
-    this.chipsBet += gs.callAmount;
+    return gs.callAmount;
   }
 
-  const players = ['arale', 'bender', 'marvin', 'wall-e'].map(player => createFakePlayer(player, talk));
+  const players = ['arale', 'bender', 'marvin', 'wall-e']
+    .map(function(name) {
+      const player = createPlayerByName(name);
+      player.talk = promisify(talk, player, gamestate);
+      return player;
+    });
 
   players[1][hasDB_] = true;
   players[3][hasBB_] = true;
 
-  const gamestate = {
-    [deck_]: [1,2,3,4,5,6].concat(new Array(46).fill('x')),
-    players: players,
-    activePlayers: players,
-    commonCards: [],
-    callAmount: 50
-  };
+  gamestate.players = players;
+
 
   engine.removeListener('gamestate:updated', onGamestateUpdated);
   engine.on('gamestate:updated', onGamestateUpdatedCustom);
 
   function onGamestateUpdatedCustom(data, res){
-    cardUpdateSpy(data.type, data.session, data.commonCards.slice(0));
+    if(data.type === 'cards'){
+      cardUpdateSpy(data.type, data.session, data.commonCards.slice(0));
+    }
     res();
   }
 
-  run(sut, gamestate)
+  run(sut, enhance(gamestate))
     .then(function() {
       t.equal(talkSpy.callCount, 16);
       t.equal(cardUpdateSpy.callCount, 3);
