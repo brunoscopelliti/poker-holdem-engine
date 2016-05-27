@@ -8,6 +8,7 @@ const request = require('request');
 
 const run = require('../test-utils/generator-runner');
 const promisify = require('../test-utils/promisify');
+const enhance = require('../test-utils/enhance-gamestate');
 
 const playerStatus = require('../../poker-engine/domain/player-status');
 const createPlayer = require('../../poker-engine/domain-utils/player-factory');
@@ -97,9 +98,8 @@ tape('preflop - check betting session starts from player next to big blind', fun
 
 
   gamestate.players = players;
-  gamestate.activePlayers = players;
 
-  run(sut, gamestate)
+  run(sut, enhance(gamestate))
     .catch(function(err) {
       t.equal(err.message, 'I want to test only pre-flop');
       t.equal(talkSpy.callCount, 4);
@@ -136,9 +136,8 @@ tape('postflop - check betting session starts from player next to dealer button'
   players[2][hasBB_] = true;
 
   gamestate.players = players;
-  gamestate.activePlayers = players;
 
-  run(sut, gamestate)
+  run(sut, enhance(gamestate))
     .then(function() {
       t.equal(talkSpy.callCount, 12);
       const expectedOrder = ['bender', 'marvin', 'wall-e', 'arale'];
@@ -181,9 +180,8 @@ tape('preflop betting session closes in a single round', function(t){
   players[3][hasBB_] = true;
 
   gamestate.players = players;
-  gamestate.activePlayers = players;
 
-  run(sut, gamestate)
+  run(sut, enhance(gamestate))
     .catch(function(err) {
       t.equal(err.message, 'I want to test only pre-flop');
       t.equal(talkSpy.callCount, 4);
@@ -229,9 +227,8 @@ tape('preflop betting session in single round cause player is allin', function(t
   players[3][hasBB_] = true;
 
   gamestate.players = players;
-  gamestate.activePlayers = players;
 
-  run(sut, gamestate)
+  run(sut, enhance(gamestate))
     .catch(function(err) {
       t.equal(err.message, 'I want to test only pre-flop');
       t.equal(talkSpy.callCount, 3);
@@ -277,9 +274,8 @@ tape('preflop betting session on multiple round', function(t){
   players[3][hasBB_] = true;
 
   gamestate.players = players;
-  gamestate.activePlayers = players;
 
-  run(sut, gamestate)
+  run(sut, enhance(gamestate))
     .catch(function(err) {
       t.equal(err.message, 'I want to test only pre-flop');
       t.equal(talkSpy.callCount, 5);
@@ -371,9 +367,8 @@ tape('the bet loop should terminate', function(t){
   walle.talk = promisify(walleTalk, walle, gamestate);
 
   gamestate.players = [arale, bender, marvin, walle];
-  gamestate.activePlayers = [bender, marvin, walle];
 
-  run(sut, gamestate)
+  run(sut, enhance(gamestate))
     .catch(function(err) {
 
       t.equal(err.message, 'I want to test only post-flop');
@@ -413,10 +408,16 @@ tape('the bet loop shouldnt terminate', function(t){
 
   // bender calls.
   // marvin should only be able to fold/call betting 10.
-  // walle calls to.
-  // TODO bruno: answer walle should be able to re-raise eventually?
-  // then the betting loop ends.
+  // walle should only be able to fold/call betting 10.
 
+  const gamestate = {
+    [deck_]: [4,5,6].concat(new Array(49).fill('x')),
+    pot: 0,
+    sidepots: 0,
+    commonCards: [1,2,3],
+    callAmount: 0,
+    sb: 5
+  };
 
   const araleTalkSpy = sinon.spy();
   const benderTalkSpy = sinon.spy();
@@ -434,78 +435,62 @@ tape('the bet loop shouldnt terminate', function(t){
     playerSpy(amount);
   }
 
-  function setChipsBet(gs, name, amount, isAllin){
-    const player = gs.players.find(player => player.name == name);
-    player.chipsBet += amount;
-    player[allin_] = !!isAllin;
-    gs.callAmount = Math.max(player.chipsBet, gs.callAmount);
-  }
-
-  function getChipsBet(players, name){
-    return players.find(player => player.name == name).chipsBet;
-  }
-
-
 
   function marvinTalk(gs){
     thrower(gs);
     let betAmount;
     if (gs.spinCount === 0){
-      gs.lastRaiserId = 'marvinID';
       betAmount = 20;
     }
     else if (gs.spinCount === 1){
-      const chipsBet = getChipsBet(gs.players, 'marvin');
-      betAmount = Math.max(gs.callAmount - chipsBet, 0);
+      betAmount = Math.max(gs.callAmount - this.chipsBet, 0);
     }
     else {
       throw new Error('gs.spinCount is not expected to be greater than 1 in this hand.');
     }
-    setChipsBet(gs, 'marvin', betAmount);
     fireSpy('marvin', betAmount, marvinTalkSpy);
+    return betAmount;
   }
 
   function walleTalk(gs){
     thrower(gs);
-    const chipsBet = getChipsBet(gs.players, 'walle');
-    const betAmount = Math.max(gs.callAmount - chipsBet, 0);
-    setChipsBet(gs, 'walle', betAmount);
+    const betAmount = Math.max(gs.callAmount - this.chipsBet, 0);
     fireSpy('walle', betAmount, walleTalkSpy);
+    return betAmount;
   }
 
   function araleTalk(gs){
     thrower(gs);
     const betAmount = 30;
-    setChipsBet(gs, 'arale', betAmount, true);
     fireSpy('arale', betAmount, araleTalkSpy);
+    return betAmount;
   }
 
   function benderTalk(gs){
     thrower(gs);
-    const chipsBet = getChipsBet(gs.players, 'bender');
-    const betAmount = Math.max(gs.callAmount - chipsBet, 0);
-    setChipsBet(gs, 'bender', betAmount);
+    const betAmount = Math.max(gs.callAmount - this.chipsBet, 0);
     fireSpy('bender', betAmount, benderTalkSpy);
+    return betAmount;
   }
 
-  const arale = createFakePlayer('arale', araleTalk);
-  const bender = createFakePlayer('bender', benderTalk);
+  const arale = createPlayerByName('arale');
+  arale.chips = 30;
+  arale.talk = promisify(araleTalk, arale, gamestate);
+
+  const bender = createPlayerByName('bender');
+  bender.talk = promisify(benderTalk, bender, gamestate);
   bender[hasDB_] = true;
 
-  const marvin = createFakePlayer('marvin', marvinTalk);
-  const walle = createFakePlayer('walle', walleTalk);
+  const marvin = createPlayerByName('marvin');
+  marvin.talk = promisify(marvinTalk, marvin, gamestate);
+
+  const walle = createPlayerByName('walle');
+  walle.talk = promisify(walleTalk, walle, gamestate);
   walle[hasBB_] = true;
 
-  const gamestate = {
-    [deck_]: [4,5,6].concat(new Array(49).fill('x')),
-    players: [arale, bender, marvin, walle],
-    activePlayers: [arale, bender, marvin, walle],
-    commonCards: [1,2,3],
-    callAmount: 0,
-    sb: 5
-  };
+  gamestate.players = [arale, bender, marvin, walle];
 
-  run(sut, gamestate)
+  run(sut, enhance(gamestate))
     .catch(function(err) {
 
       t.equal(err.message, 'I want to test only post-flop');
@@ -545,6 +530,15 @@ tape('the bet loop shouldnt terminate', function(t){
   // walle calls by betting 80.
   // when bender bets 80 too, the betting loop ends.
 
+  const gamestate = {
+    [deck_]: [4,5,6].concat(new Array(49).fill('x')),
+    pot: 0,
+    sidepots: 0,
+    commonCards: [1,2,3],
+    callAmount: 0,
+    sb: 5
+  };
+
 
   const araleTalkSpy = sinon.spy();
   const benderTalkSpy = sinon.spy();
@@ -562,80 +556,65 @@ tape('the bet loop shouldnt terminate', function(t){
     playerSpy(amount);
   }
 
-  function setChipsBet(gs, name, amount){
-    const player = gs.players.find(player => player.name == name);
-    player.chipsBet += amount;
-    gs.callAmount = Math.max(player.chipsBet, gs.callAmount);
-  }
-
-  function getChipsBet(players, name){
-    return players.find(player => player.name == name).chipsBet;
-  }
 
   function marvinTalk(gs){
     thrower(gs);
     let betAmount;
     if (gs.spinCount === 0){
-      const chipsBet = getChipsBet(gs.players, 'marvin');
-      betAmount = Math.max(gs.callAmount - chipsBet, 0);
+      betAmount = Math.max(gs.callAmount - this.chipsBet, 0);
     }
     else if (gs.spinCount === 1){
-      gs.lastRaiserId = 'marvinID';
       betAmount = 100;
     }
     else {
       throw new Error('gs.spinCount is not expected to be greater than 1 in this hand.');
     }
-    setChipsBet(gs, 'marvin', betAmount);
     fireSpy('marvin', betAmount, marvinTalkSpy);
+    return betAmount;
   }
 
   function walleTalk(gs){
     thrower(gs);
     let betAmount;
     if (gs.spinCount === 0){
-      gs.lastRaiserId = 'walleID';
       betAmount = 20;
     }
     else if (gs.spinCount === 1){
-      const chipsBet = getChipsBet(gs.players, 'walle');
-      betAmount = Math.max(gs.callAmount - chipsBet, 0);
+      betAmount = Math.max(gs.callAmount - this.chipsBet, 0);
     }
     else {
       throw new Error('gs.spinCount is not expected to be greater than 1 in this hand.');
     }
-    setChipsBet(gs, 'walle', betAmount);
     fireSpy('walle', betAmount, walleTalkSpy);
+    return betAmount;
   }
 
   function benderTalk(gs){
     thrower(gs);
-    const chipsBet = getChipsBet(gs.players, 'bender');
-    const betAmount = Math.max(gs.callAmount - chipsBet, 0);
-    setChipsBet(gs, 'bender', betAmount);
+    const betAmount = Math.max(gs.callAmount - this.chipsBet, 0);
     fireSpy('bender', betAmount, benderTalkSpy);
+    return betAmount;
   }
 
-  const arale = createFakePlayer('arale', araleTalkSpy);
+  const arale = createPlayerByName('arale');
+  arale.talk = araleTalkSpy;
   arale.status = playerStatus.folded;
 
-  const bender = createFakePlayer('bender', benderTalk);
+  const bender = createPlayerByName('bender');
+  bender.talk = promisify(benderTalk, bender, gamestate);
   bender[hasDB_] = true;
 
-  const marvin = createFakePlayer('marvin', marvinTalk);
-  const walle = createFakePlayer('walle', walleTalk);
+  const marvin = createPlayerByName('marvin');
+  marvin.talk = promisify(marvinTalk, marvin, gamestate);
+
+  const walle = createPlayerByName('walle', walleTalk);
+  walle.talk = promisify(walleTalk, walle, gamestate);
   walle[hasBB_] = true;
 
-  const gamestate = {
-    [deck_]: [4,5,6].concat(new Array(49).fill('x')),
-    players: [arale, bender, marvin, walle],
-    activePlayers: [bender, marvin, walle],
-    commonCards: [1,2,3],
-    callAmount: 0,
-    sb: 5
-  };
 
-  run(sut, gamestate)
+  gamestate.players = [arale, bender, marvin, walle];
+
+  run(sut, enhance(gamestate))
     .catch(function(err) {
 
       t.equal(err.message, 'I want to test only post-flop');
