@@ -1,6 +1,6 @@
 
 exports = module.exports = {
-  tournamentId: 'local-demo',
+  tournamentId: '574e653bbebd5a20064d08fb',
   players: [{
     id: 'arale-id',
     name: 'arale',

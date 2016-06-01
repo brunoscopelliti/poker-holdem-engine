@@ -10,7 +10,8 @@ const chalk = require('chalk');
 const mongoose = require('mongoose');
 
 const config = require('./demo-config');
-const gameSchema = require('./demo-schema');
+const gameSchema = require('./demo-game-schema');
+const chartSchema = require('./demo-chart-schema');
 
 const engine = require('./index');
 
@@ -29,6 +30,7 @@ function connect(connectionString) {
   })
 }
 
+
 connect('mongodb://localhost:27017/store')
   .then(function() {
 
@@ -36,6 +38,33 @@ connect('mongodb://localhost:27017/store')
 
 
     const Game = mongoose.model('game', gameSchema);
+
+    function saveUpdates(data, done){
+      [,data.tournamentId, data.gameId, data.handId] = data.handId.match(/^[\d]+_([a-z,-\d]+)_([\d]+)-([\d]+)$/i);
+      let entry = new Game(data);
+      entry.save(function(err, savedData){
+        if(err){
+          console.log(chalk.bold.red(`An error occurred while saving ${data.type} updates.`));
+          console.log(err.message);
+        }
+        done();
+      });
+    }
+
+
+    const Chart = mongoose.model('chart', chartSchema);
+
+    function saveChart(data, done){
+      let entry = new Chart(data);
+      entry.save(function(err, savedData){
+        if(err){
+          console.log(chalk.bold.red(`An error occurred while saving ${data.type} updates.`));
+          console.log(err.message);
+        }
+        done();
+      });
+    }
+
 
 
     engine.on('tournament:aborted', function() {
@@ -47,15 +76,10 @@ connect('mongodb://localhost:27017/store')
     });
 
     engine.on('gamestate:updated', function(data, done) {
-      [,data.tournamentId, data.gameId, data.handId] = data.handId.match(/^[\d]+_([a-z,-\d]+)_([\d]+)-([\d]+)$/i);
-      let entry = new Game(data);
-      entry.save(function(err, savedData){
-        if(err){
-          console.log(chalk.bold.red(`An error occurred while saving ${data.type} updates.`));
-          console.log(err.message);
-        }
-        done();
-      });
+      if (data.type != 'points')
+        return void saveUpdates(data, done);
+
+      saveChart(data, done);
     });
 
 
