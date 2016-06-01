@@ -159,6 +159,6 @@ exports = module.exports = function* dealer(gs){
  */
 function getRankingLogMessage(ranking){
   return ranking.reduce(function(msg, player) {
-    return msg += `${player.name}: ${player.pts}`, msg;
+    return msg += `${player.name}: ${player.pts}, `, msg;
   }, '').trim().slice(0,-1);
 }
