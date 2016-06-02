@@ -6,6 +6,7 @@ const tcase = require('tape-case');
 const sinon = require('sinon');
 
 const playerStatus = require('../../../poker-engine/domain/player-status');
+const enhance = require('../../test-utils/enhance-gamestate');
 
 const sut = require('../../../poker-engine/domain-utils/assign-dealer-button');
 
@@ -16,6 +17,34 @@ const hasDB = Symbol.for('has-dealer-button');
 tape('assign-dealer-button', t => t.end());
 
 
+tape('only one player can have dealer button', function(t){
+
+  const gs = enhance({
+    handProgressiveId: 1,
+    gameProgressiveId: 2,
+    players: [{
+      name: 'arale'
+    }, {
+      name: 'bender'
+    }, {
+      name: 'marvin',
+      [hasDB]: true
+    }, {
+      name: 'wall-e'
+    }]
+  });
+
+  sut(gs);
+
+  const dbPlayer = gs.players.filter(player => player[hasDB]);
+
+  t.equal(dbPlayer.length, 1);
+  t.equal(dbPlayer[0].name, 'bender');
+
+  t.end();
+});
+
+
 tcase([
   { description: 'handId=1, dealer button index changes on the basis of the gameId', args: [ 1 ] },
   { args: [ 2 ] },
@@ -24,8 +53,9 @@ tcase([
   { args: [ 5 ] }
 ], function(gameId) {
 
-  const gs = {
+  const gs = enhance({
     handProgressiveId: 1,
+    gameProgressiveId: gameId,
     players: [{
       name: 'arale'
     }, {
@@ -35,16 +65,7 @@ tcase([
     }, {
       name: 'wall-e'
     }]
-  };
-
-  Object.defineProperty(gs, 'dealerButtonIndex', {
-    get() {
-      return this.players.findIndex(player => player[hasDB]);
-    }
   });
-
-  gs.gameProgressiveId = gameId;
-
 
   sut(gs);
 
@@ -58,7 +79,7 @@ tcase([
 
 (function() {
 
-  const gamestate = {
+  const gamestate = enhance({
     gameProgressiveId: 1,
     handProgressiveId: 1,
     players: [{
@@ -78,12 +99,6 @@ tcase([
       name: 'wall-e',
       status: playerStatus.active
     }]
-  };
-
-  Object.defineProperty(gamestate, 'dealerButtonIndex', {
-    get() {
-      return this.players.findIndex(player => player[hasDB]);
-    }
   });
 
   tcase([
@@ -115,7 +130,7 @@ tcase([
 
 (function() {
 
-  const gamestate = {
+  const gamestate = enhance({
     gameProgressiveId: 2,
     handProgressiveId: 1,
     players: [{
@@ -135,12 +150,6 @@ tcase([
       name: 'wall-e',
       status: playerStatus.active
     }]
-  };
-
-  Object.defineProperty(gamestate, 'dealerButtonIndex', {
-    get() {
-      return this.players.findIndex(player => player[hasDB]);
-    }
   });
 
   const expectedDealerButtonId = [1,3,1,3,1,3];

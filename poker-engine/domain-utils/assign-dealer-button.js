@@ -22,20 +22,20 @@ const hasDB_ = Symbol.for('has-dealer-button');
  */
 exports = module.exports = function assignDealerButton(gs){
 
+  let dealerButtonIndex = gs.dealerButtonIndex;
+
+  if (dealerButtonIndex >= 0){
+    delete gs.players[dealerButtonIndex][hasDB_];
+  }
+
+
   if (gs.handProgressiveId == 1){
 
     gs.dealerButtonRound = 0;
 
     const dbIndex = gs.initialDealerButtonIndex = (gs.gameProgressiveId - 1) % gs.players.length;
 
-    return gs.players[dbIndex][hasDB_] = true;
-  }
-
-
-  let dealerButtonIndex = gs.dealerButtonIndex;
-
-  if (dealerButtonIndex >= 0){
-    delete gs.players[dealerButtonIndex][hasDB_];
+    return void (gs.players[dbIndex][hasDB_] = true);
   }
 
 
