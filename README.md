@@ -2,43 +2,45 @@
 
 `poker-holdem-engine` provides an engine to play Texas Hold'em Poker in respect of the [official rules](https://it.wikipedia.org/wiki/Texas_hold_%27em).
 
-Poker here is meant to be played by other programs, which should be listen for POST http request somewhere in the Internet, or on your localhost
+Poker here is meant to be played by other programs, which should be listen for POST http request somewhere in the Internet, or on your localhost.
+
+It's used as default poker holdem engine for http://botpoker.org.
 
 ## start a tournament
 
 ```
-let engine = require('poker-holdem-engine');
+const engine = require('poker-holdem-engine');
 
-engine.emit('game:start', {
-  tournamentId: 'id_of_the_tournament',
-  players: [{
-    name: 'r2-d2',
-    url: 'http://r2-d2.com/'
-  }, {
-    name: 'c-3p8',
-    url: 'http://c-3po.com/'
-  }]
-});
+const tournamentID = 'botparty';
+const players = [
+  {
+    id: 'r2',
+    name: 'r2d2',
+    serviceUrl: 'http://127.0.0.1:8080/'
+  },
+  ...
+];
+
+engine.start(tournamentID, players);
 ```
 
-Players should be object with at least the `name`, `id`, and `url` properties specified.
+Players should be object with at least the `name`, `id`, and `serviceUrl` properties specified.
 
-On the specified end point there should be an app, responding on the `POST /bet`, and `GET /version` routes.
+On the specified end point there should be an http server, responding on the `POST /bet`, `GET /`, and `GET /version` routes.
 
 Every time something of interesting happen the message `gamestate:updated` is notified, with a parameter containing further information about the state of the game.
 
 ## quit a tournament
 
 ```
-let engine = require('poker-holdem-engine');
-engine.emit('game:end');
+engine.quit(tournamentID);
 ```
 
-When the tournament finishes the message `tournament-finished` is notified.
+When the tournament finishes the message `tournament:completed` is notified.
 
 ## prepare your player
 
-It's possible to code your player in whatever language you want. In the following example i will use javascript.
+It's possible to code your player in whatever language you want. In the following example I will use JavaScript.
 
 ```
 // server.js
