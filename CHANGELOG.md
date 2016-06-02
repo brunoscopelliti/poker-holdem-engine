@@ -5,6 +5,8 @@ This was an almost complete rewrite.
 
 * Poker Holdem Rules full compliance :tada:.
 
+* Added multiple game support.
+
 * Added further configuration options, such as `WARMUP`, `MAX_GAMES`, `ANTE`.
 
 * Added demo.
