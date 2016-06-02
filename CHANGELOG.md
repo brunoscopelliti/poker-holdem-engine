@@ -1,3 +1,16 @@
+2.0.0
+---
+
+This was an almost complete rewrite.
+
+* Poker Holdem Rules full compliance :tada:.
+
+* Added further configuration options, such as `WARMUP`, `MAX_GAMES`, `ANTE`.
+
+* Added demo.
+
+* Update dependencies.
+
 1.1.0
 ---
 
