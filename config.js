@@ -64,6 +64,10 @@ if (process.env.NODE_ENV === 'production'){
     config.SMALL_BLINDS = JSON.parse(process.env.SMALL_BLINDS);
   }
 
+  if ('WARMUP' in process.env){
+    config.WARMUP = JSON.parse(process.env.WARMUP);
+  }
+
   if ('AWARDS' in process.env){
     config.AWARDS = JSON.parse(process.env.AWARDS);
   }
