@@ -6,6 +6,12 @@ Poker here is meant to be played by other programs, which should be listen for P
 
 It's used as default poker holdem engine for http://botpoker.org.
 
+## demo
+
+It's possible to run a demo on your local machine by executing the `npm run demo` from the project root folder.
+
+In order to make the demo works you need to specify a connection string for a mongodb instance.
+
 ## start a tournament
 
 ```

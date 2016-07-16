@@ -31,7 +31,7 @@ function connect(connectionString) {
 }
 
 
-connect('mongodb://localhost:27017/store')
+connect(config.mongoUri)
   .then(function() {
 
     console.log(chalk.bold.green('Connected to mongoDB'));

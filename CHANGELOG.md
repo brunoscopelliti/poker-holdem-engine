@@ -1,3 +1,13 @@
+2.0.2
+---
+
+* Doc: Added info about how to run a demo on the local machine.
+
+2.0.1
+---
+
+* Fix: JSON parsing of the new WARMUP configuration key.
+
 2.0.0
 ---
 
