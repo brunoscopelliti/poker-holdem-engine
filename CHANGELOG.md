@@ -1,3 +1,8 @@
+2.0.3
+---
+
+* Dependency: Update `request` from 2.72.0 to 2.74.0. :rocket:
+
 2.0.2
 ---
 

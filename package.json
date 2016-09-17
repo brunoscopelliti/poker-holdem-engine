@@ -1,6 +1,6 @@
 {
   "name": "poker-holdem-engine",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Texas hold'em poker engine",
   "main": "index.js",
   "engines": {
@@ -38,7 +38,7 @@
     "poker-combinations": "1.1.0",
     "poker-deck": "1.0.0",
     "poker-rank": "1.1.0",
-    "request": "2.72.0",
+    "request": "2.74.0",
     "winston": "2.2.0"
   },
   "devDependencies": {
