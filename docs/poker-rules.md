@@ -43,7 +43,7 @@ When the pre-flop betting session ends three cards are showed on the table... Ev
 
 **TURN**
 
-Now starting from the player who has the *DB*, every active player has to express his bet.
+Now starting from the player next to the *DB*, every active player has to express his bet.
 
 When this betting session ends, if remains only an active player, the hand ends; otherwise a new card is added on the table.
 
