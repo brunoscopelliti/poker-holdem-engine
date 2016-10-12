@@ -1,9 +1,6 @@
 Poker rules
 ===
 
-http://www.texasholdem-poker.com/holdem_rules
-
-
 * Assign Dealer Button (**DB**).
   Every time a poker hand ends the *DB* is passed to the active player next to the one who currently have had the *DB*.
 
@@ -13,7 +10,7 @@ http://www.texasholdem-poker.com/holdem_rules
 
   Every other player who wish to play the hand has to bet at least the amount of the *BB*.
 
-  Every time the *DB* returns to the player who originally had it, or pass from his position in case he was eliminated, the value of the blinds increases following a predefined scale. (It must also be possible define that this increase occurs every N steps from the initial position).
+  Every time the *DB* returns to the player who originally had it, or pass from his position in case he was eliminated, the value of the blinds increases following a predefined scale. (It is also possible to define that this increase occurs every N steps from the initial position).
 
   * In case the player who is the *BB* doesn't have enough chips to pay the whole amount, the other players neither have to pay the whole amount of the *BB*, but the maximum amount between the amount bet by the *SB*, and *BB* players.
 
@@ -22,7 +19,7 @@ http://www.texasholdem-poker.com/holdem_rules
 
   * **ante**'s amount is always 10% of *BB*.
 
-  * if enabled, **ante** should be started being payed when 10% of *BB* is gte than 10% of the initial buy-in.
+  * if enabled, **ante** should be started being payed when 10% of *BB* is greater or equal than 10% of the initial buy-in.
 
 * Every player receive two private cards.
 
@@ -49,7 +46,7 @@ When this betting session ends, if remains only an active player, the hand ends;
 
 **RIVER**
 
-Again starting from the player who has the *DB*, every active player has to express his bet.
+Again starting from the player next to the *DB*, every active player has to express his bet.
 
 When this betting session ends, if remains only an active player, the hand ends; otherwise a new card is added on the table.
 
@@ -110,8 +107,4 @@ In case he has the strongest card combination, he win only the part of the pot t
 
 When a player bet all of his chips and still he has not covered the minimum call amount, a **side-pot** is created.
 
-Each player contributes to forming the side-pot with an amount equal to the minimum value between his bet, and the amount for which the other player went all-in; with a formula this would be something like:
-
-```
-side-pot = sum_for_each_player( min( player_bet_amount, all_in_amount ) )
-```
+Each player contributes to forming the side-pot with an amount equal to the minimum value between his bet, and the amount for which the other player went all-in.

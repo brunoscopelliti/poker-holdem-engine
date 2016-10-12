@@ -14,7 +14,7 @@ This is the gamestate object shared with the http services which play the game.
 
 * `hand`
 
-  This was renamed; previous name was `round`. Update the wiki. Be careful!!!
+  This was renamed; previous name was `round`.
 
 * `spinCount`
 

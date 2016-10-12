@@ -83,6 +83,7 @@ gamestate
     A player who has talked, cannot raise anymore.
     It should be reset after each betting session, and every time another player makes a valid raise.
 
+
 * `activePlayers`
 
   It's a shortcut to get only the active players from the `players` array.
@@ -108,6 +109,7 @@ gamestate
   The count starts from 0.
 
   This information is used in order to compute the blind amount.
+
 
 * `lastRaiseAmount`
 
