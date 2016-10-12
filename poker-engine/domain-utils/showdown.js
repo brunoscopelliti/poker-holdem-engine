@@ -3,8 +3,6 @@
 
 const sortByRank = require('poker-rank');
 
-const eachFrom = require('../lib/loop-from');
-
 
 
 /**
@@ -34,7 +32,7 @@ exports = module.exports = function showdown(gs) {
 
   const sortedCombinations = sortByRank(playersBestCombination);
 
-  gs.handChart = sortedCombinations.map(function(bestCombinationData, i, allCombinations) {
+  gs.handChart = sortedCombinations.map(function(bestCombinationData) {
     const player = activePlayers[bestCombinationData.index];
     return {
       name: player.name,
