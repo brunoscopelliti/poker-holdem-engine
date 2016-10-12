@@ -1,3 +1,11 @@
+2.0.4
+---
+
+* Fix doc error.
+
+* Removed unneeded `require('...')`
+
+
 2.0.3
 ---
 
