@@ -22,20 +22,20 @@ const gamestate = {};
 tape('get-small-blind-amount', t => t.end());
 
 tcase([
-  { description: '(BLINDS_PERIOD=1)', args: [ 0 ], result: 10 },
-  { args: [ 1 ], result: 20 },
-  { args: [ 2 ], result: 25 },
-  { args: [ 3 ], result: 50 },
-  { args: [ 4 ], result: 100 },
-  { args: [ 5 ], result: 125 },
-  { args: [ 6 ], result: 200 },
-  { args: [ 7 ], result: 250 },
-  { args: [ 8 ], result: 500 },
-  { args: [ 9 ], result: 750 },
-  { args: [ 10 ], result: 1000 },
-  { args: [ 11 ], result: 1000 },
-  { args: [ 12 ], result: 1000 },
-  { args: [ 42 ], result: 1000 }
+  { description: '(BLINDS_PERIOD=1)', args: [ 0 ], expectedResult: 10 },
+  { args: [ 1 ], expectedResult: 20 },
+  { args: [ 2 ], expectedResult: 25 },
+  { args: [ 3 ], expectedResult: 50 },
+  { args: [ 4 ], expectedResult: 100 },
+  { args: [ 5 ], expectedResult: 125 },
+  { args: [ 6 ], expectedResult: 200 },
+  { args: [ 7 ], expectedResult: 250 },
+  { args: [ 8 ], expectedResult: 500 },
+  { args: [ 9 ], expectedResult: 750 },
+  { args: [ 10 ], expectedResult: 1000 },
+  { args: [ 11 ], expectedResult: 1000 },
+  { args: [ 12 ], expectedResult: 1000 },
+  { args: [ 42 ], expectedResult: 1000 }
 ], function(val) {
 
   // when config.BLINDS_PERIOD = 1
@@ -52,14 +52,14 @@ tcase([
 });
 
 tcase([
-  { description: '(BLINDS_PERIOD=2)', args: [ 0 ], result: 10 },
-  { args: [ 1 ], result: 10 },
-  { args: [ 2 ], result: 20 },
-  { args: [ 3 ], result: 20 },
-  { args: [ 4 ], result: 25 },
-  { args: [ 5 ], result: 25 },
-  { args: [ 6 ], result: 50 },
-  { args: [ 42 ], result: 1000 }
+  { description: '(BLINDS_PERIOD=2)', args: [ 0 ], expectedResult: 10 },
+  { args: [ 1 ], expectedResult: 10 },
+  { args: [ 2 ], expectedResult: 20 },
+  { args: [ 3 ], expectedResult: 20 },
+  { args: [ 4 ], expectedResult: 25 },
+  { args: [ 5 ], expectedResult: 25 },
+  { args: [ 6 ], expectedResult: 50 },
+  { args: [ 42 ], expectedResult: 1000 }
 ], function(val) {
 
   // when config.BLINDS_PERIOD = 2
@@ -76,12 +76,12 @@ tcase([
 });
 
 tcase([
-  { description: '(BLINDS_PERIOD=5)', args: [ 0 ], result: 10 },
-  { args: [ 1 ], result: 10 },
-  { args: [ 2 ], result: 10 },
-  { args: [ 3 ], result: 10 },
-  { args: [ 4 ], result: 10 },
-  { args: [ 5 ], result: 20 }
+  { description: '(BLINDS_PERIOD=5)', args: [ 0 ], expectedResult: 10 },
+  { args: [ 1 ], expectedResult: 10 },
+  { args: [ 2 ], expectedResult: 10 },
+  { args: [ 3 ], expectedResult: 10 },
+  { args: [ 4 ], expectedResult: 10 },
+  { args: [ 5 ], expectedResult: 20 }
 ], function(val) {
 
   // when config.BLINDS_PERIOD = 5
