@@ -4,6 +4,7 @@
 process.env.NODE_ENV = 'demo';
 
 
+const path = require('path');
 const exec = require('child_process').exec;
 
 const chalk = require('chalk');
@@ -13,7 +14,7 @@ const config = require('./demo-config');
 const gameSchema = require('./demo-game-schema');
 const chartSchema = require('./demo-chart-schema');
 
-const engine = require('./index');
+const engine = require('../index');
 
 
 function connect(connectionString) {
@@ -91,7 +92,8 @@ connect(config.mongoUri)
 
     players.forEach(function(player) {
       const port = player.serviceUrl.match(/:([\d]{4})\/$/)[1];
-      const child = exec('node ./index.js', { cwd: `./demo-players/${player.name}/`, env: { PORT: port } }, function(err, stdout, stderr) {
+      const childWorkingDirectory = path.resolve(process.cwd(), 'demo-players', player.name);
+      const child = exec('node ./index.js', { cwd: childWorkingDirectory, env: { PORT: port } }, function(err, stdout, stderr) {
         if (err) {
           console.log(chalk.bold.red('An error occurred while trying to open child process'), err);
         }

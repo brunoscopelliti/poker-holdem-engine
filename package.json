@@ -10,7 +10,7 @@
     "winston": false
   },
   "scripts": {
-    "demo": "node demo",
+    "demo": "node demo/demo.js",
     "test": "grunt unit"
   },
   "repository": {
