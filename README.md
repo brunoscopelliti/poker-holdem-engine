@@ -14,7 +14,7 @@ In order to make the demo works you need to specify a connection string for a mo
 
 ## start a tournament
 
-```
+```js
 const engine = require('poker-holdem-engine');
 
 const tournamentID = 'botparty';
@@ -38,7 +38,7 @@ Every time something of interesting happen the message `gamestate:updated` is no
 
 ## quit a tournament
 
-```
+```js
 engine.quit(tournamentID);
 ```
 
@@ -48,7 +48,7 @@ When the tournament finishes the message `tournament:completed` is notified.
 
 It's possible to code your player in whatever language you want. In the following example I will use JavaScript.
 
-```
+```js
 // server.js
 
 'use strict';
@@ -86,7 +86,7 @@ server.listen(port, function() {
 
 And the player module
 
-```
+```js
 exports = module.exports = {
 
   VERSION: 'pokerstar v1',

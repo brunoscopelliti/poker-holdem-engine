@@ -1,30 +1,28 @@
 {
   "name": "poker-holdem-engine",
-  "version": "2.0.5",
+  "version": "3.0.0",
   "description": "Texas hold'em poker engine",
-  "main": "index.js",
+  "main": "tournament.js",
   "engines": {
-    "node": "6.0.0"
-  },
-  "browser": {
-    "winston": false
+    "node": "10.0.0"
   },
   "scripts": {
-    "demo": "node demo/demo.js",
-    "test": "grunt unit"
+    "demo": "node demo/live.js",
+    "lint": "eslint tournament.js domain/** engine/** logger/**",
+    "test": "npm run lint && jest",
+    "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/brunoscopelliti/poker-holdem-engine.git"
   },
   "keywords": [
+    "poker engine",
+    "poker holdem engine",
     "poker",
-    "texas",
     "hold'em",
-    "poker",
-    "engine",
-    "poker",
-    "game"
+    "poker hold'em",
+    "hold'em engine"
   ],
   "author": "Bruno Scopelliti",
   "license": "MIT",
@@ -33,25 +31,24 @@
   },
   "homepage": "https://github.com/brunoscopelliti/poker-holdem-engine",
   "dependencies": {
-    "chalk": "1.1.3",
-    "knuth-shuffle": "1.0.1",
-    "poker-combinations": "1.1.0",
-    "poker-deck": "1.0.0",
-    "poker-rank": "1.1.0",
-    "request": "2.81.0",
-    "winston": "2.3.1"
+    "knuth-shuffle": "1.0.8",
+    "poker-combinations": "1.2.2",
+    "poker-deck": "1.0.2",
+    "poker-rank": "2.0.2",
+    "request": "2.88.0",
+    "winston": "3.1.0"
   },
   "devDependencies": {
-    "body-parser": "1.17.1",
-    "express": "4.15.2",
-    "grunt": "1.0.1",
-    "grunt-browserify": "5.0.0",
-    "grunt-contrib-connect": "1.0.2",
-    "grunt-contrib-watch": "1.0.0",
-    "grunt-eslint": "19.0.0",
-    "mongoose": "4.9.2",
-    "sinon": "2.1.0",
-    "tape": "4.6.3",
-    "tape-case": "2.2.0"
+    "body-parser": "1.18.3",
+    "chalk": "2.4.2",
+    "eslint": "5.12.1",
+    "eslint-config-bruno": "2.0.0",
+    "eslint-plugin-import": "2.14.0",
+    "eslint-plugin-node": "8.0.1",
+    "eslint-plugin-promise": "4.0.1",
+    "eslint-plugin-standard": "4.0.0",
+    "express": "4.16.4",
+    "jest": "23.6.0",
+    "pre-commit": "1.2.2"
   }
 }

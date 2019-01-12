@@ -1,28 +1,29 @@
-2.0.4
----
+## 3.0.0
+
+20/01/2019
+
+* A complete rewrite, featuring ES2017's `async/await`.
+  Tested using node.js v10.0.0.
+
+## 2.0.4
 
 * Fix doc error.
 
 * Removed unneeded `require('...')`
 
-
-2.0.3
----
+## 2.0.3
 
 * Dependency: Update `request` from 2.72.0 to 2.74.0. :rocket:
 
-2.0.2
----
+## 2.0.2
 
 * Doc: Added info about how to run a demo on the local machine.
 
-2.0.1
----
+## 2.0.1
 
 * Fix: JSON parsing of the new WARMUP configuration key.
 
-2.0.0
----
+## 2.0.0
 
 This was an almost complete rewrite.
 
@@ -36,8 +37,7 @@ This was an almost complete rewrite.
 
 * Update dependencies.
 
-1.1.0
----
+## 1.1.0
 
 * Added this changelog.
 
@@ -47,12 +47,10 @@ Previously every bet exceeding the call amount would have been considered a vali
 
 * Update unit tests dependency: sinon (1.17.3), tape (4.5.0).
 
-1.0.1
----
+## 1.0.1
 
 * Refactoring unit test
 
-1.0.0
----
+## 1.0.0
 
 This is the first stable release.

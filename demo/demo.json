@@ -1,0 +1,21 @@
+{
+  "mongoUri": "mongodb://localhost:27017/store",
+  "tournamentId": "574e653bbebd5a20064d08fb",
+  "players": [{
+    "id": "arale",
+    "name": "Arale",
+    "serviceUrl": "http://127.0.0.1:8080/"
+  }, {
+    "id": "bender",
+    "name": "Bender",
+    "serviceUrl": "http://127.0.0.1:8081/"
+  }, {
+    "id": "marvin",
+    "name": "Marvin",
+    "serviceUrl": "http://127.0.0.1:8082/"
+  }, {
+    "id": "r2d2",
+    "name": "R2D2",
+    "serviceUrl": "http://127.0.0.1:8083/"
+  }]
+}
