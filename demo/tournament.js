@@ -20,7 +20,8 @@ process.on("message", (msg) => {
       break;
 
     case "pause":
-      tournament.pause();
+    case "restart":
+      tournament[msg.topic]();
       break;
 
     default:

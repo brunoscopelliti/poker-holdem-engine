@@ -114,12 +114,12 @@ class Tournament extends EventEmitter {
     if (this.state === States.get("active")) {
       LOGGER.info(`Tournament ${this.id} is going to be paused.`, { tag: this.id });
 
-      this.state = States.get("paused");
+      this.pendingPause = true;
     }
   }
 
   restart () {
-    if (this.state === States.get("pause")) {
+    if (this.state === States.get("paused")) {
       LOGGER.info(`Tournament ${this.id} is going to restart.`, { tag: this.id });
 
       this.state = States.get("active");

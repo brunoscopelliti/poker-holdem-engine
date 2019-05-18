@@ -42,6 +42,16 @@ const launchBotServices =
     );
   };
 
+const pause =
+  (thread) => {
+    thread.send({ topic: "pause" });
+  };
+
+const resume =
+  (thread) => {
+    thread.send({ topic: "restart" });
+  };
+
 const startTournament =
   () => {
     const thread =
@@ -62,8 +72,13 @@ const startTournament =
 
     // Start a new tournament
     thread.send({ topic: "create" });
+
+    // Testing pause/resume is working.
+    // Issue #6
+    setTimeout(pause, 1000, thread);
+    setTimeout(resume, 10000, thread);
   };
 
 launchBotServices();
 
-setTimeout(startTournament, 3000);
+setTimeout(startTournament, 2000);

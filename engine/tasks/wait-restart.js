@@ -8,18 +8,23 @@ const Task = Object.create(task);
 Task.name = "Wait game restart";
 
 Task.shouldRun =
-  (tournament) =>
-    tournament.state === States.get("paused");
+  (tournament) => tournament.pendingPause;
 
 Task.run =
   async (_, tournament) =>
     new Promise((resolve) => {
       const checkTournamentState =
         () => {
+          if (tournament.pendingPause) {
+            tournament.state = States.get("paused");
+
+            delete tournament.pendingPause;
+          }
+
           if (tournament.state === States.get("active")) {
             resolve();
           } else {
-            setTimeout(checkTournamentState, 10000);
+            setTimeout(checkTournamentState, 5000);
           }
         };
 
