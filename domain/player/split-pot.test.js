@@ -13,7 +13,7 @@ const split =
   (bets) => {
     const gamestate = {
       players: bets.map((bet) => ({ chipsBet: bet })),
-      sidepots: [],
+      sidepots: ["it will be reset"],
     };
 
     split_(gamestate);

@@ -13,13 +13,13 @@ const split =
       .map((player) => player.chipsBet)
       .sort((bet1, bet2) => bet1 - bet2);
 
+    gamestate.sidepots = [];
+
     if (bets[0] === bets[bets.length - 1]) {
       // Everyone has bet the same amount,
       // so no sidepots.
       return;
     }
-
-    gamestate.sidepots = [];
 
     let bet;
 
