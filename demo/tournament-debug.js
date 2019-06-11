@@ -20,4 +20,4 @@ const startTournament =
     });
   };
 
-setTimeout(startTournament, 2000);
+startTournament();
