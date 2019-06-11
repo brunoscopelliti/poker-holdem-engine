@@ -2,7 +2,7 @@
 
 `poker-holdem-engine` provides an engine to play Texas Hold'em Poker in respect of the [official rules](https://it.wikipedia.org/wiki/Texas_hold_%27em).
 
-Poker here is meant to be played by other programs, which should be listen for POST http request somewhere in the Internet, or on your localhost.
+Poker here is meant to be played by other programs, which should be listening for POST http request somewhere in the Internet, or on your localhost.
 
 It's used as default poker holdem engine for http://botpoker.org.
 
