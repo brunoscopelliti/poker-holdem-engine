@@ -7,6 +7,8 @@ const chalk = require("chalk");
 
 const config = require("./demo.json");
 
+const [shouldRunTournament] = process.argv.slice(2);
+
 const launchBotServices =
   () => {
     config.players.forEach(
@@ -81,4 +83,6 @@ const startTournament =
 
 launchBotServices();
 
-setTimeout(startTournament, 2000);
+if (shouldRunTournament) {
+  setTimeout(startTournament, 2000);
+}

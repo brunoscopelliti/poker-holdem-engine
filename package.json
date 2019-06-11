@@ -7,7 +7,8 @@
     "node": "10.0.0"
   },
   "scripts": {
-    "demo": "node demo/live.js",
+    "demo": "node demo/live.js --run",
+    "demo:debug": "node demo/live.js | node demo/tournament-debug.js",
     "lint": "eslint tournament.js domain/** engine/** logger/**",
     "test": "npm run lint && jest",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest"
