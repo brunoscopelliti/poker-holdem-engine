@@ -45,17 +45,17 @@ Task.run =
               return player.chipsBet >= sidepot.minChipsBet;
             });
 
-          if (!sidepotContenders[0].bestCardsInfo.exequo) {
+          if (!sidepotContenders[0].exequo) {
             return assignChips(gamestate, sidepotContenders[0].playerId, sidepot.pot);
           }
 
           // If execution reaches this point
           // the value of `sidepot.pot` should be
           // split between 2 or more players.
-          const tag = sidepotContenders[0].bestCardsInfo.exequo;
+          const tag = sidepotContenders[0].exequo;
 
           const exequoPlayers = sidepotContenders
-            .filter(({ bestCardsInfo }) => bestCardsInfo.exequo === tag);
+            .filter(({ exequo }) => exequo === tag);
 
           const splitAmount = Math.floor(sidepot.pot / exequoPlayers.length);
 

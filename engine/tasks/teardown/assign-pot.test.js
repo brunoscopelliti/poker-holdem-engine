@@ -86,10 +86,12 @@ describe("assign pot", () => {
       callAmount: 10,
       handRank: [{
         playerId: "MARVIN",
-        bestCardsInfo: { exequo: "#0" },
+        bestCardsInfo: {},
+        exequo: "#0",
       }, {
         playerId: "ARALE",
-        bestCardsInfo: { exequo: "#0" },
+        bestCardsInfo: {},
+        exequo: "#0",
       }, {
         playerId: "BENDER",
         bestCardsInfo: {},
@@ -200,10 +202,12 @@ describe("assign pot", () => {
       callAmount: 20,
       handRank: [{
         playerId: "MARVIN",
-        bestCardsInfo: { exequo: "#0" },
+        bestCardsInfo: {},
+        exequo: "#0",
       }, {
         playerId: "ARALE",
-        bestCardsInfo: { exequo: "#0" },
+        bestCardsInfo: {},
+        exequo: "#0",
       }, {
         playerId: "BENDER",
         bestCardsInfo: {},
@@ -240,13 +244,16 @@ describe("assign pot", () => {
       callAmount: 20,
       handRank: [{
         playerId: "MARVIN",
-        bestCardsInfo: { exequo: "#0" },
+        bestCardsInfo: {},
+        exequo: "#0",
       }, {
         playerId: "ARALE",
-        bestCardsInfo: { exequo: "#0" },
+        bestCardsInfo: {},
+        exequo: "#0",
       }, {
         playerId: "BENDER",
-        bestCardsInfo: { exequo: "#0" },
+        bestCardsInfo: {},
+        exequo: "#0",
       }],
       pot: 50,
       sidepots: [{

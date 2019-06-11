@@ -42,6 +42,7 @@ Task.run =
             playerId: player.id,
             bestCards: data.slice(),
             bestCardsInfo: data.rank,
+            exequo: data.exequo,
           };
         });
 
