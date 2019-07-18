@@ -62,6 +62,7 @@ const startTournament =
     thread.on("message", (msg) => {
       if (msg.topic === "exit") {
         thread.kill();
+        process.exit();
       }
     });
 

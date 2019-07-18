@@ -35,6 +35,7 @@ class Tournament extends EventEmitter {
 
     gamestate.gameProgressiveId = opts.recoveryId || 1;
     gamestate.handProgressiveId = 1;
+    gamestate.tournamentId = tournamentId;
 
     const SAVER = this.update.bind(this);
 
@@ -107,7 +108,12 @@ class Tournament extends EventEmitter {
 
     this.state = States.get("active");
 
-    return loop.call(this, LOGGER);
+    return loop.call(this, LOGGER)
+      .then(
+        () => {
+          this.emit("TOURNAMENT:completed", { tournamentId: this.id });
+        }
+      );
   }
 
   pause () {

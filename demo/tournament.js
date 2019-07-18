@@ -17,6 +17,12 @@ process.on("message", (msg) => {
         // save data; then done();
         done();
       });
+      tournament.on("TOURNAMENT:completed", ({ tournamentId }) => {
+        console.log("*************************");
+        console.log("Tournament " + tournamentId + " completed!");
+        console.log("*************************");
+        quit();
+      });
       break;
 
     case "pause":
