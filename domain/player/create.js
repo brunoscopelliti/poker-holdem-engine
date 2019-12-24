@@ -197,9 +197,9 @@ module.exports =
       serialize () {
         // Extend with some not-serializable properties
         return Object.assign({}, this, {
-          hasDealerButton: Symbol.for("Dealer"),
+          hasDealerButton: this[Symbol.for("Dealer")] != null,
           id: this.id,
-          isAllin: Symbol.for("All-in"),
+          isAllin: this[Symbol.for("All-in")] != null,
           name: this.name,
           serviceUrl: this.serviceUrl,
         });
