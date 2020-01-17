@@ -26,9 +26,9 @@ describe("assign pot", () => {
       pot: 42,
     };
 
-    const update = jest.fn();
+    const onFeed = jest.fn();
 
-    await task.run(LOGGER, { gamestate, update });
+    await task.run(LOGGER, { gamestate, onFeed });
 
     expect(
       gamestate.activePlayers[0].chips
@@ -48,9 +48,9 @@ describe("assign pot", () => {
       pot: 42,
     };
 
-    const update = jest.fn();
+    const onFeed = jest.fn();
 
-    await task.run(LOGGER, { gamestate, update });
+    await task.run(LOGGER, { gamestate, onFeed });
 
     expect(
       gamestate.winners
@@ -60,16 +60,8 @@ describe("assign pot", () => {
       playerName: "Arale",
     }]);
 
-    expect(update).toHaveBeenCalledTimes(1);
-    expect(update).toHaveBeenCalledWith({
-      type: "win",
-      handId: "1/2",
-      winners: [{
-        amount: 42,
-        playerId: "ARALE",
-        playerName: "Arale",
-      }],
-    });
+    expect(onFeed).toHaveBeenCalledTimes(1);
+    expect(onFeed).toHaveBeenCalledWith(gamestate);
   });
 
   it("splits the pot between exequo players", async () => {
@@ -100,7 +92,7 @@ describe("assign pot", () => {
       sidepots: [],
     };
 
-    await task.run(LOGGER, { gamestate, update: () => {} });
+    await task.run(LOGGER, { gamestate, onFeed: () => {} });
 
     expect(arale.chips).toBe(115);
     expect(bender.chips).toBe(100);
@@ -140,7 +132,7 @@ describe("assign pot", () => {
       }],
     };
 
-    await task.run(LOGGER, { gamestate, update: () => {} });
+    await task.run(LOGGER, { gamestate, onFeed: () => {} });
 
     expect(arale.chips).toBe(145);
     expect(bender.chips).toBe(195);
@@ -180,7 +172,7 @@ describe("assign pot", () => {
       }],
     };
 
-    await task.run(LOGGER, { gamestate, update: () => {} });
+    await task.run(LOGGER, { gamestate, onFeed: () => {} });
 
     expect(arale.chips).toBe(165);
     expect(bender.chips).toBe(145);
@@ -222,7 +214,7 @@ describe("assign pot", () => {
       }],
     };
 
-    await task.run(LOGGER, { gamestate, update: () => {} });
+    await task.run(LOGGER, { gamestate, onFeed: () => {} });
 
     expect(arale.chips).toBe(180);
     expect(bender.chips).toBe(145);
@@ -265,7 +257,7 @@ describe("assign pot", () => {
       }],
     };
 
-    await task.run(LOGGER, { gamestate, update: () => {} });
+    await task.run(LOGGER, { gamestate, onFeed: () => {} });
 
     expect(arale.chips).toBe(165);
     expect(bender.chips).toBe(165);

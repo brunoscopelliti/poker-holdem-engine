@@ -46,11 +46,7 @@ Task.run =
           };
         });
 
-    await tournament.update({
-      type: "showdown",
-      handId: gamestate.handUniqueId,
-      ranks: gamestate.handRank,
-    });
+    await tournament.onFeed(gamestate);
 
     const log = gamestate.handRank
       .reduce(

@@ -59,92 +59,15 @@ describe("showdown", () => {
       handUniqueId: "1/3",
     };
 
-    const update = jest.fn();
+    const onFeed = jest.fn();
 
-    await task.run(LOGGER, { gamestate, update });
+    await task.run(LOGGER, { gamestate, onFeed });
 
     expect(
       gamestate.handRank.map((x) => x.playerId)
     ).toEqual(["a1", "m1", "b1"]);
 
-    expect(update).toBeCalledTimes(1);
-    expect(update).toBeCalledWith({
-      type: "showdown",
-      handId: "1/3",
-      ranks: [{
-        bestCards: [{
-          rank: "A",
-          type: "C",
-        }, {
-          rank: "A",
-          type: "H",
-        }, {
-          rank: "A",
-          type: "D",
-        }, {
-          rank: "A",
-          type: "S",
-        }, {
-          rank: "J",
-          type: "D",
-        }],
-        bestCardsInfo: {
-          kickers: ["J"],
-          name: "Poker",
-          rank: "A",
-          strength: 7,
-        },
-        playerId: "a1",
-      }, {
-        bestCards: [{
-          rank: "4",
-          type: "C",
-        }, {
-          rank: "4",
-          type: "D",
-        }, {
-          rank: "A",
-          type: "D",
-        }, {
-          rank: "A",
-          type: "S",
-        }, {
-          rank: "4",
-          type: "H",
-        }],
-        bestCardsInfo: {
-          kickers: ["A"],
-          name: "Full House",
-          rank: "4",
-          strength: 6,
-        },
-        playerId: "m1",
-      }, {
-        bestCards: [{
-          rank: "K",
-          type: "S",
-        }, {
-          rank: "Q",
-          type: "H",
-        }, {
-          rank: "A",
-          type: "D",
-        }, {
-          rank: "A",
-          type: "S",
-        }, {
-          rank: "J",
-          type: "D",
-        },
-        ],
-        bestCardsInfo: {
-          kickers: ["K", "Q", "J"],
-          name: "Pair",
-          rank: "A",
-          strength: 1,
-        },
-        playerId: "b1",
-      }],
-    });
+    expect(onFeed).toBeCalledTimes(1);
+    expect(onFeed).toBeCalledWith(gamestate);
   });
 });

@@ -9,15 +9,23 @@ const players = config.players.slice();
 
 const startTournament =
   () => {
-    let tournament = new Tournament("Demo", players, tournamentSettings, { autoStart: true });
-
-    tournament.on("TOURNAMENT:updated", (data, done) => {
-      // save data; then done();
-      console.log("************");
-      console.log(data);
-      console.log("************");
-      done();
-    });
+    // eslint-disable-next-line no-new
+    new Tournament(
+      "Demo",
+      players,
+      tournamentSettings,
+      {
+        autoStart: true,
+        async onFeed (data) {
+          console.log("****");
+          console.log(JSON.stringify(data, null, 2));
+          console.log("****");
+        },
+        async onTournamentComplete () {
+          console.log("**** Completed ****");
+        },
+      }
+    );
   };
 
 startTournament();

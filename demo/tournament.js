@@ -5,24 +5,33 @@ const tournamentSettings = require("./tournament-settings.json");
 
 const Tournament = require("../tournament");
 
-const players = config.players.slice();
-
 let tournament;
 
 process.on("message", (msg) => {
   switch (msg.topic) {
     case "create":
-      tournament = new Tournament("Demo", players, tournamentSettings, { autoStart: true });
-      tournament.on("TOURNAMENT:updated", (data, done) => {
-        // save data; then done();
-        done();
-      });
-      tournament.on("TOURNAMENT:completed", ({ tournamentId }) => {
-        console.log("*************************");
-        console.log("Tournament " + tournamentId + " completed!");
-        console.log("*************************");
-        quit();
-      });
+      tournament = new Tournament(
+        "Demo",
+        config.players.slice(),
+        tournamentSettings,
+        {
+          autoStart: true,
+          async onFeed (feed) {
+            console.log("****");
+            console.log(JSON.stringify(feed.players, null, 2));
+            console.log("****");
+          },
+          async onGameComplete (chart) {
+            console.log("**** Game completed ****");
+            console.log(chart);
+            console.log("************************");
+          },
+          async onTournamentComplete () {
+            console.log("**** Completed ****");
+            quit();
+          },
+        }
+      );
       break;
 
     case "pause":

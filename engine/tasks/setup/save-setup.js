@@ -20,13 +20,7 @@ Task.run =
       sb: gamestate.sb,
     };
 
-    // LOGGER.verbose("Gamestate when setup is completed:\n" +
-    //   JSON.stringify(gamestate, null, 2), { tag: gamestate.handUniqueId });
-
-    return tournament.update({
-      type: "setup",
-      ...state,
-    });
+    return tournament.onFeed(state);
   };
 
 module.exports = Task;

@@ -64,9 +64,9 @@ it("uncover the fourth common card", async () => {
     handUniqueId: "1/2",
   };
 
-  const update = jest.fn();
+  const onFeed = jest.fn();
 
-  await task.run({ debug: () => {} }, { gamestate, update });
+  await task.run({ debug: () => {} }, { gamestate, onFeed });
 
   expect(
     require("./bet-loop")
@@ -83,13 +83,8 @@ it("uncover the fourth common card", async () => {
       spinCount: 0,
     });
 
-  expect(update).toHaveBeenCalledTimes(1);
-  expect(update).toHaveBeenCalledWith({
-    type: "cards",
-    cards: [4],
-    handId: "1/2",
-    session: "TURN",
-  });
+  expect(onFeed).toHaveBeenCalledTimes(1);
+  expect(onFeed).toHaveBeenCalledWith(gamestate);
 });
 
 it("doesn't uncover any cards when there's any active player", async () => {

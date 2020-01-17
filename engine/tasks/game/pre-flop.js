@@ -44,12 +44,7 @@ Task.run =
           gamestate.deck.shift()
         );
 
-      await tournament.update({
-        type: "cards",
-        cards: gamestate.commonCards,
-        handId: gamestate.handUniqueId,
-        session: Session.get(gamestate.commonCards.length),
-      });
+      await tournament.onFeed(gamestate);
 
       const cards = gamestate.commonCards
         .reduce((str, card) => str + " " + card.rank + card.type, "");
