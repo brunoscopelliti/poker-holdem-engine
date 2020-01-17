@@ -36,6 +36,9 @@ it("create a new player", () => {
     chips: 100,
     chipsBet: 0,
     state: "active",
+    id: "a1",
+    name: "Arale",
+    serviceUrl: "http://arale.com/",
   });
 
   expect(LOGGER.info)

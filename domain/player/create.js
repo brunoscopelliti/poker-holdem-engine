@@ -169,23 +169,6 @@ module.exports =
       },
 
       /**
-       * Returns a copy of the player
-       * that is serializable.
-       * @name serialize
-       * @return {Object}
-       */
-      serialize () {
-        // Extend with some not-serializable properties
-        return Object.assign({}, this, {
-          hasDealerButton: this[Symbol.for("Dealer")] != null,
-          id: this.id,
-          isAllin: this[Symbol.for("All-in")] != null,
-          name: this.name,
-          serviceUrl: this.serviceUrl,
-        });
-      },
-
-      /**
        * Determine the player best combination.
        * @name showdown
        * @params {Object} gamestate
@@ -308,7 +291,12 @@ module.exports =
       const player = Object.create(actions);
 
       Object.keys(playerData)
-        .forEach((prop) => Object.defineProperty(player, prop, { value: playerData[prop] }));
+        .forEach((prop) =>
+          Object.defineProperty(player, prop, {
+            enumerable: true,
+            value: playerData[prop],
+          })
+        );
 
       // Every player starts as an active player.
       player.state = States.get("active");
