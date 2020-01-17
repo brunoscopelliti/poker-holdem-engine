@@ -1,10 +1,13 @@
 # Changelog
 
+## 4.0.0-rc2
 ## 4.0.0-rc1
 
 17/01/2020
 
 * Updated dependencies.
+
+* Breaking changes.
 
 ## 3.0.4
 

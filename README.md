@@ -33,8 +33,8 @@ const tournamentSettings = {
 
 const opts = {
   async onFeed (feed) {},
-  async onGameComplete () {},
-  async onTournamentComplete () {},
+  async onGameComplete (chart) {},
+  async onTournamentComplete (data) {},
 };
 
 const tournament = new Tournament(tournamentID, players, tournamentSettings, opts);

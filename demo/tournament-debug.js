@@ -16,9 +16,9 @@ const startTournament =
       tournamentSettings,
       {
         autoStart: true,
-        async onFeed (data) {
+        async onFeed (feed) {
           console.log("****");
-          console.log(JSON.stringify(data, null, 2));
+          console.log(JSON.stringify(feed, null, 2));
           console.log("****");
         },
         async onTournamentComplete () {

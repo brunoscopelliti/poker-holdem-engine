@@ -66,17 +66,7 @@ module.exports =
       async fold (gamestate) {
         this.state = States.get("fold");
 
-        const info = {
-          handId: gamestate.handUniqueId,
-          playerId: this.id,
-          session: gamestate.session,
-          state: this.state,
-        };
-
-        await save({
-          type: "state",
-          ...info,
-        });
+        await save(gamestate);
 
         LOGGER.info(`${this.name} has fold.`, { tag: gamestate.handUniqueId });
       },
@@ -150,17 +140,7 @@ module.exports =
 
         this[Symbol.for("pay")](gamestate, amount);
 
-        const info = {
-          amount: amount,
-          handId: gamestate.handUniqueId,
-          playerId: this.id,
-          session: gamestate.session,
-        };
-
-        await save({
-          type: "bet",
-          ...info,
-        });
+        await save(gamestate);
 
         LOGGER.debug(`${this.name} has bet ${amount}.`, { tag: gamestate.handUniqueId });
       },
