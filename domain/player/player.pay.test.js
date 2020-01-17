@@ -48,7 +48,7 @@ describe("pay", () => {
 
     player.pay(gamestate, 120);
 
-    expect(player[Symbol.for("All-in")]).toBe(true);
+    expect(player.allin).toBe(true);
 
     expect(player.chips).toBe(0);
     expect(player.chipsBet).toBe(100);

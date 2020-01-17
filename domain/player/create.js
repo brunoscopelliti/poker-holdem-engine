@@ -31,7 +31,7 @@ module.exports =
        */
       [Symbol.for("pay")] (gamestate, amount) {
         if (amount === this.chips) {
-          this[Symbol.for("All-in")] = true;
+          this.allin = true;
         }
 
         this.chipsBet += amount;
@@ -39,20 +39,20 @@ module.exports =
 
         gamestate.callAmount = Math.max(this.chipsBet, gamestate.callAmount);
         gamestate.pot += amount;
-        if (this[Symbol.for("All-in")] ||
+        if (this.allin ||
           gamestate.sidepots.length > 0 ||
-          gamestate.players.some((player) => player[Symbol.for("All-in")])) {
+          gamestate.players.some((player) => player.allin)) {
           splitPot(gamestate);
         }
       },
 
       /**
-       * Set the symbol that identify
+       * Set the field that identify
        * the player who holds the dealer button.
        * @name assignDealerButton
        */
       assignDealerButton () {
-        this[Symbol.for("Dealer")] = true;
+        this.Dealer = true;
       },
 
       /**
@@ -161,8 +161,8 @@ module.exports =
           this.state = States.get("active");
         }
 
-        delete this[Symbol.for("All-in")];
-        delete this[Symbol.for("Big blind")];
+        delete this.allin;
+        delete this.bigBlind;
 
         this.cards = [];
         this.chipsBet = 0;
@@ -267,12 +267,12 @@ module.exports =
       },
 
       /**
-       * Removes the symbol that identify
+       * Removes the field that identify
        * the player who holds the dealer button.
        * @name unassignDealerButton
        */
       unassignDealerButton () {
-        delete this[Symbol.for("Dealer")];
+        delete this.Dealer;
       },
     };
 

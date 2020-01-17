@@ -76,13 +76,13 @@ class Tournament {
       dealerPosition: {
         get () {
           return this.players
-            .findIndex((player) => player[Symbol.for("Dealer")]);
+            .findIndex((player) => player.Dealer);
         },
       },
       bigBlindPosition: {
         get () {
           return this.players
-            .findIndex((player) => player[Symbol.for("Big blind")]);
+            .findIndex((player) => player.bigBlind);
         },
       },
     });

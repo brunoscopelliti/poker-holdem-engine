@@ -66,7 +66,7 @@ and their meaning:
 
   It's a getter for the index of the player who has the Dealer button.
 
-  The player who is the dealer is marked with the `Symbol(Dealer)`.
+  The player who is the dealer is marked with the `Dealer` field.
 
 
 * `pot`

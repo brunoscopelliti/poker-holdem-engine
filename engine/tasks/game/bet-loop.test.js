@@ -30,7 +30,7 @@ const makePlayer =
     player.chipsBet = chipsBet;
     player.chips = 100;
     if (allIn) {
-      player[Symbol.for("All-in")] = true;
+      player.allin = true;
     }
     return player;
   };

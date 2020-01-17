@@ -63,14 +63,13 @@ describe("restore", () => {
     expect(player.state).toBe("active");
   });
 
-  it("deletes Symbols", () => {
-    player[Symbol.for("All-in")] = true;
-    player[Symbol.for("Big blind")] = true;
+  it("restore special fields", () => {
+    player.allin = true;
+    player.bigBlind = true;
     player.restore();
 
-    expect(
-      Object.getOwnPropertySymbols(player)
-    ).toHaveLength(0);
+    expect(player.allin).toBe(undefined);
+    expect(player.bigBlind).toBe(undefined);
   });
 
   it("doesn't change eliminated players' state", () => {

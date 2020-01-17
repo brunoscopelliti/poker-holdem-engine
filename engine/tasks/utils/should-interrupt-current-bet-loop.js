@@ -11,7 +11,7 @@ const shouldInterruptCurrentBetLoop =
   (gamestate) => {
     return gamestate.spinCount > 0 &&
       gamestate.activePlayers.every((player) =>
-        player.chipsBet === gamestate.callAmount || player[Symbol.for("All-in")]);
+        player.chipsBet === gamestate.callAmount || player.allin);
   };
 
 module.exports = shouldInterruptCurrentBetLoop;

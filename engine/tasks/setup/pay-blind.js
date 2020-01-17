@@ -19,7 +19,7 @@ Task.run =
     const indexBB = nextActive(gamestate.players, indexSB);
 
     gamestate.players[indexBB].pay(gamestate, 2 * gamestate.sb);
-    gamestate.players[indexBB][Symbol.for("Big blind")] = true;
+    gamestate.players[indexBB].bigBlind = true;
   };
 
 module.exports = Task;

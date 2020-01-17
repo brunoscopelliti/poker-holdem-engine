@@ -23,7 +23,7 @@ const makePostFlopTask =
         gamestate.session = Session.get(gamestate.commonCards.length);
 
         const playerWhoCanBetCount = gamestate.activePlayers
-          .filter((player) => !player[Symbol.for("All-in")])
+          .filter((player) => !player.allin)
           .length;
 
         if (playerWhoCanBetCount > 1) {
