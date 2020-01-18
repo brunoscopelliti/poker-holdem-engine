@@ -44,6 +44,11 @@ Task.run =
           gamestate.deck.shift()
         );
 
+      gamestate.actions = [{
+        type: "cards",
+        cards: gamestate.commonCards.slice(),
+      }];
+
       await tournament.onFeed(gamestate);
 
       const cards = gamestate.commonCards

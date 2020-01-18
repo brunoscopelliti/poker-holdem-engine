@@ -66,6 +66,12 @@ module.exports =
       async fold (gamestate) {
         this.state = States.get("fold");
 
+        gamestate.actions = [{
+          type: "state",
+          playerId: this.id,
+          state: this.state,
+        }];
+
         await save(gamestate);
 
         LOGGER.info(`${this.name} has fold.`, { tag: gamestate.handUniqueId });
@@ -139,6 +145,12 @@ module.exports =
         this[Symbol.for("already-bet")] = true;
 
         this[Symbol.for("pay")](gamestate, amount);
+
+        gamestate.actions = [{
+          type: "bet",
+          amount: amount,
+          playerId: this.id,
+        }];
 
         await save(gamestate);
 

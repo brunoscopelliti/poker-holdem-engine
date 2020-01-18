@@ -50,6 +50,11 @@ const makePostFlopTask =
           gamestate.commonCards =
             gamestate.commonCards.concat(card);
 
+          gamestate.actions = [{
+            type: "cards",
+            cards: gamestate.commonCards.slice(-1),
+          }];
+
           await tournament.onFeed(gamestate);
 
           LOGGER.debug(`New common card: ${card.rank + card.type}.`, { tag: gamestate.handUniqueId });

@@ -81,6 +81,10 @@ it("uncover the fourth common card", async () => {
       handUniqueId: "1/2",
       session: "FLOP",
       spinCount: 0,
+      actions: [{
+        type: "cards",
+        cards: [4],
+      }],
     });
 
   expect(onFeed).toHaveBeenCalledTimes(1);

@@ -76,6 +76,10 @@ it("uncover first three common cards", async () => {
       handUniqueId: "1/2",
       session: "PRE-FLOP",
       spinCount: 0,
+      actions: [{
+        type: "cards",
+        cards: [1, 2, 3],
+      }],
     });
 
   expect(onFeed).toHaveBeenCalledTimes(1);

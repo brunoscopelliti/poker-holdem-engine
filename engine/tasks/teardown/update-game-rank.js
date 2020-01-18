@@ -56,7 +56,15 @@ Task.run =
         });
     }
 
+    gamestate.actions = [];
+
     for (const player of playersToBeExcluded) {
+      gamestate.actions.push({
+        type: "state",
+        playerId: player.id,
+        state: PlayerState.get("out"),
+      });
+
       LOGGER.info(`${player.name} is eliminated after hand ${gamestate.handProgressiveId}`, { tag: gamestate.handUniqueId });
     }
 

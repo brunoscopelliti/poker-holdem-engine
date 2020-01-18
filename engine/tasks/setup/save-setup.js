@@ -20,6 +20,10 @@ Task.run =
       sb: gamestate.sb,
     };
 
+    gamestate.actions = [{
+      type: "setup",
+    }];
+
     return tournament.onFeed(state);
   };
 

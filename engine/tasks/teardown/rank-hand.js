@@ -46,6 +46,10 @@ Task.run =
           };
         });
 
+    gamestate.actions = [{
+      type: "showdown",
+    }];
+
     await tournament.onFeed(gamestate);
 
     const log = gamestate.handRank

@@ -88,6 +88,10 @@ Task.run =
         });
     }
 
+    gamestate.actions = [{
+      type: "win",
+    }];
+
     await tournament.onFeed(gamestate);
 
     LOGGER.info(`Hand ${gamestate.gameProgressiveId}/${gamestate.handProgressiveId} results:\n${prepareLogMessage(gamestate.winners)}`, { tag: gamestate.handUniqueId });
