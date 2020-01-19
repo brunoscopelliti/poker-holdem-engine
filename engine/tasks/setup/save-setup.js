@@ -12,19 +12,12 @@ Task.shouldRun = isRunning;
 Task.run =
   (LOGGER, tournament) => {
     const gamestate = tournament.gamestate;
-    const state = {
-      handId: gamestate.handUniqueId,
-      ante: gamestate.ante || 0,
-      players: gamestate.players,
-      pot: gamestate.pot,
-      sb: gamestate.sb,
-    };
 
     gamestate.actions = [{
       type: "setup",
     }];
 
-    return tournament.onFeed(state);
+    return tournament.onFeed(gamestate);
   };
 
 module.exports = Task;
