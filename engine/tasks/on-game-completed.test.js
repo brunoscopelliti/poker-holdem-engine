@@ -48,34 +48,29 @@ describe("run", () => {
       ],
     };
 
-    const update = jest.fn();
+    const onGameComplete = jest.fn();
 
     const tournament = {
       gamestate,
       settings,
       state: "latest-game",
-      update,
+      onGameComplete,
     };
 
     await task.run({ info: () => {}, debug: () => {} }, tournament);
 
     expect(tournament.state).toBe("completed");
 
-    expect(update).toHaveBeenCalledTimes(1);
-    expect(update).toHaveBeenCalledWith({
-      type: "points",
-      handId: "1/2",
-      gameId: 1,
-      rank: [{
-        playerId: "b1",
-        playerName: "Bender",
-        points: 10,
-      }, {
-        playerId: "a1",
-        playerName: "Arale",
-        points: 5,
-      }],
-    });
+    expect(onGameComplete).toHaveBeenCalledTimes(1);
+    expect(onGameComplete).toHaveBeenCalledWith([{
+      playerId: "b1",
+      playerName: "Bender",
+      points: 10,
+    }, {
+      playerId: "a1",
+      playerName: "Arale",
+      points: 5,
+    }]);
   });
 
   test("Reset player state", async () => {
@@ -109,7 +104,7 @@ describe("run", () => {
       gamestate,
       settings,
       state: "active",
-      update: () => {},
+      onGameComplete: () => {},
     };
 
     await task.run({ info: () => {}, debug: () => {} }, tournament);

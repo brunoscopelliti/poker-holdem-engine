@@ -30,9 +30,9 @@ test("exclude one player", async () => {
     }],
   };
 
-  const update = jest.fn();
+  const onFeed = jest.fn();
 
-  await task.run({ info: () => {} }, { gamestate, update });
+  await task.run({ info: () => {} }, { gamestate, onFeed });
 
   expect(playerToBeExcluded1.state).toBe("out");
 
@@ -44,13 +44,8 @@ test("exclude one player", async () => {
     playerName: "Bender",
   }]);
 
-  expect(update).toBeCalledTimes(1);
-  expect(update).toBeCalledWith({
-    type: "state",
-    handId: "1/2",
-    playerId: "a1",
-    state: "out",
-  });
+  expect(onFeed).toBeCalledTimes(1);
+  expect(onFeed).toBeCalledWith(gamestate);
 });
 
 test("exclude two players", async () => {
@@ -80,9 +75,9 @@ test("exclude two players", async () => {
     }],
   };
 
-  const update = jest.fn();
+  const onFeed = jest.fn();
 
-  await task.run({ info: () => {} }, { gamestate, update });
+  await task.run({ info: () => {} }, { gamestate, onFeed });
 
   expect(playerToBeExcluded1.state).toBe("out");
   expect(playerToBeExcluded2.state).toBe("out");
@@ -98,7 +93,7 @@ test("exclude two players", async () => {
     playerName: "Bender",
   }]);
 
-  expect(update).toBeCalledTimes(2);
+  expect(onFeed).toBeCalledTimes(1);
 });
 
 test("Bug: cannot set property 'state' of undefined /update-game-rank.js:47:24", async () => {
@@ -192,7 +187,7 @@ test("Bug: cannot set property 'state' of undefined /update-game-rank.js:47:24",
     },
   });
 
-  const update = jest.fn();
+  const onFeed = jest.fn();
 
-  await task.run({ info: () => {} }, { gamestate, update });
+  await task.run({ info: () => {} }, { gamestate, onFeed });
 });

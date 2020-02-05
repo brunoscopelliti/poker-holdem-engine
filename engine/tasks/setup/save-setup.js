@@ -12,21 +12,12 @@ Task.shouldRun = isRunning;
 Task.run =
   (LOGGER, tournament) => {
     const gamestate = tournament.gamestate;
-    const state = {
-      handId: gamestate.handUniqueId,
-      ante: gamestate.ante || 0,
-      players: gamestate.players,
-      pot: gamestate.pot,
-      sb: gamestate.sb,
-    };
 
-    // LOGGER.verbose("Gamestate when setup is completed:\n" +
-    //   JSON.stringify(gamestate, null, 2), { tag: gamestate.handUniqueId });
-
-    return tournament.update({
+    gamestate.actions = [{
       type: "setup",
-      ...state,
-    });
+    }];
+
+    return tournament.onFeed(gamestate);
   };
 
 module.exports = Task;

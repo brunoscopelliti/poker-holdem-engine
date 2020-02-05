@@ -36,6 +36,9 @@ it("create a new player", () => {
     chips: 100,
     chipsBet: 0,
     state: "active",
+    id: "a1",
+    name: "Arale",
+    serviceUrl: "http://arale.com/",
   });
 
   expect(LOGGER.info)
@@ -60,14 +63,13 @@ describe("restore", () => {
     expect(player.state).toBe("active");
   });
 
-  it("deletes Symbols", () => {
-    player[Symbol.for("All-in")] = true;
-    player[Symbol.for("Big blind")] = true;
+  it("restore special fields", () => {
+    player.allin = true;
+    player.bigBlind = true;
     player.restore();
 
-    expect(
-      Object.getOwnPropertySymbols(player)
-    ).toHaveLength(0);
+    expect(player.allin).toBe(undefined);
+    expect(player.bigBlind).toBe(undefined);
   });
 
   it("doesn't change eliminated players' state", () => {

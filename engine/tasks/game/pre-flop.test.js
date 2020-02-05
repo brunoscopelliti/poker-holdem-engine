@@ -59,9 +59,9 @@ it("uncover first three common cards", async () => {
     handUniqueId: "1/2",
   };
 
-  const update = jest.fn();
+  const onFeed = jest.fn();
 
-  await task.run({ debug: () => {} }, { gamestate, update });
+  await task.run({ debug: () => {} }, { gamestate, onFeed });
 
   expect(
     require("./bet-loop")
@@ -76,15 +76,14 @@ it("uncover first three common cards", async () => {
       handUniqueId: "1/2",
       session: "PRE-FLOP",
       spinCount: 0,
+      actions: [{
+        type: "cards",
+        cards: [1, 2, 3],
+      }],
     });
 
-  expect(update).toHaveBeenCalledTimes(1);
-  expect(update).toHaveBeenCalledWith({
-    type: "cards",
-    cards: [1, 2, 3],
-    handId: "1/2",
-    session: "FLOP",
-  });
+  expect(onFeed).toHaveBeenCalledTimes(1);
+  expect(onFeed).toHaveBeenCalledWith(gamestate);
 });
 
 it("doesn't uncover any cards when there's any active player", async () => {

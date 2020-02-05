@@ -29,7 +29,7 @@ describe("run", () => {
 
     expect(
       gamestate.players
-        .find((player) => player[Symbol.for("Dealer")]).name
+        .find((player) => player.Dealer).name
     ).toBe("Arale");
   });
 
@@ -62,7 +62,7 @@ describe("run", () => {
 
     expect(
       gamestate.players
-        .find((player) => player[Symbol.for("Dealer")]).name
+        .find((player) => player.Dealer).name
     ).toBe("Marvin");
   });
 });

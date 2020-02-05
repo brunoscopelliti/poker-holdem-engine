@@ -56,16 +56,19 @@ Task.run =
         });
     }
 
+    gamestate.actions = [];
+
     for (const player of playersToBeExcluded) {
-      await tournament.update({
+      gamestate.actions.push({
         type: "state",
-        handId: gamestate.handUniqueId,
         playerId: player.id,
         state: PlayerState.get("out"),
       });
 
       LOGGER.info(`${player.name} is eliminated after hand ${gamestate.handProgressiveId}`, { tag: gamestate.handUniqueId });
     }
+
+    await tournament.onFeed(gamestate);
   };
 
 module.exports = Task;

@@ -1,3 +1,28 @@
+# Changelog
+
+## 4.0.0
+
+05/02/2020
+
+* Updated dependencies.
+
+* Breaking changes.
+
+  - `Tournament` isn't an EventEmitter subclass anymore. Introduced `onFeed`, `onGameComplete` and `onTournamentComplete` to retrieve info about the state of the tournament.
+
+## 4.0.0-rc6
+## 4.0.0-rc5
+## 4.0.0-rc4
+## 4.0.0-rc3
+## 4.0.0-rc2
+## 4.0.0-rc1
+
+17/01/2020
+
+* Updated dependencies.
+
+* Breaking changes.
+
 ## 3.0.4
 
 24/12/2019

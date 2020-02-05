@@ -31,12 +31,7 @@ Task.run =
         return { ...entry, points: points[i] };
       });
 
-    await tournament.update({
-      type: "points",
-      handId: gamestate.handUniqueId,
-      gameId: gamestate.gameProgressiveId,
-      rank: finalRank,
-    });
+    await tournament.onGameComplete(finalRank);
 
     LOGGER.info(`Game ${gamestate.gameProgressiveId} completed.`, { tag: gamestate.handUniqueId });
 

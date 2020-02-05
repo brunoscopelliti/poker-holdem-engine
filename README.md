@@ -26,20 +26,24 @@ const players = [
   ...
 ];
 
-tournamentSettings = {
+const tournamentSettings = {
   BUYIN: 100,
   // Read docs/game-settings.md for the available configuration options.
 };
 
-const tournament = new Tournament(tournamentID, players, tournamentSettings);
+const opts = {
+  async onFeed (feed) {},
+  async onGameComplete (chart) {},
+  async onTournamentComplete (data) {},
+};
+
+const tournament = new Tournament(tournamentID, players, tournamentSettings, opts);
 tournament.start();
 ```
 
 Players should be object with at least the `name`, `id`, and `serviceUrl` properties specified.
 
 On the specified end point there should be an http server, responding on the `POST /bet`, `GET /`, and `GET /version` routes.
-
-Every time something of interesting happen the message `TOURNAMENT:updated` is notified, with a parameter containing further information about the state of the game.
 
 ## quit a tournament
 
@@ -68,21 +72,21 @@ const server = http.Server(app);
 
 app.use(bodyParser.json());
 
-app.get("/", function(req, res) {
+app.get("/", function (req, res) {
   res.sendStatus(200);
 });
 
-app.get("/version", function(req, res) {
+app.get("/version", function (req, res) {
   res.status(200).send(player.VERSION);
 });
 
-app.post("/bet", function(req, res) {
-  player.bet(req.body, bet => res.status(200).send(bet.toString()));
+app.post("/bet", function (req, res) {
+  res.status(200).send(String(player.bet(req.body)));
 });
 
-const port = parseInt(process.env["PORT"] || 1337);
+const port = Number.parseInt(process.env["PORT"] || 1337);
 
-server.listen(port, function() {
+server.listen(port, function () {
   console.log("Server listening on port", server.address().port);
 });
 ```
@@ -90,12 +94,12 @@ server.listen(port, function() {
 And the player module
 
 ```js
-exports = module.exports = {
+module.exports = {
   VERSION: "pokerstar v1",
-  bet: function (gamestate) {
-    // gamestate contains info about the state of the game.
-    // currently we just fold every single hand
+  bet (gamestate) {
+    // gamestate contains info about the state of the game;
+    // currently we just fold every single hand.
     return 0;
-  }
+  },
 };
 ```

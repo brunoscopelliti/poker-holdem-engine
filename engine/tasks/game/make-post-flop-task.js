@@ -23,7 +23,7 @@ const makePostFlopTask =
         gamestate.session = Session.get(gamestate.commonCards.length);
 
         const playerWhoCanBetCount = gamestate.activePlayers
-          .filter((player) => !player[Symbol.for("All-in")])
+          .filter((player) => !player.allin)
           .length;
 
         if (playerWhoCanBetCount > 1) {
@@ -50,12 +50,12 @@ const makePostFlopTask =
           gamestate.commonCards =
             gamestate.commonCards.concat(card);
 
-          await tournament.update({
+          gamestate.actions = [{
             type: "cards",
             cards: gamestate.commonCards.slice(-1),
-            handId: gamestate.handUniqueId,
-            session: Session.get(gamestate.commonCards.length),
-          });
+          }];
+
+          await tournament.onFeed(gamestate);
 
           LOGGER.debug(`New common card: ${card.rank + card.type}.`, { tag: gamestate.handUniqueId });
         }

@@ -1,8 +1,5 @@
 "use strict";
 
-const events = require("events");
-const EventEmitter = events.EventEmitter;
-
 const config = require("./config");
 
 const LOGGER = require("./logger")(config.LOG_LEVEL);
@@ -15,21 +12,33 @@ const getPlayerFactory = require("./domain/player/create");
 
 const loop = require("./engine/loop");
 
+const defaultOptions = {
+  autoStart: false,
+  async onFeed () {},
+  async onGameComplete () {},
+  async onTournamentComplete () {},
+  recoveryId: 1,
+};
+
 /**
  * @class Tournament
  * @param {String} tournamentId
  * @param {any} players
  * @param {any} tournamentSettings
- * @param {Boolean} autoStart
+ * @param {Object} opts
  */
-class Tournament extends EventEmitter {
-  constructor (tournamentId, players, tournamentSettings, opts = { autoStart: false, recoveryId: 1 }) {
-    super();
-
+class Tournament {
+  constructor (tournamentId, players, tournamentSettings, opts) {
     tournamentId = this.id = tournamentId || randomId();
     const processId = this.pid = process.pid;
 
+    opts = { ...defaultOptions, ...opts };
+
     this.settings = tournamentSettings;
+
+    this.onFeed = opts.onFeed;
+    this.onGameComplete = opts.onGameComplete;
+    this.onTournamentComplete = opts.onTournamentComplete;
 
     const gamestate = {};
 
@@ -37,9 +46,7 @@ class Tournament extends EventEmitter {
     gamestate.handProgressiveId = 1;
     gamestate.tournamentId = tournamentId;
 
-    const SAVER = this.update.bind(this);
-
-    const create = getPlayerFactory(LOGGER, SAVER, tournamentSettings);
+    const create = getPlayerFactory(LOGGER, this.onFeed.bind(this), tournamentSettings);
 
     gamestate.players = players
       .map(create)
@@ -69,13 +76,13 @@ class Tournament extends EventEmitter {
       dealerPosition: {
         get () {
           return this.players
-            .findIndex((player) => player[Symbol.for("Dealer")]);
+            .findIndex((player) => player.Dealer);
         },
       },
       bigBlindPosition: {
         get () {
           return this.players
-            .findIndex((player) => player[Symbol.for("Big blind")]);
+            .findIndex((player) => player.bigBlind);
         },
       },
     });
@@ -111,7 +118,7 @@ class Tournament extends EventEmitter {
     return loop.call(this, LOGGER)
       .then(
         () => {
-          this.emit("TOURNAMENT:completed", { tournamentId: this.id });
+          this.onTournamentComplete({ tournamentId: this.id });
         }
       );
   }
@@ -138,23 +145,6 @@ class Tournament extends EventEmitter {
 
       this.state = States.get("latest-game");
     }
-  }
-
-  /**
-   * @name update
-   */
-  update (msg) {
-    // The capability to resolve the returned Promise
-    // is delegated to the watcher.
-    return new Promise((resolve) => {
-      if (msg.players) {
-        msg.players = msg.players
-          .map((player) => player.serialize());
-      }
-
-      this.emit("TOURNAMENT:updated",
-        Object.assign({}, msg), resolve);
-    });
   }
 }
 

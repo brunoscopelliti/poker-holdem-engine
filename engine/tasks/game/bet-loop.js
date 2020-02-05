@@ -71,7 +71,7 @@ const shouldBet =
       return false;
     }
 
-    if (player[Symbol.for("All-in")]) {
+    if (player.allin) {
       // Ask a new bet to a player
       // who have already bet everything
       // does not make sense.

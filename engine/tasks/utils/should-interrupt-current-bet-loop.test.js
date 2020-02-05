@@ -32,7 +32,7 @@ test("should interrupt when all players, but all in, have bet call amount", () =
       activePlayers: [{
         chipsBet: 100,
       }, {
-        [Symbol.for("All-in")]: true,
+        allin: true,
         chipsBet: 50,
       }],
       callAmount: 100,

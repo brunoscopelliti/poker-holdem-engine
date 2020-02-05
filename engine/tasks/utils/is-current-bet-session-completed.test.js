@@ -21,7 +21,7 @@ it("returns `true`, when everyone, but allin, has bet the callAmount", () => {
     isCompleted([{
       chipsBet: 100,
     }, {
-      [Symbol.for("All-in")]: true,
+      allin: true,
       chipsBet: 50,
     }, {
       chipsBet: 100,

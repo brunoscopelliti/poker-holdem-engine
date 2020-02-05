@@ -31,7 +31,7 @@ module.exports =
        */
       [Symbol.for("pay")] (gamestate, amount) {
         if (amount === this.chips) {
-          this[Symbol.for("All-in")] = true;
+          this.allin = true;
         }
 
         this.chipsBet += amount;
@@ -39,20 +39,20 @@ module.exports =
 
         gamestate.callAmount = Math.max(this.chipsBet, gamestate.callAmount);
         gamestate.pot += amount;
-        if (this[Symbol.for("All-in")] ||
+        if (this.allin ||
           gamestate.sidepots.length > 0 ||
-          gamestate.players.some((player) => player[Symbol.for("All-in")])) {
+          gamestate.players.some((player) => player.allin)) {
           splitPot(gamestate);
         }
       },
 
       /**
-       * Set the symbol that identify
+       * Set the field that identify
        * the player who holds the dealer button.
        * @name assignDealerButton
        */
       assignDealerButton () {
-        this[Symbol.for("Dealer")] = true;
+        this.Dealer = true;
       },
 
       /**
@@ -66,17 +66,13 @@ module.exports =
       async fold (gamestate) {
         this.state = States.get("fold");
 
-        const info = {
-          handId: gamestate.handUniqueId,
-          playerId: this.id,
-          session: gamestate.session,
-          state: this.state,
-        };
-
-        await save({
+        gamestate.actions = [{
           type: "state",
-          ...info,
-        });
+          playerId: this.id,
+          state: this.state,
+        }];
+
+        await save(gamestate);
 
         LOGGER.info(`${this.name} has fold.`, { tag: gamestate.handUniqueId });
       },
@@ -150,17 +146,13 @@ module.exports =
 
         this[Symbol.for("pay")](gamestate, amount);
 
-        const info = {
-          amount: amount,
-          handId: gamestate.handUniqueId,
-          playerId: this.id,
-          session: gamestate.session,
-        };
-
-        await save({
+        gamestate.actions = [{
           type: "bet",
-          ...info,
-        });
+          amount: amount,
+          playerId: this.id,
+        }];
+
+        await save(gamestate);
 
         LOGGER.debug(`${this.name} has bet ${amount}.`, { tag: gamestate.handUniqueId });
       },
@@ -181,28 +173,11 @@ module.exports =
           this.state = States.get("active");
         }
 
-        delete this[Symbol.for("All-in")];
-        delete this[Symbol.for("Big blind")];
+        delete this.allin;
+        delete this.bigBlind;
 
         this.cards = [];
         this.chipsBet = 0;
-      },
-
-      /**
-       * Returns a copy of the player
-       * that is serializable.
-       * @name serialize
-       * @return {Object}
-       */
-      serialize () {
-        // Extend with some not-serializable properties
-        return Object.assign({}, this, {
-          hasDealerButton: this[Symbol.for("Dealer")] != null,
-          id: this.id,
-          isAllin: this[Symbol.for("All-in")] != null,
-          name: this.name,
-          serviceUrl: this.serviceUrl,
-        });
       },
 
       /**
@@ -304,12 +279,12 @@ module.exports =
       },
 
       /**
-       * Removes the symbol that identify
+       * Removes the field that identify
        * the player who holds the dealer button.
        * @name unassignDealerButton
        */
       unassignDealerButton () {
-        delete this[Symbol.for("Dealer")];
+        delete this.Dealer;
       },
     };
 
@@ -328,7 +303,12 @@ module.exports =
       const player = Object.create(actions);
 
       Object.keys(playerData)
-        .forEach((prop) => Object.defineProperty(player, prop, { value: playerData[prop] }));
+        .forEach((prop) =>
+          Object.defineProperty(player, prop, {
+            enumerable: true,
+            value: playerData[prop],
+          })
+        );
 
       // Every player starts as an active player.
       player.state = States.get("active");

@@ -172,12 +172,6 @@ describe("payBet", () => {
     await player.payBet(gamestate, 10);
 
     expect(save).toBeCalledTimes(1);
-    expect(save).toBeCalledWith({
-      type: "bet",
-      amount: 10,
-      handId: "foo",
-      playerId: "a1",
-      session: "FLOP",
-    });
+    expect(save).toBeCalledWith(gamestate);
   });
 });

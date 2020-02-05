@@ -14,7 +14,7 @@ const isCurrentBetSessionCompleted =
   (activePlayers, callAmount) => {
     return activePlayers.length === 1 ||
       activePlayers.every((player) =>
-        player.chipsBet === callAmount || player[Symbol.for("All-in")]);
+        player.chipsBet === callAmount || player.allin);
   };
 
 module.exports = isCurrentBetSessionCompleted;

@@ -13,18 +13,14 @@ it("updates player state", async () => {
 
   const player = create({ id: "a1", name: "Arale", serviceUrl: "http://arale.com/" });
 
-  await player.fold({
+  const gamestate = {
     handUniqueId: 1,
     session: "FLOP",
-  });
+  };
+
+  await player.fold(gamestate);
 
   expect(player.state).toBe("fold");
   expect(save).toHaveBeenCalledTimes(1);
-  expect(save).toHaveBeenCalledWith({
-    type: "state",
-    handId: 1,
-    playerId: "a1",
-    session: "FLOP",
-    state: "fold",
-  });
+  expect(save).toHaveBeenCalledWith(gamestate);
 });
