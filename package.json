@@ -1,6 +1,6 @@
 {
   "name": "poker-holdem-engine",
-  "version": "4.0.0-rc6",
+  "version": "4.0.0",
   "description": "Texas hold'em poker engine",
   "main": "tournament.js",
   "engines": {
@@ -44,12 +44,12 @@
     "chalk": "3.0.0",
     "eslint": "6.8.0",
     "eslint-config-bruno": "2.0.0",
-    "eslint-plugin-import": "2.20.0",
+    "eslint-plugin-import": "2.20.1",
     "eslint-plugin-node": "11.0.0",
     "eslint-plugin-promise": "4.2.1",
     "eslint-plugin-standard": "4.0.1",
     "express": "4.17.1",
-    "jest": "24.9.0",
+    "jest": "25.1.0",
     "pre-commit": "1.2.2"
   }
 }
