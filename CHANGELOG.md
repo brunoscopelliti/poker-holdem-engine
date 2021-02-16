@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.1.0
+
+16/02/2021
+
+* Updated min node version (>= 14.0).
+
+* Updated some dev deps.
+
 ## 4.0.0
 
 05/02/2020
