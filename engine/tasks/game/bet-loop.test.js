@@ -35,6 +35,7 @@ const makePlayer =
     return player;
   };
 
+const hasOwn = {}.hasOwnProperty;
 const makeGamestate =
   (state) => {
     const gamestate = Object.create({
@@ -43,8 +44,8 @@ const makeGamestate =
       },
     });
 
-    for (let k in state) {
-      if (state.hasOwnProperty(k)) {
+    for (const k in state) {
+      if (hasOwn.call(state, k)) {
         gamestate[k] = state[k];
       }
     }

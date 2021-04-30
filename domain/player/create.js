@@ -251,9 +251,9 @@ module.exports =
               return this.id !== player.id
                 ? playerWithoutCards
                 : {
-                  cards: player.cards,
-                  ...playerWithoutCards,
-                };
+                    cards: player.cards,
+                    ...playerWithoutCards,
+                  };
             }
           );
 

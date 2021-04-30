@@ -36,20 +36,16 @@
     "poker-combinations": "1.2.2",
     "poker-deck": "1.0.2",
     "poker-rank": "2.0.2",
-    "request": "2.88.0",
-    "winston": "3.2.1"
+    "request": "2.88.2",
+    "winston": "3.3.3"
   },
   "devDependencies": {
     "body-parser": "1.19.0",
-    "chalk": "3.0.0",
-    "eslint": "7.20.0",
-    "eslint-config-bruno": "2.0.0",
-    "eslint-plugin-import": "2.22.1",
-    "eslint-plugin-node": "11.1.0",
-    "eslint-plugin-promise": "4.3.1",
-    "eslint-plugin-standard": "5.0.0",
+    "chalk": "4.1.1",
+    "eslint": "7.25.0",
+    "eslint-config-bruno": "3.0.0",
     "express": "4.17.1",
-    "jest": "25.1.0",
+    "jest": "26.6.3",
     "pre-commit": "1.2.2"
   }
 }
