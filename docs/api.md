@@ -3,7 +3,7 @@
 ## Tournament
 
 ```js
-const Tournament = require("poker-holdem-engine");
+const Tournament = require("@botpoker/engine-holdem");
 ```
 
 It's a constructor.

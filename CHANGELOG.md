@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0
+
+30/04/2021
+
+Published on npmjs under a different name - @botpoker/engine-holdem.
+
 ## 4.1.0
 
 16/02/2021

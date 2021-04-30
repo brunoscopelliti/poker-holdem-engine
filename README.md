@@ -1,6 +1,6 @@
-# poker-holdem-engine
+# @botpoker/engine-holdem
 
-`poker-holdem-engine` provides an engine to play Texas Hold'em Poker in respect of the [official rules](https://it.wikipedia.org/wiki/Texas_hold_%27em).
+`@botpoker/engine-holdem` provides an engine to play Texas Hold'em Poker in respect of the [official rules](https://it.wikipedia.org/wiki/Texas_hold_%27em).
 
 Poker here is meant to be played by other programs, which should be listening for POST http request somewhere in the Internet, or on your localhost.
 
@@ -13,7 +13,7 @@ It's possible to run a demo on your local machine by executing the `npm run demo
 ## start a tournament
 
 ```js
-const Tournament = require("poker-holdem-engine");
+const Tournament = require("@botpoker/engine-holdem");
 
 const tournamentID = "botparty";
 

@@ -1,7 +1,7 @@
 {
-  "name": "poker-holdem-engine",
-  "version": "4.1.0",
-  "description": "Texas hold'em poker engine",
+  "name": "@botpoker/engine-holdem",
+  "version": "1.0.0",
+  "description": "Texas Hold'em poker engine",
   "main": "tournament.js",
   "engines": {
     "node": ">=14.0.0"
