@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1
+
+01/05/2021
+
+Use @botpoker/cards instead of poker-deck.
+
 ## 1.0.0
 
 30/04/2021

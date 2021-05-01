@@ -1,6 +1,6 @@
 "use strict";
 
-const CARDS = require("poker-deck");
+const CARDS = require("@botpoker/cards");
 const shuffle = require("knuth-shuffle").knuthShuffle;
 const task = require("../task");
 const loop = require("../utils/loop-players");
