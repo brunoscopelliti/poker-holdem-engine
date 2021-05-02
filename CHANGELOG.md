@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.3
+
+02/05/2021
+
+Use @botpoker/all-combs instead of poker-combinations.
+
 ## 1.0.2
 
 02/05/2021

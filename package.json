@@ -1,6 +1,6 @@
 {
   "name": "@botpoker/engine-holdem",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Texas Hold'em poker engine",
   "main": "tournament.js",
   "engines": {
@@ -32,10 +32,10 @@
   },
   "homepage": "https://github.com/brunoscopelliti/poker-holdem-engine",
   "dependencies": {
-    "@botpoker/cards": "^1.0.0",
-    "@botpoker/rank-hands": "^1.0.0",
+    "@botpoker/all-combs": "1.0.0",
+    "@botpoker/cards": "1.0.0",
+    "@botpoker/rank-hands": "1.0.0",
     "knuth-shuffle": "1.0.8",
-    "poker-combinations": "1.2.2",
     "request": "2.88.2",
     "winston": "3.3.3"
   },
