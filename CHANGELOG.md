@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.2
+
+02/05/2021
+
+Use @botpoker/rank-hands instead of poker-rank.
+
 ## 1.0.1
 
 01/05/2021

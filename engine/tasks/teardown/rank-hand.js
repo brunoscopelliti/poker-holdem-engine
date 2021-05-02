@@ -1,6 +1,6 @@
 "use strict";
 
-const sortByRank = require("poker-rank");
+const sortByRank = require("@botpoker/rank-hands");
 
 const task = require("../task");
 const isRunning = require("../utils/is-tournament-running");

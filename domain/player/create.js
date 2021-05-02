@@ -3,7 +3,7 @@
 const send = require("request");
 
 const getAllCombination = require("poker-combinations");
-const sortByRank = require("poker-rank");
+const sortByRank = require("@botpoker/rank-hands");
 
 const States = require("./states");
 const splitPot = require("./split-pot");
